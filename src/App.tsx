@@ -18,14 +18,13 @@ function App() {
       <Routes>
 
         <Route element={<PrivateRoute />} >
-          <Route path="/forms" element={<SchoolClassPage />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/tests" element={<TestsPage />} />
           <Route path="/test/new" element={<TestAddPage />} />
 
         </Route>
         
-        <Route path="/" element={<HomePage />} />
-
+        <Route path="/forms" element={<SchoolClassPage />} />
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
 
