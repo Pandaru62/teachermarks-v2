@@ -4,7 +4,7 @@ import TextInput from "../../components/ui/formInput/textInput";
 import DefaultButton from "../../components/ui/defaultButton";
 import BackButton from "../../components/ui/backButton";
 import ColorPickerModal from "../../components/ui/ColorPickerModal";
-import { useSchoolClassForm } from "../../hooks/useSchoolClassForm";
+import { useSchoolClassForm } from "../../hooks/schoolClass/useSchoolClassForm";
 
 export default function AddSchoolClassPage() {
 
@@ -34,16 +34,20 @@ export default function AddSchoolClassPage() {
                         <BackButton/>
                         <h1 className="text-black mb-3">Ma classe</h1>
                     </div>
-                    <TextInput
-                        label="Nom de la classe"
-                        name="class_name"
-                        value={formik.values.class_name}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={formik.touched.class_name && formik.errors.class_name}
-                    />
-                    <div className="mt-3 rounded-lg bg-white w-[90%] p-5">
-                        <ul className="grid grid-cols-4 gap-3">
+                    <div className="flex flex-col lg:flex-row gap-3">
+                        <TextInput
+                            label="Nom de la classe"
+                            name="class_name"
+                            value={formik.values.class_name}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.class_name && formik.errors.class_name}
+                        />
+                        
+                    </div>
+                    <label htmlFor="color" className="text-xl font-semibold text-black text-center mt-3">Choix de la couleur</label>
+                    <fieldset className="mt-1 rounded-lg bg-white w-[90%] p-5">
+                        <ul className="grid grid-cols-4 lg:grid-cols-6 gap-3">
                             {defaultColors.map((color) => (
                             <li
                                 key={color}
@@ -78,7 +82,7 @@ export default function AddSchoolClassPage() {
                                 </IconButton>
                             </li>
                         </ul>
-                    </div>
+                    </fieldset>
 
                     
                 </Card>

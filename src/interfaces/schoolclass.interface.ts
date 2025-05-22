@@ -12,3 +12,16 @@ export default interface SchoolClassInterface {
 }
 
 export type CreateSchoolClassInterface = Pick<SchoolClassInterface, "name" | "color" | "formId">;
+
+export interface SchoolClassWithPupilsInterface {
+    id: number,
+    color: string,
+    name: string,
+    pupils : [
+        {
+            id: number,
+            firstName: string,
+            lastName: string
+        }
+    ]
+}

@@ -16,7 +16,7 @@ export default function TextInput(props: PropsInterface) {
 
     return (
         <div className="flex flex-col">
-            <label htmlFor="email" className="text-xl font-semibold text-black text-center mb-1">{label}</label>
+            <label htmlFor={name} className="text-xl font-semibold text-black text-center mb-1">{label}</label>
             <input 
             type={type}
             id={name}

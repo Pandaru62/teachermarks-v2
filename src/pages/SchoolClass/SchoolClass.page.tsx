@@ -1,20 +1,9 @@
-import SchoolClassInterface from "../../interfaces/schoolclass.interface";
-import { Card, Typography, Button } from "@material-tailwind/react";
-import { getTextColor } from "../../utils/getTextColor.function";
-import useSchoolClassesQueries from "./useSchoolClassesQueries";
-import { useStore } from "zustand";
-import { useAuthStore } from "../../hooks/useAuthStore";
+import { Card, Typography } from "@material-tailwind/react";
 import Wrapper from "../../components/ui/wrapper";
-import { Link } from "react-router-dom";
 import DefaultLinkButton from "../../components/ui/defaultLinkButton";
+import ClassList from "../../components/classList";
 
 export default function SchoolClassPage() {
-
-    const { schoolClasses, schoolClassesError, schoolClassesLoading } = useSchoolClassesQueries()
-    console.log("🚀 ~ SchoolClassPage ~ schoolClasses:", schoolClasses)
-
-    const currentUser = useStore(useAuthStore)
-    console.log("🚀 ~ SchoolClassPage ~ currentUser:", currentUser.user)
 
     return(
         <Wrapper extraClass="flex flex-col gap-5">
@@ -25,14 +14,8 @@ export default function SchoolClassPage() {
                 <Typography as="p" className="text-xl">Vos élèves n'attendent plus que vous !</Typography>
             </Card>
 
-            <div className="row-span-1 grid grid-cols-2 lg:grid-cols-4 gap-3">
-                {schoolClasses?.map((schoolClass:SchoolClassInterface) => (
-                <Link to={`/forms/${schoolClass.id}`} className="" key={schoolClass.id}>
-                    <Button className="w-full rounded-[15px] custom-shadow" size="lg" style={{ backgroundColor: schoolClass.color, color: getTextColor(schoolClass.color)}}>
-                        <Typography className="font-extrabold text-2xl">{schoolClass.name}</Typography>
-                    </Button>
-                </Link>
-                ))}
+            <div className="row-span-1">
+                <ClassList/>
             </div>
 
             <DefaultLinkButton
