@@ -5,8 +5,10 @@ export default interface SchoolClassInterface {
     name: string,
     color: string,
     is_archived: boolean,
-    form_id: number,
+    formId: number,
     form?: FormInterface,
     created_at: Date | string,
     updated_at: Date | string
 }
+
+export type CreateSchoolClassInterface = Pick<SchoolClassInterface, "name" | "color" | "formId">;

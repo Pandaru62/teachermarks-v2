@@ -222,7 +222,7 @@ export default function Header() {
           className="mr-4 ml-2 cursor-pointer py-1.5 font-medium"
         >
             {/* <span className="font-logo text-2xl text-white">Teachermarks</span> */}
-            <img src="src\assets\Logo_TeacherMarks\Orange M.png" alt="logo" className="w-[205px] h-auto"/>
+            <img src="src\assets\Logo_TeacherMarks\OrangeM.png" alt="logo" className="w-[205px] h-auto"/>
         </Typography>
         {isAuthenticated ? (
         <>

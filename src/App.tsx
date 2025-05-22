@@ -9,6 +9,7 @@ import TestAddPage from './pages/Tests/TestAdd.page copy'
 import SchoolClassPage from './pages/SchoolClass/SchoolClass.page'
 import { SignInPage } from './pages/auth/signin.page'
 import { SignUpPage } from './pages/auth/signup.page'
+import AddSchoolClassPage from './pages/SchoolClass/AddSchoolClass.page'
 
 function App() {
 
@@ -21,10 +22,13 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/tests" element={<TestsPage />} />
           <Route path="/test/new" element={<TestAddPage />} />
+          
+          <Route path="/forms" element={<SchoolClassPage />} />
+          <Route path="/forms/new" element={<AddSchoolClassPage />} />
+
 
         </Route>
         
-        <Route path="/forms" element={<SchoolClassPage />} />
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
 

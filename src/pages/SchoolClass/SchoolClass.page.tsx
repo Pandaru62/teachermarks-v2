@@ -1,10 +1,12 @@
 import SchoolClassInterface from "../../interfaces/schoolclass.interface";
-import { Card, CardBody, Typography, IconButton } from "@material-tailwind/react";
+import { Card, Typography, Button } from "@material-tailwind/react";
 import { getTextColor } from "../../utils/getTextColor.function";
 import useSchoolClassesQueries from "./useSchoolClassesQueries";
 import { useStore } from "zustand";
 import { useAuthStore } from "../../hooks/useAuthStore";
 import Wrapper from "../../components/ui/wrapper";
+import { Link } from "react-router-dom";
+import DefaultLinkButton from "../../components/ui/defaultLinkButton";
 
 export default function SchoolClassPage() {
 
@@ -15,44 +17,29 @@ export default function SchoolClassPage() {
     console.log("🚀 ~ SchoolClassPage ~ currentUser:", currentUser.user)
 
     return(
-        <Wrapper extraClass="flex flex-col items-center">
-            <h1 className="self-start">Mes classes</h1>
-            <Card className="w-96">
-                <CardBody>
-                <div className="mb-4 flex items-center justify-between">
-                    <Typography variant="h5" color="blue-gray" className="">
-                        Mes classes actives
-                    </Typography>
-                </div>
-                <div className="divide-y divide-gray-200">
-                {schoolClasses?.map((schoolClass:SchoolClassInterface) => (
-                    <div
-                    key={schoolClass.id}
-                    className="flex items-center justify-between pb-3 pt-3 last:pb-0"
-                    >
-                    <div className="flex items-center gap-x-3">
-                        <Typography 
-                            variant="h4" 
-                            className="w-24 text-center" 
-                            style={{ backgroundColor: schoolClass.color, color: getTextColor(schoolClass.color)}}
-                        >
-                            {schoolClass.name}
-                        </Typography>
-                        <div>
-                        <Typography color="blue-gray" variant="h6">
-                            x Qté élèves
-                        </Typography>
-                        <Typography variant="small" color="gray">
-                            x évaluations
-                        </Typography>
-                        </div>
-                    </div>
-                    <IconButton><i className="fas fa-pen"/></IconButton>
-                    </div>
-                ))}
-                </div>
-                </CardBody>
+        <Wrapper extraClass="flex flex-col gap-5">
+            <Card className="row-span-3 mt-6 py-5 bg-test-200 text-black flex justify-between items-center">
+                <h1 className="text-black">Mes classes</h1>
+                <Typography as="h2" className="text-xl font-semibold">Bienvenue <span className="text-test-400">super_prof</span> !</Typography>
+                <img src="\src\assets\smiling_postit.svg" alt="smiling post-it"/>
+                <Typography as="p" className="text-xl">Vos élèves n'attendent plus que vous !</Typography>
             </Card>
+
+            <div className="row-span-1 grid grid-cols-2 lg:grid-cols-4 gap-3">
+                {schoolClasses?.map((schoolClass:SchoolClassInterface) => (
+                <Link to={`/forms/${schoolClass.id}`} className="" key={schoolClass.id}>
+                    <Button className="w-full rounded-[15px] custom-shadow" size="lg" style={{ backgroundColor: schoolClass.color, color: getTextColor(schoolClass.color)}}>
+                        <Typography className="font-extrabold text-2xl">{schoolClass.name}</Typography>
+                    </Button>
+                </Link>
+                ))}
+            </div>
+
+            <DefaultLinkButton
+                label="Ajouter une classe"
+                height={75}
+                to="/forms/new"
+            />
            
         </Wrapper>
     )
