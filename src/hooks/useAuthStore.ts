@@ -1,8 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import UserInterface from "../interfaces/user.interface";
 
-export type UserWithoutPassword = Omit<UserInterface, "password">;
+export type UserWithoutPassword = {
+  email: string;
+  firstname: string;
+  id: number;
+  lastname: string;
+  school: string;
+};
 
 type AuthStore = {
   user: UserWithoutPassword | null;

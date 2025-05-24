@@ -1,6 +1,4 @@
-import { useStore } from "zustand"
 import useSchoolClassesQueries from "../hooks/schoolClass/useSchoolClassesQueries"
-import { useAuthStore } from "../hooks/useAuthStore"
 import { Button, Typography } from "@material-tailwind/react"
 import { Link } from "react-router-dom"
 import { getTextColor } from "../utils/getTextColor.function"
@@ -9,8 +7,6 @@ import SchoolClassInterface from "../interfaces/schoolclass.interface"
 export default function ClassList() {
 
     const { schoolClasses, schoolClassesError, schoolClassesLoading } = useSchoolClassesQueries()
-
-    const currentUser = useStore(useAuthStore);
 
     return (
     <>
@@ -33,7 +29,7 @@ export default function ClassList() {
                     className="snap-start shrink-0"
                 >
                     <Button
-                    className="rounded-[15px] custom-shadow min-w-[200px]"
+                    className="rounded-[15px] custom-shadow w-[90]"
                     size="lg"
                     style={{
                         backgroundColor: schoolClass.color,

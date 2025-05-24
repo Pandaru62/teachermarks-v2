@@ -3,8 +3,6 @@ import { Link } from "react-router-dom";
 
 export default function HomeLoggedUser() {
 
-
-
     return(
         <div className="grid grid-rows-3">
             <Card className="row-span-2 mt-6 py-5 bg-test-200 text-black flex justify-between items-center">

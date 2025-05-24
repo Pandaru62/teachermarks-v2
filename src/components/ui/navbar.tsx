@@ -20,6 +20,7 @@ import {
   AcademicCapIcon,
   DocumentDuplicateIcon,
   FolderPlusIcon,
+  SquaresPlusIcon,
 } from "@heroicons/react/24/solid";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useStore } from "zustand";
@@ -145,6 +146,11 @@ const loggedNavListItems = [
     label: "Ajouter une évaluation",
     icon: FolderPlusIcon,
     link: "test/new"
+  },
+  {
+    label: "Mes compétences",
+    icon: SquaresPlusIcon,
+    link: "skills"
   },
 ];
 

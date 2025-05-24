@@ -18,7 +18,7 @@ export default function DefaultButton(props: ButtonProps) {
             className={`w-full h-[${height}px] rounded-[15px] custom-shadow ${background} bg-opacity-${opacity} text-black ${extraClass}"`}
             size="lg" 
             type={type}>
-            <Typography className="font-extrabold text-2xl">{label}</Typography>
+            <Typography className="font-semibold text-2xl">{label}</Typography>
         </Button>
     )
 }

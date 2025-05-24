@@ -5,7 +5,6 @@ import useSchoolClassQuery from "../../hooks/schoolClass/useSchoolClassQuery";
 export default function EditSchoolClassPage() {
 
     const classId = Number(useParams().id);
-    console.log("🚀 ~ classId:", classId)
     const {schoolClass, schoolClassError, schoolClassLoading} = useSchoolClassQuery(classId);
     return (
         <>
