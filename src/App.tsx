@@ -11,6 +11,7 @@ import { SignInPage } from './pages/auth/signin.page'
 import { SignUpPage } from './pages/auth/signup.page'
 import AddSchoolClassPage from './pages/SchoolClass/AddSchoolClass.page'
 import SchoolClasseDetailsPage from './pages/SchoolClass/SchoolClassDetails.page'
+import EditSchoolClassPage from './pages/SchoolClass/EditSchoolClass.page'
 
 function App() {
 
@@ -28,6 +29,7 @@ function App() {
           <Route path="/forms/new" element={<AddSchoolClassPage />} />
 
           <Route path="/forms/:id" element={<SchoolClasseDetailsPage />} />
+          <Route path="/forms/:id/edit" element={<EditSchoolClassPage />} />
 
 
 

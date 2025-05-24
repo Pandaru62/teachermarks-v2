@@ -24,7 +24,7 @@ export default function SchoolClasseDetailsPage() {
                     style={{ backgroundColor: schoolClass.color }}
                 >
                     <div className="flex gap-3">
-                        <BackButton/>
+                        <BackButton />
                         <h1 className="text-black">{schoolClass.name}</h1>
                     </div>
                     <Typography as="p" className="text-xl font-semibold">Voilà les élèves de {schoolClass.name} !</Typography>

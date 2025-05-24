@@ -4,7 +4,7 @@ export default interface SchoolClassInterface {
     id: string,
     name: string,
     color: string,
-    is_archived: boolean,
+    isArchived: boolean,
     formId: number,
     form?: FormInterface,
     created_at: Date | string,
@@ -12,6 +12,8 @@ export default interface SchoolClassInterface {
 }
 
 export type CreateSchoolClassInterface = Pick<SchoolClassInterface, "name" | "color" | "formId">;
+
+export type EditSchoolClassInterface = Pick<SchoolClassInterface, "name" | "color" | "isArchived">;
 
 export interface SchoolClassWithPupilsInterface {
     id: number,

@@ -1,12 +1,18 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useState } from 'react';
-import { createSchoolClass } from '../../api/schoolclass';
+import { createSchoolClass, editSchoolClass } from '../../api/schoolclass';
 import { useNavigate } from 'react-router-dom';
-import { showSuccessAlert } from '../../utils/showSuccessAlert';
+import { showSuccessAlert } from '../../utils/alerts/showSuccessAlert';
 
-export const useSchoolClassForm = () => {
-  const [selectedColor, setSelectedColor] = useState('');
+interface SchoolClassFormProps {
+  initialValues: { class_name: string; color: string };
+  editClassId?: number;
+}
+
+export const useSchoolClassForm = (props : SchoolClassFormProps) => {
+  const {initialValues, editClassId} = props;
+  const [selectedColor, setSelectedColor] = useState(initialValues.color ?? "");
   const [customColor, setCustomColor] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -22,21 +28,33 @@ export const useSchoolClassForm = () => {
   };
 
   const formik = useFormik({
-    initialValues: {
-      class_name: '',
-    },
+    initialValues,
     validationSchema: Yup.object({
       class_name: Yup.string().required('Nom de la classe requis'),
     }),
     onSubmit: async (values) => {
-      const newClass = await createSchoolClass(
-        {
+      if(editClassId) {
+        const editClass = await editSchoolClass(
+          {
             name : values.class_name,
             color: selectedColor,
-            formId : 1
-        });
-      if (newClass) {
-        showSuccessAlert("Classe créée avec succès !", () => navigate("/forms"));
+            isArchived: false
+          },
+          editClassId
+        );
+        if(editClass) {
+          showSuccessAlert("Classe modifiée avec succès !", () => navigate("/forms/" + editClassId));
+        }
+      } else {
+        const newClass = await createSchoolClass(
+          {
+              name : values.class_name,
+              color: selectedColor,
+              formId : 1
+          });
+        if (newClass) {
+          showSuccessAlert("Classe créée avec succès !", () => navigate("/forms"));
+        }
       }
     },
     

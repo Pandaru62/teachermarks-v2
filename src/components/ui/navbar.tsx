@@ -169,12 +169,12 @@ function NavList() {
           {({isActive}) => (
           <Typography
             variant="small"
-            color="gray"
-            className="text-blue-gray-500"
+            color="white"
+            className={isActive ? "text-gray-400" : "text-white"}
           >
             <MenuItem className="flex items-center gap-2 lg:rounded-full">
               {React.createElement(icon, { className: "h-[18px] w-[18px]" })}{" "}
-              <span className={isActive ? "font-bold text-gray-700" : "text-gray-900"}> {label}</span>
+              <span className={isActive ? "font-semibold text-gray-400" : "text-white"}> {label}</span>
             </MenuItem>
           </Typography>
           )}

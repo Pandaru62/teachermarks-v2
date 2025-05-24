@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import getSchoolClasses from "../../api/schoolclass";
 
-export default function useSchoolClassesQueries(postId?: number) {
+export default function useSchoolClassesQueries() {
 
     const {
         data: schoolClasses,
