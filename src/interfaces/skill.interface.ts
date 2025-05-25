@@ -3,6 +3,7 @@ export default interface SkillInterface {
     name: string,
     abbreviation: string,
     description: string,
+    isArchived: boolean,
     created_at?: Date | string,
     updated_at?: Date | string,
     userId?: number

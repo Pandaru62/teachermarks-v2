@@ -19,16 +19,17 @@ export default function SkillListPage() {
     }, [skills])
 
     return (
-        <div>
+        <div className="flex flex-col lg:gap-5">
             <TopCard
-                cardClass="h-[50vh]"
+                cardClass=""
                 title1 = "Mes compétences"
                 title2= {title2}
                 paragraph={paragraph}
             />
-            <SkillList 
-                skills={skills}
-            />
+            {skills && (<SkillList skills={skills} />)}
+            {skillsError && <p>Une erreur s'est produite. Veuillez réessayer</p>}
+            {skillsLoading && <p>Chargement en cours ...</p>}
+
             <DefaultLinkButton
                 to="/skills/new"
                 label="ajouter une compétence"

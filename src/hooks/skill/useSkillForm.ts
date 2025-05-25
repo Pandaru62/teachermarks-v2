@@ -5,6 +5,7 @@ import { showSuccessAlert } from '../../utils/alerts/showSuccessAlert';
 import { SkillFormProps } from '../../components/forms/SkillForm';
 import { createSkill, editSkill } from '../../api/skill';
 import { useQueryClient } from '@tanstack/react-query';
+import SkillInterface from '../../interfaces/skill.interface';
 
 export const useSkillForm = (props : SkillFormProps) => {
   const {initialValues, editSkillId} = props;
@@ -29,7 +30,11 @@ export const useSkillForm = (props : SkillFormProps) => {
           editSkillId
         );
         if(editedSkill) {
-          queryClient.invalidateQueries({ queryKey: ['skill', editSkillId] });
+          queryClient.setQueryData(['skills'], (oldSkills : SkillInterface[]) =>
+          oldSkills ? oldSkills.map((skill) => skill.id === editSkillId ? editedSkill : skill) : []);
+
+          queryClient.setQueryData(['skill', editSkillId], editedSkill)
+
           showSuccessAlert("Compétence modifiée avec succès !", () => navigate("/skills/" + editSkillId));
         }
       } else {
@@ -40,6 +45,11 @@ export const useSkillForm = (props : SkillFormProps) => {
               description : values.description
           });
         if (newSkill) {
+          queryClient.setQueryData(['skills'], (oldSkills?: SkillInterface[]) =>
+            oldSkills ? [...oldSkills, newSkill] : [newSkill]
+          );
+
+          queryClient.setQueryData(['skill', newSkill.id], newSkill);
           showSuccessAlert("Compétence créée avec succès !", () => navigate("/skills"));
         }
       }

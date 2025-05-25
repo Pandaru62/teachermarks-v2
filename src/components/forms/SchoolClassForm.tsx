@@ -9,6 +9,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { archiveSchoolClass } from "../../api/schoolclass";
 import { showWarningAlert } from "../../utils/alerts/warningAlert";
 import { useNavigate } from "react-router-dom";
+import SchoolClassInterface from "../../interfaces/schoolclass.interface";
 
 interface SchoolClassFormProps {
   initialValues: { class_name: string; color: string };
@@ -36,9 +37,11 @@ export default function SchoolClassForm({ initialValues, editClassId }: SchoolCl
 const queryClient = useQueryClient();
 const mutation = useMutation({
     mutationFn: archiveSchoolClass,
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ['schoolClasses'] })
+    onSuccess: (editedClass : SchoolClassInterface) => {
+        queryClient.setQueryData(['schoolClasses'], (oldSchoolClasses : SchoolClassInterface[]) =>
+            oldSchoolClasses ? oldSchoolClasses.map((schoolClass) => schoolClass.id === editClassId ? editedClass : schoolClass) : []);
+    
+        queryClient.setQueryData(['schoolClass', editClassId], editedClass);
     },
   });
 

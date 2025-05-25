@@ -4,18 +4,22 @@ import SkillInterface from "../interfaces/skill.interface"
 
 interface SkillListProps {
     skills: SkillInterface[]
+    isArchivedFilter?: boolean
 }
 
 export default function SkillList(props : SkillListProps) {
 
-    const {skills} = props;
+    const {skills, isArchivedFilter = false} = props;
 
     return (
     <>
         <div className="hidden lg:grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {skills?.map((skill) => (
+        {skills?.filter((skill) => skill.isArchived === isArchivedFilter).map((skill) => (
             <Link to={`/skills/${skill.id}`} key={skill.id}>
-                <Button className="w-full rounded-[15px] custom-shadow" size="lg" >
+                <Button
+                    className="rounded-[15px] custom-shadow bg-test-200 bg-opacity-60 text-black w-full"
+                    size="lg"
+                >                    
                     <Typography className="font-extrabold text-2xl">{skill.name}</Typography>
                 </Button>
             </Link>

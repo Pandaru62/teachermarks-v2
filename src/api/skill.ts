@@ -39,3 +39,12 @@ export async function editSkill(skill : EditSkillInterface, id : number) {
     }
 }
 
+export async function archiveSkill(id : number) {
+    try {
+        const { data } = await api.patch('skills/' + id + '/archive');
+        return data
+    } catch (error: any) {
+        throw new Error(error);
+    }
+}
+

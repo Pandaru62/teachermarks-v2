@@ -1,7 +1,7 @@
 import FormInterface from "./form.interface"
 
 export default interface SchoolClassInterface {
-    id: string,
+    id: number,
     name: string,
     color: string,
     isArchived: boolean,

@@ -6,21 +6,23 @@ interface PropsInterface {
     value: string,
     onChange?: (e: React.ChangeEvent<any>) => void
     error? : any
+    rows: number
 }
 
 export default function TextAreaInput(props: PropsInterface) {
 
-    const {label, name, onChange, value, error} = props;
+    const {label, name, onChange, value, error, rows} = props;
 
     return (
         <div className="flex flex-col">
             <label htmlFor={name} className="text-xl font-semibold text-black text-center mb-1">{label}</label>
             <textarea 
-            id={name}
-            name={name}
-            onChange={onChange}
-            value={value}
-            className="rounded-xl p-2 text-black text-center"
+                id={name}
+                name={name}
+                onChange={onChange}
+                value={value}
+                className={`w-full rounded-xl p-2 text-black text-center`}
+                rows={rows}
             />
             {error && (
                 <Typography variant="small" color="pink" className="flex items-center gap-1">

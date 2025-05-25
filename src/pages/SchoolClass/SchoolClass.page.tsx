@@ -8,7 +8,7 @@ export default function SchoolClassPage() {
     return(
         <Wrapper extraClass="flex flex-col gap-5">
             <TopCard
-                cardClass="h-[50vh]"
+                cardClass=""
                 title1 = "Mes classes"
                 title2= "Bienvenue"
                 paragraph="Vos élèves n'attendent plus que vous !"

@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { createSchoolClass, editSchoolClass } from '../../api/schoolclass';
 import { useNavigate } from 'react-router-dom';
 import { showSuccessAlert } from '../../utils/alerts/showSuccessAlert';
+import { useQueryClient } from '@tanstack/react-query';
+import SchoolClassInterface from '../../interfaces/schoolclass.interface';
 
 interface SchoolClassFormProps {
   initialValues: { class_name: string; color: string };
@@ -11,6 +13,7 @@ interface SchoolClassFormProps {
 }
 
 export const useSchoolClassForm = (props : SchoolClassFormProps) => {
+    const queryClient = useQueryClient();
   const {initialValues, editClassId} = props;
   const [selectedColor, setSelectedColor] = useState(initialValues.color ?? "");
   const [customColor, setCustomColor] = useState('');
@@ -34,7 +37,7 @@ export const useSchoolClassForm = (props : SchoolClassFormProps) => {
     }),
     onSubmit: async (values) => {
       if(editClassId) {
-        const editClass = await editSchoolClass(
+        const editedClass = await editSchoolClass(
           {
             name : values.class_name,
             color: selectedColor,
@@ -42,7 +45,13 @@ export const useSchoolClassForm = (props : SchoolClassFormProps) => {
           },
           editClassId
         );
-        if(editClass) {
+        if(editedClass) {
+
+          queryClient.setQueryData(['schoolClasses'], (oldSchoolClasses : SchoolClassInterface[]) =>
+            oldSchoolClasses ? oldSchoolClasses.map((schoolClass) => schoolClass.id === editClassId ? editedClass : schoolClass) : []);
+
+          queryClient.setQueryData(['schoolClass', editClassId], editedClass);
+
           showSuccessAlert("Classe modifiée avec succès !", () => navigate("/forms/" + editClassId));
         }
       } else {
@@ -53,6 +62,12 @@ export const useSchoolClassForm = (props : SchoolClassFormProps) => {
               formId : 1
           });
         if (newClass) {
+
+          queryClient.setQueryData(['schoolClasses'], (oldSchoolClasses : SchoolClassInterface[]) =>
+            oldSchoolClasses ? [...oldSchoolClasses, newClass] : [newClass]);
+
+          queryClient.setQueryData(['schoolClass', newClass.id], newClass);
+
           showSuccessAlert("Classe créée avec succès !", () => navigate("/forms"));
         }
       }
