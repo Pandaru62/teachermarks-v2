@@ -145,7 +145,7 @@ const loggedNavListItems = [
   {
     label: "Ajouter une évaluation",
     icon: FolderPlusIcon,
-    link: "test/new"
+    link: "tests/new"
   },
   {
     label: "Mes compétences",

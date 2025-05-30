@@ -23,7 +23,6 @@ export default function TopCard(props : TopCardProps) {
     } = props;
 
     const currentUser = useStore(useAuthStore);
-    console.log("🚀 ~ TopCard ~ currentUser:", currentUser)
 
     return (
         <Card className={`${cardClass} mt-6 py-5 bg-test-200 text-black flex justify-between items-center`}>

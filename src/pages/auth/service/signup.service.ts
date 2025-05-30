@@ -22,7 +22,6 @@ export function useSignUpPageService() {
       return response;
     },
     onSuccess: (response : any) => {
-      console.log("Sign Up Service", response)
       Swal.fire({
         title: "Compte créé avec succès",
         text: `Un e-mail de validation vient d'être envoyé à l'adresse ${response.email}. Veuillez cliquer sur le lien pour activer votre compte et vous connecter.`,

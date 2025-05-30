@@ -6,9 +6,6 @@ import HomeLoggedUser from "./Home.loggeduser";
 export default function HomePage() {
 
     const currentUser = useStore(useAuthStore);
-    console.log("🚀 ~ HomePage ~ currentUser:", currentUser)
-
-    
 
     return(
         <>

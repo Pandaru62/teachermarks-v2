@@ -2,9 +2,9 @@ import { Typography } from "@material-tailwind/react";
 
 interface PropsInterface {
     label: string,
-    type?: "text" | "email" | "password",
+    type?: "text" | "email" | "password" | "date" | "number",
     name: string,
-    value: string,
+    value: string | number,
     onChange?: (e: React.ChangeEvent<any>) => void
     onBlur?: React.FocusEventHandler<HTMLInputElement>
     error? : any
