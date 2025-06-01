@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getTestById } from "../../api/tests";
+import TestInterface from "../../interfaces/test.interface";
 
 export default function useTestQuery(id : number) {
 
@@ -7,7 +8,7 @@ export default function useTestQuery(id : number) {
         data: test,
         isLoading: testLoading,
         isError: testError,
-      } = useQuery({
+      } = useQuery<TestInterface>({
         queryKey: ["test", id],
         queryFn: () => getTestById(id),
       });

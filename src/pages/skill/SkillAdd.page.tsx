@@ -1,6 +1,6 @@
 import SkillForm from "../../components/forms/SkillForm";
 
-export default function SkillListPage() {
+export default function SkillAddPage() {
     return (
         <SkillForm
                 initialValues={{ name: "", description: "", abbreviation: "" }}

@@ -10,7 +10,7 @@ export default function useSkillQuery(id: number) {
         isError: skillError,
       } = useQuery<SkillInterface>({
         queryKey: ["skill", id],
-        queryFn: () => getSkillById(id),
+        queryFn: () => getSkillById(id)
       });
 
 

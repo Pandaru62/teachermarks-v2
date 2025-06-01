@@ -18,6 +18,7 @@ export interface TestFormProps {
     schoolClassId?: number;
     scale: number;
     coefficient: number;
+    skills?: {id: number, name: string}[]
   };
   editTestId?: number;
   schoolClasses? : SchoolClassInterface[]
@@ -27,7 +28,7 @@ export const useTestForm = (props : TestFormProps) => {
   const queryClient = useQueryClient();
   const {initialValues, editTestId } = props;
   const navigate = useNavigate();
-  const [selectedSkills, setSelectedSkills] = useState<{id: number, name: string}[]>([]);
+  const [selectedSkills, setSelectedSkills] = useState<{id: number, name: string}[]>(initialValues.skills ?? []);
 
 
   const formik = useFormik({
@@ -50,12 +51,12 @@ export const useTestForm = (props : TestFormProps) => {
           editTestId
         );
         if(editedTest) {
-          // queryClient.setQueryData(['schoolClasses'], (oldSchoolClasses : SchoolClassInterface[]) =>
-          //   oldSchoolClasses ? oldSchoolClasses.map((schoolClass) => schoolClass.id === editClassId ? editedClass : schoolClass) : []);
+          queryClient.setQueryData(['tests'], (oldTests : TestInterface[]) =>
+            oldTests ? oldTests.map((test) => test.id === editTestId ? editedTest : test) : []);
 
-          // queryClient.setQueryData(['schoolClass', editClassId], editedClass);
+          queryClient.setQueryData(['test', editTestId], editedTest);
 
-          // showSuccessAlert("Evaluation modifiée avec succès !", () => navigate("/tests/" + editTestId));
+          showSuccessAlert("Evaluation modifiée avec succès !", () => navigate("/tests/" + editTestId));
         }
       } else {
         const formatDate = new Date(values.date).toISOString();

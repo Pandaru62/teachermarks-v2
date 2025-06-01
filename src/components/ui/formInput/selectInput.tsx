@@ -5,22 +5,24 @@ interface PropsInterface {
     options: { id: number; label: string; }[],
     value: number,
     name: string,
-    onChange?: (e: React.ChangeEvent<any>) => void
-    error? : any
+    onChange?: (e: React.ChangeEvent<any>) => void,
+    error? : any,
+    disabled? : boolean
 }
 
 export default function SelectInput(props: PropsInterface) {
 
-    const {label, options, value, name, onChange, error} = props;
+    const {label, options, value, name, onChange, error, disabled = false} = props;
 
     return (
         <div className="flex flex-col">
             <label htmlFor={name} className="text-xl font-semibold text-black text-center mb-1">{label}</label>
             <select
                 name={name}
-                className="bg-white rounded-xl ps-3 h-10"
+                className="bg-white rounded-xl ps-3 h-10 disabled:bg-blue-gray-200"
                 onChange={onChange}
                 value={value}
+                disabled={disabled}
             >
                 {options.map((option) => (
                     <option key={option.id} value={option.id}>{option.label}</option>

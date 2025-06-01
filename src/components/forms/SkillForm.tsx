@@ -4,13 +4,14 @@ import DefaultButton from "../ui/defaultButton";
 import TextInput from "../ui/formInput/textInput";
 import Wrapper from "../ui/wrapper";
 import TextAreaInput from "../ui/formInput/textAreaInput";
-import SkillBubble from "../ui/skillBubble";
+import SkillBubble from "../ui/skill/skillBubble";
 import { useSkillForm } from "../../hooks/skill/useSkillForm";
 import { showWarningAlert } from "../../utils/alerts/warningAlert";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { archiveSkill } from "../../api/skill";
 import SkillInterface from "../../interfaces/skill.interface";
+import { SkillLevelEnum } from "../../interfaces/student-test.interface";
 
 export interface SkillFormProps {
   initialValues: { name: string; description: string; abbreviation: string };
@@ -82,10 +83,9 @@ export default function SkillForm({ initialValues, editSkillId }: SkillFormProps
                                     className="rounded-xl p-2 text-black text-center"
                                 />
                                 <div className="col-span-2 bg-white bg-opacity-70 rounded-xl p-2 flex justify-around">
-                                        <SkillBubble color="bg-test-400" letter={formik.values.abbreviation} />
-                                        <SkillBubble color="bg-test-300" letter={formik.values.abbreviation} />
-                                        <SkillBubble color="bg-test-200" letter={formik.values.abbreviation} />
-                                        <SkillBubble color="bg-test-600" letter={formik.values.abbreviation} />
+                                {[SkillLevelEnum.LVL1, SkillLevelEnum.LVL2, SkillLevelEnum.LVL3, SkillLevelEnum.LVL4].map(skillLevel => (
+                                    <SkillBubble key={skillLevel} level={skillLevel} letter={formik.values.abbreviation} />
+                                ))}
                                 </div>  
                             </div>
                             {formik.touched.abbreviation && formik.errors.abbreviation && (

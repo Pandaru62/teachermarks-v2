@@ -1,5 +1,3 @@
-import SchoolClassInterface from "./schoolclass.interface"
-
 export enum TrimesterEnum {
   TR1 = "TR1",
   TR2 = "TR2",
@@ -14,13 +12,18 @@ export default interface TestInterface {
     trimester: TrimesterEnum,
     scale: number,
     coefficient: number,
-    schoolClass?: SchoolClassInterface,
+    schoolclass?: {
+      name: string,
+      count: number,
+      color: string
+    },
     schoolClassId: number,
     created_at: Date | string,
     updated_at: Date | string,
     skills: {
       id: number,
-      name: string
+      name: string,
+      abbreviation: string
     }[]
 }
 
