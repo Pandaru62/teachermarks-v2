@@ -7,6 +7,7 @@ import SchoolClassInterface from '../../interfaces/schoolclass.interface';
 import { createTest, editTest } from '../../api/tests';
 import TestInterface, { TrimesterEnum } from '../../interfaces/test.interface';
 import { useState } from 'react';
+import SkillInterface from '../../interfaces/skill.interface';
 
 export interface TestFormProps {
   initialValues: { 
@@ -18,7 +19,7 @@ export interface TestFormProps {
     schoolClassId?: number;
     scale: number;
     coefficient: number;
-    skills?: {id: number, name: string}[]
+    skills?: Pick<SkillInterface, "id" | "name" | "abbreviation">[]
   };
   editTestId?: number;
   schoolClasses? : SchoolClassInterface[]
@@ -28,7 +29,7 @@ export const useTestForm = (props : TestFormProps) => {
   const queryClient = useQueryClient();
   const {initialValues, editTestId } = props;
   const navigate = useNavigate();
-  const [selectedSkills, setSelectedSkills] = useState<{id: number, name: string}[]>(initialValues.skills ?? []);
+  const [selectedSkills, setSelectedSkills] = useState<Pick<SkillInterface, "id" | "name" | "abbreviation">[]>(initialValues.skills ?? []);
 
 
   const formik = useFormik({

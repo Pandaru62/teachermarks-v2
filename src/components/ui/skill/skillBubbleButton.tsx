@@ -1,15 +1,17 @@
+import { IconButton } from "@material-tailwind/react";
 import { SkillLevelEnum } from "../../../interfaces/student-test.interface";
 
 interface SkillBubbleProps {
     level: SkillLevelEnum,
-    letter: string,
-    bubbleSize?: number,
-    textSize?: 'xs' | 'sm' | 'lg'
+    label: string,
+    isActive?: boolean,
+    onClick: () => void
 }
 
-export default function SkillBubble(props : SkillBubbleProps) {
+export default function SkillBubbleButton(props : SkillBubbleProps) {
 
-    const {level, letter, bubbleSize = 6, textSize = 'xs'} = props;
+    const {level, label, isActive = false, onClick} = props;
+    
 
     let color = ''
     switch (level) {
@@ -29,15 +31,22 @@ export default function SkillBubble(props : SkillBubbleProps) {
             color = 'bg-test-600';
             break;
         case SkillLevelEnum.ABS:
-            color = 'bg-test-50 opacity-50';
+            color = 'bg-blue-gray-300';
             break;
         default :
-            color = 'bg-test-50 opacity-50';
+            color = 'bg-blue-gray-300';
     }
 
     return (
-        <div className={`rounded-full h-${bubbleSize} w-${bubbleSize} my-1 ${color} flex justify-center items-center`}>
-            <span className={color === 'bg-test-600' || color === 'bg-black' || color === 'bg-test-100' || color === 'bg-test-400' ? `text-${textSize} font-logo text-white` : `text-${textSize} font-logo text-black`}>{letter}</span>
-        </div>
+        <IconButton 
+            key={level}
+            className={`rounded-full ${!isActive ? "opacity-50" : color}`}
+            variant={isActive ? "filled" : "outlined"}
+            onClick={onClick}
+        >
+            <span className='font-logo'>
+                {label}
+            </span>
+        </IconButton>
     )
 }

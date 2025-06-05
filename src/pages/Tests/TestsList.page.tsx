@@ -18,24 +18,24 @@ export default function TestsListPage() {
 
     
     useEffect(() => {
-  if (!allTests) return;
+        if (!allTests) return;
 
-  let filtered = [...allTests];
+        let filtered = [...allTests];
 
-  if (trimesterFilters.length > 0) {
-    filtered = filtered.filter(test =>
-      trimesterFilters.includes(test.trimester)
-    );
-  }
+        if (trimesterFilters.length > 0) {
+            filtered = filtered.filter(test =>
+            trimesterFilters.includes(test.trimester)
+            );
+        }
 
-  if (schoolClassFilters.length > 0) {
-    filtered = filtered.filter(test =>
-      schoolClassFilters.includes(test.schoolclass?.name ?? "")
-    );
-  }
+        if (schoolClassFilters.length > 0) {
+            filtered = filtered.filter(test =>
+            schoolClassFilters.includes(test.schoolclass?.name ?? "")
+            );
+        }
 
-  setFilteredTests(filtered);
-}, [trimesterFilters, schoolClassFilters, allTests]);
+        setFilteredTests(filtered);
+    }, [trimesterFilters, schoolClassFilters, allTests]);
     
     if (allTestsLoading) return <p>Chargement en cours ...</p>
     if (allTestsError) return <p>Erreur. Veuillez réessayer</p>

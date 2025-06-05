@@ -20,7 +20,7 @@ export default function SkillAverageLine(props : SkillAvgProps) {
                 letter={skill.abbreviation ?? "?"}
                 level={calcAvg.level}
             />
-            <span>{skill.name} : {calcAvg.average}</span>
+            <span>{skill.name} : {isNaN(calcAvg.average) ? 'Aucun résultat' : calcAvg.average.toFixed(2) + ' / 4'}</span>
         </li>
     )
 }

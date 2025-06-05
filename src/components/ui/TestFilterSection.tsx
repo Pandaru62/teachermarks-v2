@@ -14,11 +14,7 @@ export default function TestFilterSection(props : TestFilterSectionProps) {
 
     const {schoolClassFilters, setSchoolClassFilters, setTrimesterFilters, trimesterFilters} = props;
     
-    console.log("🚀 ~ TestFilterSection ~ schoolClassFilters:", schoolClassFilters)
-
     const {schoolClasses} = useSchoolClassesQueries();
-
-    console.log("🚀 ~ TestFilterSection ~ trimesterFilters:", trimesterFilters)
 
     const handleTrimesterFilters = (trimester : TrimesterEnum) => {
         if (trimesterFilters.includes(trimester)) {

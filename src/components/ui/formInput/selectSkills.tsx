@@ -5,14 +5,14 @@ interface PropsInterface {
     label: string;
     skills: SkillInterface[];
     name: string;
-    selectedSkills: { id: number; name: string }[];
-    setSelectedSkills: React.Dispatch<React.SetStateAction<{ id: number; name: string }[]>>;
+    selectedSkills: Pick<SkillInterface, "id" | "name" | "abbreviation">[];
+    setSelectedSkills: React.Dispatch<React.SetStateAction<Pick<SkillInterface, "id" | "name" | "abbreviation">[]>>;
 }
 
 export default function SelectSkills(props: PropsInterface) {
     const { label, skills, name, selectedSkills, setSelectedSkills } = props;
 
-    const handleSkillSelection = (skill: { id: number; name: string }) => {
+    const handleSkillSelection = (skill: Pick<SkillInterface, "id" | "name" | "abbreviation">) => {
         const isSelected = selectedSkills.some((s) => s.id === skill.id);
 
         if (isSelected) {
@@ -38,7 +38,7 @@ export default function SelectSkills(props: PropsInterface) {
                                 rounded-full
                                 ${isSelected ? 'bg-test-400 opacity-100' : 'bg-test-300 opacity-40 focus:opacity-40 text-black'}
                             `}
-                            onClick={() => handleSkillSelection({ id: skill.id, name: skill.name })}
+                            onClick={() => handleSkillSelection({ id: skill.id, name: skill.name, abbreviation: skill.abbreviation })}
                         >
                             <span className="text-xs font-logo">{skill.abbreviation}</span>
                         </IconButton>

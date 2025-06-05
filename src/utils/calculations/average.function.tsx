@@ -1,10 +1,10 @@
-import StudentTestInterface, { SkillLevelEnum } from "../../interfaces/student-test.interface";
+import StudentTestInterface, { SkillLevelEnum, StudentTestByStudentInterface } from "../../interfaces/student-test.interface";
 
 export default function calculateAverage(numbers : number[]): number {
-    return numbers.reduce((acc, number) => acc + number, 0)/numbers.length
+    return (numbers.reduce((acc, number) => acc + number, 0)/numbers.length)
 }
 
-export function getAverageMark(studentTests : StudentTestInterface[]): number {
+export function getAverageMark(studentTests : StudentTestInterface[] | StudentTestByStudentInterface[]): number {
     // only count tests for which students were present and marked
     const marks = studentTests.filter((sT) => sT.isAbsent === false && sT.isUnmarked === false).map((studentTest) => studentTest.mark);
     return calculateAverage(marks);
@@ -15,7 +15,9 @@ export function countAbsent(studentTests : StudentTestInterface[]): number {
 }
 
 export function countUnmarked(studentTests : StudentTestInterface[]): number {
-    return studentTests.filter((sT) => sT.isUnmarked === true).length
+    return studentTests.filter(
+        (sT) => sT.isUnmarked === true
+    ).length
 }
 
 export function countMarked(studentTests : StudentTestInterface[]): number {
@@ -39,7 +41,7 @@ export function applyAverageSkillLevel(average : number) : SkillLevelEnum {
 
 }
 
-export function getAverageSkillById(studentTests : StudentTestInterface[], skillId: number) : {average: number, level : SkillLevelEnum} {
+export function getAverageSkillById(studentTests : StudentTestInterface[] | StudentTestByStudentInterface[], skillId: number) : {average: number, level : SkillLevelEnum} {
     
     // 1. get each result for given skill Id
     const skillList : SkillLevelEnum[] = []

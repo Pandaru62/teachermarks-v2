@@ -1,3 +1,5 @@
+import { TrimesterEnum } from "./test.interface";
+
 export enum SkillLevelEnum {
   NN = "NN",
   ABS = "ABS",
@@ -21,13 +23,43 @@ export default interface StudentTestInterface {
     studenttesthasskill: {
         skill: {
             id: number,
-            name: number,
+            name: string,
             abbreviation: string
         },
         level: SkillLevelEnum
     }[]
 }
 
-// export type CreateStudentInterface = Pick<StudentInterface, "lastName" | "firstName">;
+export interface StudentTestByStudentInterface {
+  id: number;
+  mark: number;
+  isAbsent: boolean;
+  isUnmarked: boolean;
+  test: {
+    coefficient: number;
+    date: string;
+    description: string;
+    name: string;
+    scale: number;
+    id: number;
+    trimester: TrimesterEnum;
+  };
+  studenttesthasskill: {
+    skill: {
+      id: number;
+      name: string;
+      abbreviation: string;
+    };
+    level: SkillLevelEnum;
+  }[];
+}
 
-// export type EditStudentInterface = Pick<StudentInterface, "lastName" | "firstName">;
+export interface EditStudentTestInterface {
+    mark: number,
+    isAbsent: boolean,
+    isUnmarked: boolean,
+    skills: {
+        skillId: number,
+        level: SkillLevelEnum
+    }[]
+};

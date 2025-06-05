@@ -3,12 +3,13 @@ import { Checkbox, ListItem, ListItemPrefix, Typography } from "@material-tailwi
 interface CheckboxListItemProps {
     id: string,
     label: string,
-    onClick: () => void
+    onClick: () => void,
+    checked?: boolean
 }
 
 export default function CheckBoxListItem(props : CheckboxListItemProps ) {
 
-    const {id, label, onClick} = props;
+    const {id, label, onClick, checked = false} = props;
 
     return (
         <ListItem className="p-0" key={id}>
@@ -21,7 +22,8 @@ export default function CheckBoxListItem(props : CheckboxListItemProps ) {
                     color="amber"
                     id={id}
                     ripple={false}
-                    onClick={onClick}
+                    onChange={onClick}
+                    checked={checked}
                     className="hover:before:opacity-0"
                     containerProps={{
                     className: "p-0",

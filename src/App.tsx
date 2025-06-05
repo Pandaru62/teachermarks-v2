@@ -28,7 +28,6 @@ function App() {
       <Routes>
 
         <Route element={<PrivateRoute />} >
-          <Route path="/" element={<HomePage />} />
           <Route path="/tests" element={<TestsPage />} />
           <Route path="/tests/new" element={<TestAddPage />} />
           <Route path="/tests/:id" element={<TestDetailsPage />} />
@@ -53,12 +52,12 @@ function App() {
 
 
         </Route>
-        
+
+        <Route path="/" element={<HomePage />} />
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
-
-
         <Route path="/*" element={<ErrorPage />} />
+        
       </Routes>
     </>
   )
