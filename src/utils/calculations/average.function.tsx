@@ -1,4 +1,5 @@
 import StudentTestInterface, { SkillLevelEnum, StudentTestByStudentInterface } from "../../interfaces/student-test.interface";
+import TestInterface, { TrimesterEnum } from "../../interfaces/test.interface";
 
 export default function calculateAverage(numbers : number[]): number {
     return (numbers.reduce((acc, number) => acc + number, 0)/numbers.length)
@@ -62,3 +63,86 @@ export function getAverageSkillById(studentTests : StudentTestInterface[] | Stud
         level
     };
 }
+
+export interface AverageBySkillByTrimesterInterface {
+    trimester: TrimesterEnum;
+    skills: {
+      id: number;
+      name: string;
+      result: number;
+    }[];
+  }
+
+
+export function getAverageBySkillByTrimester(
+  studentTests: StudentTestByStudentInterface[],
+  uniqueSkills: { id: number; name: string; abbr: string }[]
+) : AverageBySkillByTrimesterInterface[] {
+  interface ResultInterface {
+    trimester: TrimesterEnum;
+    skills: {
+      id: number;
+      name: string;
+      result: number;
+    }[];
+  }
+
+  let results: ResultInterface[] = [];
+
+  const trimesters = Object.values(TrimesterEnum) as TrimesterEnum[];
+
+  for (const trimester of trimesters) {
+    const skills: {
+      id: number;
+      name: string;
+      result: number;
+    }[] = [];
+
+    const trimResults = studentTests.filter(
+      (st) =>
+        st.test.trimester === trimester &&
+        !st.isAbsent &&
+        !st.isUnmarked
+    );
+
+    for (const skill of uniqueSkills) {
+      const numericLevels: number[] = [];
+
+      for (const studentTest of trimResults) {
+        for (const sths of studentTest.studenttesthasskill) {
+          if (
+            sths.skill.id === skill.id &&
+            sths.level !== SkillLevelEnum.ABS &&
+            sths.level !== SkillLevelEnum.NN
+          ) {
+            // Get the numeric level from enum key (e.g., LVL2 → 2)
+            const levelString = sths.level.toString(); // "LVL2"
+            const numeric = parseInt(levelString.replace("LVL", ""), 10);
+            if (!isNaN(numeric)) {
+              numericLevels.push(numeric);
+            }
+          }
+        }
+      }
+
+      const average =
+        numericLevels.length > 0
+          ? numericLevels.reduce((a, b) => a + b, 0) / numericLevels.length
+          : 0;
+
+      skills.push({
+        id: skill.id,
+        name: skill.name,
+        result: parseFloat(average.toFixed(2)), // optional: round to 2 decimals
+      });
+    }
+
+    results.push({
+      trimester,
+      skills,
+    });
+  }
+
+  return results;
+}
+

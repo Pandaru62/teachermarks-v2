@@ -15,10 +15,11 @@ import EditSchoolClassPage from './pages/SchoolClass/EditSchoolClass.page'
 import SkillListPage from './pages/skill/SkillList.page'
 import SkillEditPage from './pages/skill/SkillEdit.page'
 import StudentsAddPage from './pages/students/studentsAdd.page'
-import StudentDetailsPage from './pages/Student/studentDetails.page'
+import StudentDetailsPage from './pages/students/studentDetails.page'
 import TestDetailsPage from './pages/Tests/TestDetails.page'
 import TestEditPage from './pages/Tests/TestEdit.page'
 import SkillAddPage from './pages/skill/SkillAdd.page'
+import StudentEditPage from './pages/students/StudentEdit.page'
 
 function App() {
 
@@ -46,9 +47,7 @@ function App() {
           <Route path="/skills/:id" element={<SkillEditPage />} />
 
           <Route path="/student/:id" element={<StudentDetailsPage />} />
-
-
-
+          <Route path="/student/:id/edit" element={<StudentEditPage />} />
 
 
         </Route>

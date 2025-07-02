@@ -7,9 +7,9 @@ import {
   MenuHandler,
   MenuList,
   MenuItem,
-  Avatar,
   IconButton,
   Collapse,
+  ListItem,
 } from "@material-tailwind/react";
 import {
   UserCircleIcon,
@@ -19,7 +19,6 @@ import {
   PowerIcon,
   AcademicCapIcon,
   DocumentDuplicateIcon,
-  FolderPlusIcon,
   SquaresPlusIcon,
 } from "@heroicons/react/24/solid";
 import { Link, NavLink, useNavigate } from "react-router-dom";
@@ -32,6 +31,11 @@ const profileMenuItems = [
     label: "Mon profil",
     icon: UserCircleIcon,
     path: "/profile"
+  },
+  {
+    label: "Mes compétences",
+    icon: SquaresPlusIcon,
+    path: "/skills"
   },
   {
     label: "Paramètres",
@@ -67,15 +71,10 @@ function ProfileMenu() {
           color="blue-gray"
           className="flex items-center gap-1 rounded-full py-0.5 pr-2 pl-0.5 lg:ml-auto"
         >
-          <Avatar
-            variant="circular"
-            size="sm"
-            alt="tania andrew"
-            className="border border-gray-900 p-0.5"
-            src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80"
-          />
+          <svg xmlns="http://www.w3.org/2000/svg" width={30} height={30} viewBox="0 0 48 48"><g fill="white"><path d="M32 20a8 8 0 1 1-16 0a8 8 0 0 1 16 0"></path><path fillRule="evenodd" d="M23.184 43.984C12.517 43.556 4 34.772 4 24C4 12.954 12.954 4 24 4s20 8.954 20 20s-8.954 20-20 20h-.274q-.272 0-.542-.016M11.166 36.62a3.028 3.028 0 0 1 2.523-4.005c7.796-.863 12.874-.785 20.632.018a2.99 2.99 0 0 1 2.498 4.002A17.94 17.94 0 0 0 42 24c0-9.941-8.059-18-18-18S6 14.059 6 24c0 4.916 1.971 9.373 5.166 12.621" clipRule="evenodd"></path></g></svg>
           <ChevronDownIcon
             strokeWidth={2.5}
+            color="white"
             className={`h-3 w-3 transition-transform ${
               isMenuOpen ? "rotate-180" : ""
             }`}
@@ -136,22 +135,7 @@ const loggedNavListItems = [
     label: "Mes classes",
     icon: AcademicCapIcon,
     link: "/forms"
-  },
-  {
-    label: "Mes évaluations",
-    icon: DocumentDuplicateIcon,
-    link: "/tests"
-  },
-  {
-    label: "Ajouter une évaluation",
-    icon: FolderPlusIcon,
-    link: "tests/new"
-  },
-  {
-    label: "Mes compétences",
-    icon: SquaresPlusIcon,
-    link: "skills"
-  },
+  }
 ];
 
 const visitorNavListItems = [
@@ -167,25 +151,89 @@ const visitorNavListItems = [
  
 function NavList() {
   const { isAuthenticated } = useAuthStore();
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+  const evalMenu = [{
+    label: "Mes évaluations",
+    link: "/tests"
+  }, {
+    label: "Ajouter une évaluation",
+    link: "/tests/new"
+  }];
+
+  const renderItems = evalMenu.map(({label, link}) => (
+    <Link to={link} key={link}>
+      <MenuItem className="flex flex-row items-center gap-3 rounded-lg">
+            <Typography
+              variant="h6"
+              color="blue-gray"
+              className="flex items-center text-sm font-bold"
+            >
+              {label}
+            </Typography>
+        </MenuItem>
+    </Link>
+  ))
 
   return (
     <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center">
-      {isAuthenticated ? (loggedNavListItems.map(({ label, icon, link }) => (
-        <NavLink key={label} to={link}>
-          {({isActive}) => (
-          <Typography
-            variant="small"
-            color="white"
-            className={isActive ? "text-gray-400" : "text-white"}
-          >
-            <MenuItem className="flex items-center gap-2 lg:rounded-full">
-              {React.createElement(icon, { className: "h-[18px] w-[18px]" })}{" "}
-              <span className={isActive ? "font-semibold text-gray-400" : "text-white"}> {label}</span>
-            </MenuItem>
-          </Typography>
-          )}
-        </NavLink>
-      ))) : (visitorNavListItems.map(({ label, link }) => (
+      {isAuthenticated ? (
+      <>
+        {loggedNavListItems.map(({ label, icon, link }) => (
+          <NavLink key={label} to={link}>
+            {({isActive}) => (
+            <Typography
+              variant="small"
+              color="white"
+              className="font-semibold"
+            >
+              <MenuItem className="flex items-center gap-2 lg:rounded-lg">
+                {React.createElement(icon, { className: "h-[18px] w-[18px]" })}{" "}
+                <span > {label}</span>
+              </MenuItem>
+            </Typography>
+            )}
+          </NavLink>
+        ))}
+        <Menu
+        open={isMenuOpen}
+        handler={setIsMenuOpen}
+        offset={{ mainAxis: 20 }}
+        placement="bottom"
+        allowHover={true}
+        >
+          <MenuHandler>
+            <Typography as="div" variant="small" className="font-medium">
+              <ListItem
+                className="flex items-center gap-2 py-2 pr-4 font-medium text-white"
+                selected={isMenuOpen || isMobileMenuOpen}
+                onClick={() => setIsMobileMenuOpen((cur) => !cur)}
+              >
+                <DocumentDuplicateIcon className="h-5"/>
+                Mes évaluations
+                <ChevronDownIcon
+                  strokeWidth={2.5}
+                  className={`hidden h-3 w-3 transition-transform lg:block ${
+                    isMenuOpen ? "rotate-180" : ""
+                  }`}
+                />
+                <ChevronDownIcon
+                  strokeWidth={2.5}
+                  className={`block h-3 w-3 transition-transform lg:hidden ${
+                    isMobileMenuOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </ListItem>
+            </Typography>
+          </MenuHandler>
+          <MenuList className="hidden max-w-screen-xl rounded-xl lg:block">
+            <ul className="outline-none outline-0">
+              {renderItems}
+            </ul>
+          </MenuList>
+        </Menu>
+      </>
+      ) : (visitorNavListItems.map(({ label, link }) => (
           <NavLink key={label} to={link}>
             {({isActive}) => (
             <Typography
@@ -227,7 +275,6 @@ export default function Header() {
           href="/"
           className="mr-4 ml-2 cursor-pointer py-1.5 font-medium"
         >
-            {/* <span className="font-logo text-2xl text-white">Teachermarks</span> */}
             <img src="src\assets\Logo_TeacherMarks\OrangeM.png" alt="logo" className="w-[205px] h-auto"/>
         </Typography>
         {isAuthenticated ? (

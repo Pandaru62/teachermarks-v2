@@ -8,7 +8,6 @@ export default function TestEditPage() {
 
     const testId = Number(useParams().id);
     const {test, testError, testLoading} = useTestQuery(testId);
-    console.log("🚀 ~ TestEditPage ~ test:", test)
     const {schoolClasses} = useSchoolClassesQueries();
 
 

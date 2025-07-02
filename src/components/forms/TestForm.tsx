@@ -12,7 +12,6 @@ import SelectSkills from "../ui/formInput/selectSkills";
 
 
 export default function TestForm({ initialValues, editTestId, schoolClasses }: TestFormProps) {
-  console.log("🚀 ~ TestForm ~ initialValues:", initialValues.skills)
   
     const {
         formik,

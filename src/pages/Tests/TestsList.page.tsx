@@ -10,11 +10,9 @@ import { CalendarIcon } from "@heroicons/react/24/solid";
 export default function TestsListPage() {
 
     const {allTests, allTestsError, allTestsLoading} = useAllTestsQuery();
-    console.log("🚀 ~ TestsListPage ~ allTests:", allTests)
     const [trimesterFilters, setTrimesterFilters] = useState<TrimesterEnum[]>([])
     const [schoolClassFilters, setSchoolClassFilters] = useState<string[]>([])
     const [filteredTests, setFilteredTests] = useState<TestInterface[]>(allTests ?? [])
-    console.log("🚀 ~ TestsListPage ~ filteredTests:", filteredTests)
 
     
     useEffect(() => {

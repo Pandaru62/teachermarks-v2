@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { StudentTestByStudentInterface } from "../../interfaces/student-test.interface";
 import { getAllStudentTestsByStudentId } from "../../api/studenttest";
-import { getAverageMark } from "../../utils/calculations/average.function";
+import { getAverageBySkillByTrimester, getAverageMark } from "../../utils/calculations/average.function";
 
 export default function useStudentTestsByStudentIdQuery(studentId : number) {
 
@@ -16,12 +16,15 @@ export default function useStudentTestsByStudentIdQuery(studentId : number) {
 
   const average = getAverageMark(studentTests ?? []);
 
+  
   const uniqueSkills = Array.from(
-  new Map(
-    studentTests?.flatMap(test => test.studenttesthasskill)
+    new Map(
+      studentTests?.flatMap(test => test.studenttesthasskill)
       .map(skillEntry => [skillEntry.skill.id, { id: skillEntry.skill.id, name: skillEntry.skill.name, abbr: skillEntry.skill.abbreviation }])
-  ).values()
+    ).values()
   );
+
+  const averageSkills = getAverageBySkillByTrimester(studentTests ?? [], uniqueSkills);
 
   return( 
       {
@@ -29,6 +32,7 @@ export default function useStudentTestsByStudentIdQuery(studentId : number) {
         studentTestsLoading,
         studentTestsError,
         average,
-        uniqueSkills
+        uniqueSkills,
+        averageSkills
     })
   }

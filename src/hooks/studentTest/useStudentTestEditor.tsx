@@ -53,7 +53,6 @@ export default function useStudentTestEditor({ test, studentTests, students, sta
         initialValues,
         onSubmit: async (values) => {
             const editedStudentTest = await editStudentTest(test.id, currentStudentId, values);
-            console.log("🚀 ~ onSubmit: ~ editedStudentTest:", editedStudentTest)
             if (editedStudentTest) {
                 queryClient.setQueryData(['studentTests', test.id], (oldTests: StudentTestInterface[] | undefined) => {
                     if (!oldTests) return [editedStudentTest];

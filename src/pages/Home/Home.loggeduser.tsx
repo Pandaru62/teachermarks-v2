@@ -1,13 +1,17 @@
 import { Button, Card, Typography } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
+import { useStore } from "zustand";
+import { useAuthStore } from "../../hooks/useAuthStore";
 
 export default function HomeLoggedUser() {
+
+    const currentUser = useStore(useAuthStore);
 
     return(
         <div className="grid grid-rows-3">
             <Card className="row-span-2 mt-6 py-5 bg-test-200 text-black flex justify-between items-center">
                 <h1 className="text-black">Bienvenue</h1>
-                <Typography as="h2" className="text-xl font-semibold">Bonjour <span className="text-test-400">super_prof</span> !</Typography>
+                <Typography as="h2" className="text-xl font-semibold">Bonjour <span className="text-test-400">{currentUser.user?.firstname} {currentUser.user?.lastname}</span> !</Typography>
                 <img src="\src\assets\smiling_postit.svg" alt="smiling post-it"/>
                 <Typography as="p" className="text-xl">Vos élèves viennent d'être évalués ?</Typography>
                 <Typography as="p" className="text-xl font-semibold text-center">N'oubliez pas de <br/> MARKER leurs succès.</Typography>
