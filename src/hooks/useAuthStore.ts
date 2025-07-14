@@ -7,43 +7,42 @@ export type UserWithoutPassword = {
   id: number;
   lastname: string;
   school: string;
+  is_first_visit: boolean;
 };
 
 type AuthStore = {
   user: UserWithoutPassword | null;
   accessToken: string | null;
-  refreshToken: string | null;
   isAuthenticated: boolean;
-  login: (user?: UserWithoutPassword, accessToken?: string, refreshToken?: string) => void;
+  login: (user?: UserWithoutPassword, accessToken?: string) => void;
   logout: () => void;
+  setUser: (user: UserWithoutPassword) => void;
 };
 
 export const useAuthStore = create<AuthStore>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       user: null,
       accessToken: null,
       refreshToken: null,
       isAuthenticated: false,
-      login: (user?: UserWithoutPassword, accessToken?: string, refreshToken?: string) =>
+      login: (user?: UserWithoutPassword, accessToken?: string) =>
         set({
           user,
           accessToken,
-          refreshToken,
           isAuthenticated: true,
         }),
       logout: () => {
-        const userId = get().user?.id;
         set({
           user: null,
           accessToken: null,
-          refreshToken: null,
           isAuthenticated: false,
         });
       },
+      setUser: (user) => set({ user }),
     }),
     {
-      name: "auth-storage", // nom dans le localStorage
+      name: "auth-storage", // name in localStorage
     }
   )
 );

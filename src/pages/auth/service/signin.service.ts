@@ -27,12 +27,11 @@ export function useLoginPageService() {
       const response = await signin(dataToSubmit);
       return {
         user: response.data.user,
-        accessToken: response.data.access_token,
-        refreshToken: response.data.refresh_token,
+        accessToken: response.data.access_token
       };
     },
-    onSuccess: (data: { user: UserWithoutPassword; accessToken: string; refreshToken: string }) => {
-      useAuthStore.getState().login(data.user, data.accessToken, data.refreshToken);
+    onSuccess: (data: { user: UserWithoutPassword; accessToken: string }) => {
+      useAuthStore.getState().login(data.user, data.accessToken);
       navigate("/");
     },
     onError: (error: AxiosError<{ message: string }>) => {

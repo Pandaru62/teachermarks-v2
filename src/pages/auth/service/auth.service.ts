@@ -13,9 +13,18 @@ const api = useApi();
     }
   }
 
-    export async function signup(data: LoginFormValues) {
+  export async function signup(data: LoginFormValues) {
     try {
       const response = await axios.post(import.meta.env.VITE_API_BASE_URL + "auth/signup", data);
+      return response.data;
+    } catch (error) {
+      throw new Error(`Une erreur est survenue: ${error}`);
+    }
+  }
+
+  export async function logOutClearCookies() {
+    try {
+      const response = await api.delete("auth/logout");
       return response.data;
     } catch (error) {
       throw new Error(`Une erreur est survenue: ${error}`);

@@ -8,4 +8,3 @@ export default interface UserInterface {
     is_validated: boolean;
     profile: ProfileInterface
   }
-  

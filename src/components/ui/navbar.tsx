@@ -24,6 +24,9 @@ import {
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useStore } from "zustand";
 import { useAuthStore } from "../../hooks/useAuthStore";
+import { useMutation } from "@tanstack/react-query";
+import { logOutClearCookies } from "../../pages/auth/service/auth.service";
+import { AxiosError } from "axios";
 
 // profile menu component
 const profileMenuItems = [
@@ -55,10 +58,22 @@ function ProfileMenu() {
   const navigate = useNavigate();
 
   const { logout } = useAuthStore();
+
+  const mutation = useMutation({
+    mutationFn: async () => {
+      await logOutClearCookies();
+    },
+    onSuccess: () => {
+      logout();
+      navigate("/");
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+      throw new Error(error.message);
+    },
+  });
   
   const handleLogout = () => {
-    logout();
-    navigate("/");
+    mutation.mutate();
   };
  
   const closeMenu = () => setIsMenuOpen(false);
@@ -181,7 +196,6 @@ function NavList() {
       <>
         {loggedNavListItems.map(({ label, icon, link }) => (
           <NavLink key={label} to={link}>
-            {({isActive}) => (
             <Typography
               variant="small"
               color="white"
@@ -192,7 +206,6 @@ function NavList() {
                 <span > {label}</span>
               </MenuItem>
             </Typography>
-            )}
           </NavLink>
         ))}
         <Menu
