@@ -16,6 +16,8 @@ export default function StudentsList(props : StudentsListProp) {
     const {students} = props;
 
     return (
+    <>
+        {students !== undefined && students.length > 0 ? (
         <table className="w-full min-w-max table-auto text-left">
             <tbody>
             {students.map(({ lastName, firstName, id }) => (
@@ -38,5 +40,10 @@ export default function StudentsList(props : StudentsListProp) {
             ))}
             </tbody>
         </table>
-    )
+        ) : (
+        <p className="text-center">
+            Aucun élève
+        </p>
+        )}
+    </>)
 }

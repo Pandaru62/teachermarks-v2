@@ -183,6 +183,7 @@ export default function StudentsAddPage() {
                                     {mutation.isError ? ( <div>Une erreur s'est produite: {mutation.error.message}</div> ) : null}
                                     {mutation.isSuccess ? (
                                         <>
+                                            <div className="bg-white rounded-xl p-5 my-3">
                                             <Alert
                                                 icon={<svg
                                                         xmlns="http://www.w3.org/2000/svg"
@@ -198,9 +199,8 @@ export default function StudentsAddPage() {
                                                         </svg>}
                                                 className="rounded-none border-l-4 border-[#2ec946] bg-[#2ec946]/10 font-medium text-[#2ec946]"
                                                 >
-                                                Ajout effectué !
+                                                Ajout effectué
                                             </Alert>
-                                            <div className="bg-white rounded-xl p-5 my-3">
                                                 <StudentsList students={addedStudents ?? []} />
                                             </div>
                                             <DefaultLinkButton

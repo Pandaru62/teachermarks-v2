@@ -126,7 +126,7 @@ export default function StudentReportPdf(props: StudentReportPdfProps) {
                 <Text>Moyenne générale : {average} / 20</Text>
                 {skills.map((skill) => (
                 <Text key={skill.id}>
-                    {skill.name} : **/4
+                    {skill.name} : {skill.result.average}/4
                 </Text>
               ))}
             </View>
@@ -136,57 +136,60 @@ export default function StudentReportPdf(props: StudentReportPdfProps) {
           </View>
         </View>
 
-        <View style={styles.section}>
-          <View style={styles.table}>
+        <View style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+          <View style={styles.section}>
+            <View style={styles.table}>
 
-            {/* Header */}
-            <View style={[styles.tableRow, styles.tableHeader]}>
-              <Text style={[styles.tableCell, styles.cellTR]}>TR</Text>
-              <Text style={[styles.tableCell, styles.cellName]}>Évaluation</Text>
-              <Text style={[styles.tableCell, styles.cellNote]}>Note</Text>
-              {skills.map((skill) => (
-                <Text
-                  key={skill.id}
-                  style={[
-                    styles.tableCell,
-                    styles.cellSkill,
-                  ]}
-                >
-                  {skill.name}
-                </Text>
-              ))}
-            </View>
-
-            {/* Rows */}
-            {tests.map(test => (
-              <View key={test.id} style={styles.tableRow}>
-                <Text style={[styles.tableCell, styles.cellTR]}>{test.test.trimester}</Text>
-                <Text style={[styles.tableCell, styles.cellName]}>{test.test.name}</Text>
-                <Text style={[styles.tableCell, styles.cellNote]}>{test.mark ?? 'x'}/{test.test.scale}</Text>
-                {skills.map((skill) => {
-                    const result = test.studenttesthasskill.find((sths => sths.skill.id === skill.id));
-                    const color = getSkillColor(skill.result.level);
-                  return (
-                    <View
-                        key={skill.id}
-                        style={[
-                            styles.tableCell,
-                            styles.cellSkill,
-                        ]}
-                    >
-                        <View style={styles.skillLevelWrapper}>
-                            {result && (<View style={[styles.skillDot, { backgroundColor: color }]} />)}
-                            <Text>{result?.level ?? "X"}</Text>
-                        </View>
-                    </View>
-                  );
-                })}
+              {/* Header */}
+              <View style={[styles.tableRow, styles.tableHeader]}>
+                <Text style={[styles.tableCell, styles.cellTR]}>TR</Text>
+                <Text style={[styles.tableCell, styles.cellName]}>Évaluation</Text>
+                <Text style={[styles.tableCell, styles.cellNote]}>Note</Text>
+                {skills.map((skill) => (
+                  <Text
+                    key={skill.id}
+                    style={[
+                      styles.tableCell,
+                      styles.cellSkill,
+                    ]}
+                  >
+                    {skill.name}
+                  </Text>
+                ))}
               </View>
-            ))}
 
+              {/* Rows */}
+              {tests.map(test => (
+                <View key={test.id} style={styles.tableRow}>
+                  <Text style={[styles.tableCell, styles.cellTR]}>{test.test.trimester}</Text>
+                  <Text style={[styles.tableCell, styles.cellName]}>{test.test.name}</Text>
+                  <Text style={[styles.tableCell, styles.cellNote]}>{test.mark ?? 'x'}/{test.test.scale}</Text>
+                  {skills.map((skill) => {
+                      const result = test.studenttesthasskill.find((sths => sths.skill.id === skill.id));
+                      const color = getSkillColor(skill.result.level);
+                    return (
+                      <View
+                          key={skill.id}
+                          style={[
+                              styles.tableCell,
+                              styles.cellSkill,
+                          ]}
+                      >
+                          <View style={styles.skillLevelWrapper}>
+                              {result && (<View style={[styles.skillDot, { backgroundColor: color }]} />)}
+                              <Text>{result?.level ?? "X"}</Text>
+                          </View>
+                      </View>
+                    );
+                  })}
+                </View>
+              ))}
+
+            </View>
           </View>
+          <View style={{flexGrow: 1}} /> 
           <View style={styles.comment}>
-            <Text style={{fontWeight: 700, paddingBottom: 300}}> Appréciation générale : </Text>
+            <Text style={{fontWeight: 700, marginBottom: 5}}> Appréciation générale : </Text>
             <Text>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Error, iusto expedita, enim quisquam obcaecati beatae blanditiis dicta adipisci suscipit in nesciunt temporibus deserunt quaerat! Unde, maxime architecto quas, alias adipisci earum deserunt error corrupti nostrum voluptates nihil, animi dolore voluptatibus similique quo possimus totam odit eos sunt vel reiciendis impedit. Corrupti quae iste ratione molestiae veritatis, assumenda maxime culpa aut!</Text>
           </View>
         </View>

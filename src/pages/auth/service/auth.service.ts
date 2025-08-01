@@ -24,8 +24,9 @@ const api = useApi();
 
   export async function logOutClearCookies() {
     try {
-      const response = await api.delete("auth/logout");
-      return response.data;
+      // const response = await api.delete("auth/logout");
+      // return response.data;
+      return
     } catch (error) {
       throw new Error(`Une erreur est survenue: ${error}`);
     }

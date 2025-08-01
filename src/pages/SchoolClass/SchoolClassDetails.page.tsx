@@ -6,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import useSchoolClassQuery from "../../hooks/schoolClass/useSchoolClassQuery";
 import BackButton from "../../components/ui/backButton";
 import StudentsList from "../../components/ui/studentsList";
+import useSchoolClassesQueries from "../../hooks/schoolClass/useSchoolClassesQueries";
 
 export default function SchoolClasseDetailsPage() {
 
@@ -13,6 +14,9 @@ export default function SchoolClasseDetailsPage() {
     const formId = useParams().id;
 
     const {schoolClass, schoolClassLoading, schoolClassError} = useSchoolClassQuery(Number(formId));
+    console.log("🚀 ~ SchoolClasseDetailsPage ~ schoolClass:", schoolClass)
+    const { schoolClasses, schoolClassesError, schoolClassesLoading } = useSchoolClassesQueries()
+    
 
     return(
         <>
@@ -37,7 +41,12 @@ export default function SchoolClasseDetailsPage() {
                     </div>
                 </Card>
 
-                <ClassList/>
+                {schoolClassesError && (<p>Une erreur est survenue. Veuillez réessayer.</p>)}
+                {schoolClassesLoading && (<p>Chargement en cours.</p>)}
+                {schoolClasses && (
+                    <ClassList schoolClasses={schoolClasses}/>
+                )}
+                
                 <DefaultLinkButton
                     to={`/forms/${formId}/edit`}
                     height={75}

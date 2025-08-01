@@ -21,7 +21,6 @@ export default function StudentDetailsPage() {
     const {student, studentError,studentLoading} = useStudentQuery(studentId);
     const [trimesterFilters, setTrimesterFilters] = useState<TrimesterEnum[]>([TrimesterEnum.TR1, TrimesterEnum.TR2, TrimesterEnum.TR3])
     const {studentTests, studentTestsError, studentTestsLoading, average, uniqueSkills, averageSkills} = useStudentTestsByStudentIdQuery(studentId);
-    console.log("🚀 ~ StudentDetailsPage ~ averageSkills:", averageSkills)
     const [filteredTests, setFilteredTests] = useState<StudentTestByStudentInterface[]>(studentTests ?? []);
     const [diagramModal, setDiagramModal] = useState<boolean>(false);
 
@@ -58,7 +57,7 @@ export default function StudentDetailsPage() {
                 <Card className={`mt-6 py-5 bg-test-200 text-black flex p-5`}>
                     <div className="flex justify-between">
                         <BackButton/>
-                        <h1 className="text-black">{student.lastName} {student.firstName}</h1>
+                        <h1 className="text-black text-center">{student.lastName} {student.firstName}</h1>
                         <IconButton color="white" className={`rounded-xl`} onClick={() => navigate(`/student/${studentId}/edit`)}>
                             <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24"><g fill="none" stroke="#F46030" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></g></svg>
                         </IconButton>
@@ -79,7 +78,7 @@ export default function StudentDetailsPage() {
                                                     letter={sk.abbr}
                                                     level={getAverageSkillById(studentTests, sk.id).level}
                                                 />
-                                                <span className="font-semibold">{sk.name}</span> : {isNaN(getAverageSkillById(studentTests, sk.id).average) ? "Non évalué" : getAverageSkillById(studentTests, sk.id).average + "/4"}
+                                                <span className="font-semibold">{sk.name}</span> : {isNaN(sk.avg) ? "Non évalué" : sk.avg + "/4"}
                                             </li>
                                         ))}
                                     </ul>
@@ -116,11 +115,11 @@ export default function StudentDetailsPage() {
                             </div>
                             )}
                         </div>
-                        <div className="mt-5 bg-white rounded-xl p-3 w-full">
+                        <div className="mt-5 bg-white rounded-xl p-3 flex-col">
                             <Typography as="h3" className="font-logo text-center">Filtrer</Typography>
-                            <fieldset className="border-2 border-dashed m-3 rounded-xl">
-                                <legend className="ms-3">Filtrer par trimestre</legend>
-                                <List className="flex-row ">
+                            {/* <fieldset className="border-2 border-dashed m-3 rounded-xl"> */}
+                                {/* <legend className="ms-3">Filtrer par trimestre</legend> */}
+                                <List className="flex-col md:flex-row">
                                 { Object.values(TrimesterEnum).map(trimester =>
                                     (<CheckBoxListItem 
                                         key={trimester}
@@ -130,7 +129,7 @@ export default function StudentDetailsPage() {
                                         label={trimester}
                                     />))}
                                 </List>
-                            </fieldset>
+                            {/* </fieldset> */}
                         </div>
                     </div>
                 </Card>
