@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getStudentById } from "../../api/student";
+import { getReportByStudentId } from "../../api/report";
 
 export default function useStudentQuery(id : number) {
 
@@ -12,9 +13,21 @@ export default function useStudentQuery(id : number) {
         queryFn: () => getStudentById(id),
       });
 
+      const {
+        data: studentReports,
+        isLoading: studentReportsLoading,
+        isError: studentReportsError,
+      } = useQuery({
+        queryKey: ["studentReport", id],
+        queryFn: () => getReportByStudentId(id),
+      });
+
 
     return( 
-        {student,
-        studentLoading,
-        studentError})
+      {student,
+      studentLoading,
+      studentError,
+      studentReports,
+      studentReportsLoading,
+      studentReportsError})
   }

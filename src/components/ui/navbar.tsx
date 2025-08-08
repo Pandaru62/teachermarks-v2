@@ -27,6 +27,7 @@ import { useAuthStore } from "../../hooks/useAuthStore";
 import { useMutation } from "@tanstack/react-query";
 import { logOutClearCookies } from "../../pages/auth/service/auth.service";
 import { AxiosError } from "axios";
+import StudentSearchBar from "./StudentSearchBar";
 
 // profile menu component
 const profileMenuItems = [
@@ -191,7 +192,7 @@ function NavList() {
   ))
 
   return (
-    <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center">
+    <ul className="po mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center">
       {isAuthenticated ? (
       <>
         {loggedNavListItems.map(({ label, icon, link }) => (
@@ -245,6 +246,7 @@ function NavList() {
             </ul>
           </MenuList>
         </Menu>
+        <StudentSearchBar/>
       </>
       ) : (visitorNavListItems.map(({ label, link }) => (
           <NavLink key={label} to={link}>

@@ -2,16 +2,18 @@ import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import { SkillLevelEnum, StudentTestByStudentInterface } from '../../interfaces/student-test.interface';
 import StudentInterface from '../../interfaces/student.interface';
 import { getAverageSkillById } from '../../utils/calculations/average.function';
+import ReportInterface from '../../interfaces/report.interface';
 
 interface StudentReportPdfProps {
   tests: StudentTestByStudentInterface[];
   student: StudentInterface;
+  reports : ReportInterface[];
   uniqueSkills: { id: number; name: string }[];
   average: number;
 }
 
 export default function StudentReportPdf(props: StudentReportPdfProps) {
-    const { tests, student, uniqueSkills, average } = props;
+    const { tests, student, uniqueSkills, average, reports } = props;
 
     const styles = StyleSheet.create({
         page: {
@@ -130,9 +132,9 @@ export default function StudentReportPdf(props: StudentReportPdfProps) {
                 </Text>
               ))}
             </View>
-            <View style={styles.headerBox}>
+            {/* <View style={styles.headerBox}>
                 <Text>Diagramme</Text>
-            </View>
+            </View> */}
           </View>
         </View>
 
@@ -189,8 +191,10 @@ export default function StudentReportPdf(props: StudentReportPdfProps) {
           </View>
           <View style={{flexGrow: 1}} /> 
           <View style={styles.comment}>
-            <Text style={{fontWeight: 700, marginBottom: 5}}> Appréciation générale : </Text>
-            <Text>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Error, iusto expedita, enim quisquam obcaecati beatae blanditiis dicta adipisci suscipit in nesciunt temporibus deserunt quaerat! Unde, maxime architecto quas, alias adipisci earum deserunt error corrupti nostrum voluptates nihil, animi dolore voluptatibus similique quo possimus totam odit eos sunt vel reiciendis impedit. Corrupti quae iste ratione molestiae veritatis, assumenda maxime culpa aut!</Text>
+            <Text style={{fontWeight: 700, marginBottom: 5}}> Appréciations : </Text>
+            {reports.map(report => (
+              report.description.length > 1 && (<Text key={report.id}>{report.trimester}: {report.description}</Text>)
+            ))}
           </View>
         </View>
       </Page>

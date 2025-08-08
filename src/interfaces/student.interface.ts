@@ -4,7 +4,7 @@ export default interface StudentInterface {
     firstName: string,
     created_at?: Date | string,
     updated_at?: Date | string,
-    classes?: string[]
+    classes: {id: number, name: string}[]
 }
 
 export type CreateStudentInterface = Pick<StudentInterface, "lastName" | "firstName">;

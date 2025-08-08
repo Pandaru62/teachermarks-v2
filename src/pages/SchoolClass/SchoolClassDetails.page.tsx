@@ -14,7 +14,6 @@ export default function SchoolClasseDetailsPage() {
     const formId = useParams().id;
 
     const {schoolClass, schoolClassLoading, schoolClassError} = useSchoolClassQuery(Number(formId));
-    console.log("🚀 ~ SchoolClasseDetailsPage ~ schoolClass:", schoolClass)
     const { schoolClasses, schoolClassesError, schoolClassesLoading } = useSchoolClassesQueries()
     
 
