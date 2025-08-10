@@ -24,7 +24,7 @@ export default function TextInput(props: PropsInterface) {
             onChange={onChange}
             onBlur={onBlur}
             value={value}
-            className="rounded-xl p-2 text-black text-center"
+            className="rounded-xl p-2 text-black text-center border-2"
             />
             {error && (
                 <Typography variant="small" color="pink" className="flex items-center gap-1">

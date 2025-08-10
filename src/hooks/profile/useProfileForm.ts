@@ -4,19 +4,15 @@ import { useNavigate } from 'react-router-dom';
 import { showSuccessAlert } from '../../utils/alerts/showSuccessAlert';
 import { editProfile } from '../../api/profile';
 import { useAuthStore } from '../useAuthStore';
+import ProfileInterface from '../../interfaces/profile.interface';
 
 
-export const useProfileForm = () => {
+export const useProfileForm = (initialValues : Omit<ProfileInterface, "userId">) => {
   const { user, setUser } = useAuthStore();
   
   
   const navigate = useNavigate();
 
-  const initialValues = {
-    firstname: "",
-    lastname: "",
-    school: ""
-  }
 
   const formik = useFormik({
     initialValues,

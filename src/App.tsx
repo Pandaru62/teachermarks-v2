@@ -20,6 +20,8 @@ import TestDetailsPage from './pages/Tests/TestDetails.page'
 import TestEditPage from './pages/Tests/TestEdit.page'
 import SkillAddPage from './pages/skill/SkillAdd.page'
 import StudentEditPage from './pages/students/StudentEdit.page'
+import ProfileDetailsPage from './pages/profile/profileDetails.page'
+import ProfileEditPage from './pages/profile/profileEdit.page'
 
 function App() {
 
@@ -48,6 +50,9 @@ function App() {
 
           <Route path="/student/:id" element={<StudentDetailsPage />} />
           <Route path="/student/:id/edit" element={<StudentEditPage />} />
+
+          <Route path="/profile" element={<ProfileDetailsPage />} />
+          <Route path="/profile/edit" element={<ProfileEditPage />} />
 
 
         </Route>

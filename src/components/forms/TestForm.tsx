@@ -61,7 +61,7 @@ export default function TestForm({ initialValues, editTestId, schoolClasses }: T
 
                             <SelectEnumInput
                                 label="Trimestre"
-                                defaultOption={TrimesterEnum.TR2}
+                                defaultOption={formik.values.trimester}
                                 name="trimester"
                                 options={Object.values(TrimesterEnum)}
                                 onChange={formik.handleChange}

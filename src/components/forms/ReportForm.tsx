@@ -16,7 +16,6 @@ const [originalDescription, setOriginalDescription] = useState<string>(report?.d
 
     return(
         <form onSubmit={formik.handleSubmit} className="flex flex-col gap-2 mb-4">
-
             <Textarea 
                 label={"Appréciation " + trimester}
                 name="description"

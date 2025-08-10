@@ -1,13 +1,24 @@
 import DefaultButton from "../ui/defaultButton";
 import TextInput from "../ui/formInput/textInput";
 import { useProfileForm } from "../../hooks/profile/useProfileForm";
+import { UserWithoutPassword } from "../../hooks/useAuthStore";
 
+interface ProfileFormProps {
+    user: UserWithoutPassword | null
+}
 
-export default function ProfileForm() {
+export default function ProfileForm(props: ProfileFormProps) {
+
+    const {user} = props;
+    const initialValues = {
+        firstname: user?.firstname ?? "",
+        lastname: user?.lastname ?? "",
+        school: user?.school ?? ""
+    }
   
     const {
         formik,
-    } = useProfileForm();
+    } = useProfileForm(initialValues);
 
     return(
         <form onSubmit={formik.handleSubmit}>
@@ -41,7 +52,7 @@ export default function ProfileForm() {
                 />
                                                 
                 <DefaultButton
-                    height={75}
+                    height={50}
                     label="Valider"
                     type="submit"
                     opacity={60}

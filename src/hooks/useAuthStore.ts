@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { TrimesterEnum } from "../interfaces/test.interface";
 
 export type UserWithoutPassword = {
   email: string;
@@ -8,6 +9,7 @@ export type UserWithoutPassword = {
   lastname: string;
   school: string;
   is_first_visit: boolean;
+  current_trimester: TrimesterEnum;
 };
 
 type AuthStore = {
