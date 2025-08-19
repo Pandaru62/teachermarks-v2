@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Wrapper from "../../components/ui/wrapper";
 import useStudentQuery from "../../hooks/student/useStudentQuery";
 import { Card, IconButton, Typography, Button, Chip, List, Dialog } from "@material-tailwind/react";
@@ -33,7 +33,6 @@ export default function StudentDetailsPage() {
     const [nextStudent, setNextStudent] = useState<StudentInterface | null>(null);
     const [previousStudent, setPreviousStudent] = useState<StudentInterface | null>(null);
 
-
     useEffect(() => {
         if (student && student.classes.length > 0) {
             setClassId(student.classes[0].id);
@@ -43,10 +42,10 @@ export default function StudentDetailsPage() {
     useEffect(() => {
         if(students && students.length > 0) {
             const currentIndex = students.findIndex(s => s.id === studentId);
-            setPreviousStudent(students[(currentIndex - 1) % students.length])
+            setPreviousStudent(currentIndex === 0 ? students[students.length - 1] : students[(currentIndex - 1) % students.length])
             setNextStudent(students[(currentIndex + 1) % students.length])
         }
-    }, [students])
+    }, [students, studentId])
 
     const handleDiagramModal = () => {
         setDiagramModal(!diagramModal);
@@ -85,7 +84,10 @@ export default function StudentDetailsPage() {
                 <Card className={`mt-6 py-5 bg-test-200 text-black flex p-5`}>
                     <div className="flex justify-between">
                         <BackButton/>
-                        <h1 className="text-black text-center">{student.lastName} {student.firstName}</h1>
+                        <div className="flex gap-2 items-center">
+                            <h1 className="text-black text-center">{student.lastName} {student.firstName}</h1>
+                            <Chip value={student.classes[0].name} />
+                        </div>
                         <IconButton color="white" className={`rounded-xl`} onClick={() => navigate(`/student/${studentId}/edit`)}>
                             <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24"><g fill="none" stroke="#F46030" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></g></svg>
 
@@ -96,7 +98,6 @@ export default function StudentDetailsPage() {
                         <Button color="white" className="rounded-full" onClick={() => navigate("/student/" + previousStudent.id)}>
                             ← <span className="hidden lg:inline">{previousStudent.lastName + " " + previousStudent.firstName}</span>
                         </Button>
-                        <h2>({student.classes[0].name})</h2>
                         <Button color="white" className="rounded-full" onClick={() => navigate("/student/" + nextStudent.id)}>
                             <span className="hidden lg:inline">{nextStudent.lastName + " " + nextStudent.firstName}</span> →
                         </Button>
@@ -193,27 +194,29 @@ export default function StudentDetailsPage() {
                         </thead>
                         <tbody className="py-3">
                             {filteredTests.map(studentTest => (
-                                <tr key={studentTest.id} className="hover:bg-test-200 hover:bg-opacity-30">
+                                <tr
+                                    key={studentTest.id}
+                                    onClick={() => navigate(`/tests/${studentTest.test.id}`)}
+                                    className="hover:bg-test-200 hover:bg-opacity-30 cursor-pointer"
+                                >
                                     <td className="ps-2 ">
                                         <Chip value={studentTest.test.trimester} size="sm" className="inline me-2" />
-                                        <Link to={`/tests/${studentTest.test.id}`}>
-                                            {studentTest.test.name.length > 5 ? (studentTest.test.name).split("", 5) : studentTest.test.name}
-                                        </Link>
+                                        {studentTest.test.name.length > 5 ? (studentTest.test.name).split("", 5) : studentTest.test.name}
                                     </td>
                                     <td>
                                         <span className="font-semibold">{studentTest.mark ?? 'x'}</span>
                                         <span className="text-xs">/{studentTest.test.scale}</span>
                                     </td>
                                     {uniqueSkills.map(skill => (
-                                    <td key={skill.id}>
+                                        <td key={skill.id}>
                                         <SkillBubble 
                                             bubbleSize={9}
                                             textSize="lg"
                                             letter={studentTest.studenttesthasskill.find((sths => sths.skill.id === skill.id))?.skill.abbreviation ?? "X"}
                                             level={studentTest.studenttesthasskill.find((sths => sths.skill.id === skill.id))?.level ?? SkillLevelEnum.NN}
-                                        />
+                                            />
                                     </td>
-                                ))}
+                                    ))}
                                 </tr>
                             ))}
                         </tbody>

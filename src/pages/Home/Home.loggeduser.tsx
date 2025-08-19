@@ -2,6 +2,7 @@ import { Button, Card, Typography } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 import { useStore } from "zustand";
 import { useAuthStore } from "../../hooks/useAuthStore";
+import TutoAlert from "../../components/ui/tutoAlert";
 
 export default function HomeLoggedUser() {
 
@@ -9,6 +10,9 @@ export default function HomeLoggedUser() {
 
     return(
         <div className="grid grid-rows-3">
+            {currentUser.user?.is_first_visit && (
+                <TutoAlert/>
+            )}
             <Card className="row-span-2 mt-6 py-5 px-4 bg-test-200 text-black flex justify-between items-center">
                 <h1 className="text-black">Bienvenue</h1>
                 <Typography as="h2" className="text-xl font-semibold">Bonjour <span className="text-test-400">{currentUser.user?.firstname} {currentUser.user?.lastname}</span> !</Typography>

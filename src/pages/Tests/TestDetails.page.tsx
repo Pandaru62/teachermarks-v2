@@ -109,9 +109,6 @@ export default function TestDetailsPage() {
                                         <SkillAverageLine key={skill.id} calcAvg={getAverageSkillById(studentTests, skill.id)} skill={skill} />
                                     ))}
                                     </ul>
-                                    <IconButton disabled>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" fillRule="evenodd" d="M14 20.5V4.25c0-.728-.002-1.2-.048-1.546c-.044-.325-.115-.427-.172-.484s-.159-.128-.484-.172C12.949 2.002 12.478 2 11.75 2s-1.2.002-1.546.048c-.325.044-.427.115-.484.172s-.128.159-.172.484c-.046.347-.048.818-.048 1.546V20.5z" clipRule="evenodd"/><path fill="currentColor" d="M8 8.75A.75.75 0 0 0 7.25 8h-3a.75.75 0 0 0-.75.75V20.5H8zm12 5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75v6.75H20z" opacity="0.7"/><path fill="currentColor" d="M1.75 20.5a.75.75 0 0 0 0 1.5h20a.75.75 0 0 0 0-1.5z" opacity="0.5"/></svg>
-                                    </IconButton>
                                 </div>
                             ) : 
                                 <div className="flex flex-col p-3">
@@ -144,7 +141,7 @@ export default function TestDetailsPage() {
                     </thead>
                     <tbody className="py-3">
                         {students.map(student => (
-                            <tr key={student.id} className="hover:bg-test-200 hover:bg-opacity-30">
+                            <tr key={student.id} className="hover:bg-test-200 hover:bg-opacity-30 cursor-pointer" onClick={() => handleTestEdit(student.id)}>
                                 <td className="ps-2">
                                     <Link to={`/student/${student.id}`}>
                                         {student.lastName.toUpperCase()} 
@@ -153,12 +150,7 @@ export default function TestDetailsPage() {
                                     </Link>
                                 </td>
                                 <td>
-                                    <Button 
-                                        onClick={() => handleTestEdit(student.id)}
-                                        className="bg-gray-100 text-black"
-                                    >
-                                        <span className="font-semibold">{studentTests.find((st) => st.student.id === student.id)?.mark ?? 'x'}</span><span className="text-xs">/{test.scale}</span>
-                                    </Button>
+                                    <span className="font-semibold">{studentTests.find((st) => st.student.id === student.id)?.mark ?? 'x'}</span><span className="text-xs">/{test.scale}</span>
                                 </td>
                                 {test.skills.map(skill => (
                                 <td key={skill.id} className="pe-2">

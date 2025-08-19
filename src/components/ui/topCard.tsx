@@ -1,6 +1,7 @@
 import { Card, Typography } from "@material-tailwind/react";
 import { useStore } from "zustand";
 import { useAuthStore } from "../../hooks/useAuthStore";
+import TutoAlert from "./tutoAlert";
 
 interface TopCardProps {
     cardClass : string,
@@ -13,6 +14,8 @@ interface TopCardProps {
 
 export default function TopCard(props : TopCardProps) {
 
+    const { user } = useAuthStore();
+
     const {
         cardClass, 
         title1, 
@@ -22,14 +25,21 @@ export default function TopCard(props : TopCardProps) {
         paragraph
     } = props;
 
+
     const currentUser = useStore(useAuthStore);
 
     return (
+    <>
+    {user?.is_first_visit ? (
+        <TutoAlert/>
+    ) : ''}
+
         <Card className={`${cardClass} mt-6 py-5 bg-test-200 text-black flex justify-between items-center`}>
             <h1 className="text-black">{title1}</h1>
             <Typography as="h2" className="text-xl font-semibold">{title2} <span className="text-test-400">{currentUser.user?.firstname} {currentUser.user?.lastname}</span> !</Typography>
             <img src={imgPath} alt={imgAlt}/>
             <Typography as="p" className="text-xl text-center">{paragraph}</Typography>
         </Card>
+    </>
     )
 }

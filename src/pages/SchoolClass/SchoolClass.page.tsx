@@ -5,12 +5,15 @@ import TopCard from "../../components/ui/topCard";
 import useSchoolClassesQueries from "../../hooks/schoolClass/useSchoolClassesQueries";
 import { Typography } from "@material-tailwind/react";
 
+
 export default function SchoolClassPage() {
 
-        const { schoolClasses, schoolClassesError, schoolClassesLoading } = useSchoolClassesQueries()
+    const { schoolClasses, schoolClassesError, schoolClassesLoading } = useSchoolClassesQueries()
+
 
     return(
         <Wrapper extraClass="flex flex-col gap-5">
+
             <TopCard
                 cardClass=""
                 title1 = "Mes classes"
@@ -30,16 +33,18 @@ export default function SchoolClassPage() {
                 )}
             </div>
             
+            <div>
             {schoolClasses && schoolClasses.length === 0 && (
-            <Typography className="text-center font-semibold">
-                Timéo cherche sa classe
-            </Typography>
+                <Typography className="text-center font-semibold">
+                    Timéo cherche sa classe
+                </Typography>
             )}
-            <DefaultLinkButton
-                label="Ajouter une classe"
-                height={75}
-                to="/forms/new"
-            />
+                <DefaultLinkButton
+                    label="Ajouter une classe"
+                    height={75}
+                    to="/forms/new"
+                />
+            </div>
            
         </Wrapper>
     )

@@ -14,8 +14,6 @@ import {
 import {
   UserCircleIcon,
   ChevronDownIcon,
-  Cog6ToothIcon,
-  LifebuoyIcon,
   PowerIcon,
   AcademicCapIcon,
   DocumentDuplicateIcon,
@@ -41,16 +39,16 @@ const profileMenuItems = [
     icon: SquaresPlusIcon,
     path: "/skills"
   },
-  {
-    label: "Paramètres",
-    icon: Cog6ToothIcon,
-    path: "/settings"
-  },
-  {
-    label: "Aide",
-    icon: LifebuoyIcon,
-    path: "/help"
-  }
+  // {
+  //   label: "Paramètres",
+  //   icon: Cog6ToothIcon,
+  //   path: "/settings"
+  // },
+  // {
+  //   label: "Aide",
+  //   icon: LifebuoyIcon,
+  //   path: "/help"
+  // }
 ];
 
 function ProfileMenu() {
