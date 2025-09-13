@@ -1,6 +1,7 @@
 import { Button, Card, Typography } from "@material-tailwind/react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import background from "../../assets/Flying_background.png";
 
 export default function HomeVisitor() {
 
@@ -16,7 +17,7 @@ export default function HomeVisitor() {
                     <div className="h-[100px] flex items-center justify-center">
                         <h1 className="text-black">Notez tous les progrès.</h1>
                     </div>
-                    <img src="src\assets\Flying_background.png" alt="flying background"/>
+                    <img src={background} alt="flying background"/>
                     <div className="h-[100px]">
                     </div>
             </Card>

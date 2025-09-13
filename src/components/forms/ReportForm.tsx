@@ -2,7 +2,6 @@ import ReportInterface from "../../interfaces/report.interface";
 import { useReportForm } from "../../hooks/report/useReportForm";
 import { TrimesterEnum } from "../../interfaces/test.interface";
 import { Button, IconButton, Textarea, Typography } from "@material-tailwind/react";
-import { useState } from "react";
 
 interface ReportFormProps {
   report: ReportInterface | undefined;
@@ -12,7 +11,7 @@ interface ReportFormProps {
 export default function ReportForm({ report, trimester }: ReportFormProps) {
   
 const { formik } = useReportForm({report, trimester});
-const [originalDescription, setOriginalDescription] = useState<string>(report?.description ?? " ");
+const originalDescription = report?.description ?? " ";
 
     return(
         <form onSubmit={formik.handleSubmit} className="flex flex-col gap-2 mb-4">

@@ -2,6 +2,8 @@ import { Card, Typography } from "@material-tailwind/react";
 import { useStore } from "zustand";
 import { useAuthStore } from "../../hooks/useAuthStore";
 import TutoAlert from "./tutoAlert";
+import smilingPostit from "../../assets/smiling_postit.svg";
+
 
 interface TopCardProps {
     cardClass : string,
@@ -20,7 +22,7 @@ export default function TopCard(props : TopCardProps) {
         cardClass, 
         title1, 
         title2, 
-        imgPath = "/src/assets/smiling_postit.svg",
+        imgPath = smilingPostit,
         imgAlt = "smiling post-it",
         paragraph
     } = props;

@@ -1,5 +1,5 @@
 import StudentTestInterface, { SkillLevelEnum, StudentTestByStudentInterface } from "../../interfaces/student-test.interface";
-import TestInterface, { TrimesterEnum } from "../../interfaces/test.interface";
+import { TrimesterEnum } from "../../interfaces/test.interface";
 
 export default function calculateAverage(numbers : number[]): number {
     return (numbers.reduce((acc, number) => acc + number, 0)/numbers.length)

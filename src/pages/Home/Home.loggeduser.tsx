@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useStore } from "zustand";
 import { useAuthStore } from "../../hooks/useAuthStore";
 import TutoAlert from "../../components/ui/tutoAlert";
+import smilingPostit from "../../assets/smiling_postit.svg";
 
 export default function HomeLoggedUser() {
 
@@ -16,7 +17,7 @@ export default function HomeLoggedUser() {
             <Card className="row-span-2 mt-6 py-5 px-4 bg-test-200 text-black flex justify-between items-center">
                 <h1 className="text-black">Bienvenue</h1>
                 <Typography as="h2" className="text-xl font-semibold">Bonjour <span className="text-test-400">{currentUser.user?.firstname} {currentUser.user?.lastname}</span> !</Typography>
-                <img src="\src\assets\smiling_postit.svg" alt="smiling post-it"/>
+                <img src={smilingPostit} alt="smiling post-it"/>
                 {currentUser.user?.is_first_visit ? (
                 <>
                     <Typography as="p" className="text-xl text-center">Vous êtes sur le point de commencer un suivi plus intuitif et rapide des compétences de vos élèves.</Typography>
