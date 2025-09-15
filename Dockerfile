@@ -1,14 +1,8 @@
 # Build stage
 FROM node:18-alpine AS build
 WORKDIR /app
-
-# Keep only build-time args you actually need (Vite envs are baked at build time)
-ARG VITE_API_KEY_MAPBOX
-ENV VITE_API_KEY_MAPBOX=${VITE_API_KEY_MAPBOX}
-
 COPY package*.json ./
 RUN npm ci
-
 COPY . .
 RUN npm run build
 

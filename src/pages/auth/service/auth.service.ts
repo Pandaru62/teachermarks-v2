@@ -15,7 +15,7 @@ const api = useApi();
 
   export async function signup(data: LoginFormValues) {
     try {
-      const response = await axios.post(import.meta.env.VITE_API_BASE_URL || '/api' + "auth/signup", data);
+      const response = await axios.post(import.meta.env.VITE_API_BASE_URL || '/api/' + "auth/signup", data);
       return response.data;
     } catch (error) {
       throw new Error(`Une erreur est survenue: ${error}`);
