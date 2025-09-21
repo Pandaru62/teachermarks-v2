@@ -27,7 +27,7 @@ export default function SchoolClasseDetailsPage() {
                     className="mt-6 py-5 text-black flex justify-between items-center"
                     style={{ backgroundColor: schoolClass.color }}
                 >
-                    <div className="flex gap-3 items-center">
+                    <div className="w-full flex gap-3 justify-around items-center">
                         <BackButton />
                         <h1 className="text-black">{schoolClass.name}</h1>
                         <IconButton color="white" className="rounded-xl" onClick={() => navigate(`/forms/${schoolClass.id}/add-students`)}>
@@ -35,7 +35,7 @@ export default function SchoolClasseDetailsPage() {
                         </IconButton>
                     </div>
                     <Typography as="p" className="text-xl font-semibold">Voilà les élèves de {schoolClass.name} !</Typography>
-                    <div className="bg-white rounded-xl p-5 w-4/5 mt-3">
+                    <div className="bg-white rounded-xl p-3 w-[90%] mt-3">
                         <StudentsList students={schoolClass.pupils}/>
                     </div>
                 </Card>

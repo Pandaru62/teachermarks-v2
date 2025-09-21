@@ -54,50 +54,61 @@ export default function QuickEditModal(props: QuickEditModalProps) {
                         ←
                     </IconButton>
                     <div className="flex flex-col">
-                        <span>Évaluation : {test.name} ({test?.schoolclass?.name})</span>
-                        <span>Élève : <span className="font-semibold">{student?.lastName} {student?.firstName}</span></span>
+                        <div>
+                            <span className="hidden md:inline">Évaluation : </span>{test.name} ({test?.schoolclass?.name})
+                        </div>
+                        <div>
+                            <span className="hidden md:inline">Élève : </span><span className="font-semibold">{student?.lastName} {student?.firstName}</span>
+                        </div>
                     </div>
                     <IconButton variant="outlined" className="rounded-full" onClick={handleNext}>
                         →
                     </IconButton>
                 </div>
                 <ul>
-                    <li className="flex gap-3 items-center mb-3">
-                        <Chip value="Note" color="cyan" className="w-20 text-center" variant="outlined" />
-                        <label htmlFor="mark" className="hidden">Note</label>
-                        <input
-                            id="mark"
-                            name="mark"
-                            type="number"
-                            step="0.25"
-                            max={test.scale}
-                            min={0}
-                            className="w-10 text-right pe-1 border-gray-500 border-2 disabled:bg-gray-300 disabled:text-gray-300"
-                            onChange={formik.handleChange}
-                            onFocus={(e) => e.target.select()}
-                            value={formik.values.mark}
-                            disabled={formik.values.isUnmarked || formik.values.isAbsent}
-                        />
-                        <span>/{test.scale}</span>
-                        <CheckBoxListItem
+                    <div className="mb-3">
+                        <div className="flex justify-between">
+                            <CheckBoxListItem
                             id="isUnmarked"
-                            label="NN"
+                            label="Non Noté"
                             checked={formik.values.isUnmarked}
                             onClick={() => {
                                 formik.setFieldValue("isUnmarked", !formik.values.isUnmarked);
                                 formik.setFieldValue("mark", 0);
                             }}
-                        />
-                        <CheckBoxListItem
-                            id="isAbsent"
-                            label="ABS"
-                            checked={formik.values.isAbsent}
-                            onClick={() => {
-                                formik.setFieldValue("isAbsent", !formik.values.isAbsent);
-                                formik.setFieldValue("mark", 0);
-                            }}
-                        />
-                    </li>
+                            />
+                            <CheckBoxListItem
+                                id="isAbsent"
+                                label="Absent"
+                                checked={formik.values.isAbsent}
+                                onClick={() => {
+                                    formik.setFieldValue("isAbsent", !formik.values.isAbsent);
+                                    formik.setFieldValue("mark", 0);
+                                }}
+                            />
+                        </div>
+                        <div className="flex flex-col md:flex-row gap-3 items-center mb-3">
+                            <Chip value="Note" color="cyan" className="w-40 text-center" variant="outlined" />
+                            <label htmlFor="mark" className="hidden">Note</label>
+                            <div>
+                                <input
+                                    id="mark"
+                                    name="mark"
+                                    type="number"
+                                    step="0.25"
+                                    max={test.scale}
+                                    min={0}
+                                    className="w-10 text-right me-2 pe-1 border-gray-500 border-2 disabled:bg-gray-300 disabled:text-gray-300"
+                                    onChange={formik.handleChange}
+                                    onFocus={(e) => e.target.select()}
+                                    value={formik.values.mark}
+                                    disabled={formik.values.isUnmarked || formik.values.isAbsent}
+                                    autoFocus
+                                />
+                                <span>/{test.scale}</span>
+                            </div>
+                        </div>
+                    </div>
                     {formik.values.skills.sort((a, b) => a.skillId - b.skillId).map(skill => (
                         <li key={skill.skillId} className="flex flex-col lg:flex-row gap-3 items-center mb-3">
                             <Chip value={test.skills.find(sk => skill.skillId === sk.id)?.name} color="cyan" className="w-40 text-center" variant="outlined" />
@@ -118,7 +129,7 @@ export default function QuickEditModal(props: QuickEditModalProps) {
             </DialogBody>
             <DialogFooter>
                 <Button variant="text" color="red" onClick={handleOpen} className="mr-1">
-                    Fermer sans enregistrer
+                    Fermer & annuler
                 </Button>
                 <Button
                     variant="gradient"
@@ -128,7 +139,7 @@ export default function QuickEditModal(props: QuickEditModalProps) {
                     disabled={!formik.dirty || !formik.isValid || isSaved}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} viewBox="0 0 24 24"><path fill="currentColor" d="M21 7v12q0 .825-.587 1.413T19 21H5q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h12zm-2 .85L16.15 5H5v14h14zM12 18q1.25 0 2.125-.875T15 15t-.875-2.125T12 12t-2.125.875T9 15t.875 2.125T12 18m-6-8h9V6H6zM5 7.85V19V5z"></path></svg>
-                    {isSaved || !formik.dirty ? "Données à jour" : "Enregistrer"}
+                    {isSaved || !formik.dirty ? "Données à jour" : "Enregistrer & suivant"}
                 </Button>
             </DialogFooter>
         </form>

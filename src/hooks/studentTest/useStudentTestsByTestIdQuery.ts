@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import StudentTestInterface from "../../interfaces/student-test.interface";
 import getAllStudentTestsByTestId from "../../api/studenttest";
-import { countAbsent, countMarked, countUnmarked, getAverageMark } from "../../utils/calculations/average.function";
+import { countAbsent, countMarked, countUnmarked, getTestAverageMark } from "../../utils/calculations/average.function";
 
 export default function useStudentTestsByTestIdQuery(testId : number) {
 
@@ -17,7 +17,7 @@ export default function useStudentTestsByTestIdQuery(testId : number) {
       const numAbsent = countAbsent(studentTests ?? [])
       const numUnmarked = countUnmarked(studentTests ?? [])
       const numMarked = countMarked(studentTests ?? [])
-      const average = getAverageMark(studentTests ?? [])
+      const average = getTestAverageMark(studentTests ?? [])
 
     return( 
         {

@@ -85,19 +85,18 @@ export default function StudentDetailsPage() {
                     <div className="flex justify-between">
                         <BackButton/>
                         <div className="flex gap-2 items-center">
-                            <h1 className="text-black text-center">{student.lastName} {student.firstName}</h1>
-                            <Chip value={student.classes[0].name} />
+                            <h3 className="text-black text-center">{student.lastName}<br/> {student.firstName}</h3>
                         </div>
                         <IconButton color="white" className={`rounded-xl`} onClick={() => navigate(`/student/${studentId}/edit`)}>
                             <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24"><g fill="none" stroke="#F46030" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></g></svg>
-
                         </IconButton>
                     </div>
                     {previousStudent && nextStudent &&(
-                    <div className="flex justify-between">
+                    <div className="flex justify-between mt-2">
                         <Button color="white" className="rounded-full" onClick={() => navigate("/student/" + previousStudent.id)}>
                             ← <span className="hidden lg:inline">{previousStudent.lastName + " " + previousStudent.firstName}</span>
                         </Button>
+                        <Chip value={student.classes[0].name} />
                         <Button color="white" className="rounded-full" onClick={() => navigate("/student/" + nextStudent.id)}>
                             <span className="hidden lg:inline">{nextStudent.lastName + " " + nextStudent.firstName}</span> →
                         </Button>
@@ -164,7 +163,7 @@ export default function StudentDetailsPage() {
                         </div>
                         <div className="mt-5 bg-white rounded-xl p-3 flex-col">
                             <Typography as="h3" className="font-logo text-center">Filtrer</Typography>
-                            <List className="flex-col md:flex-row">
+                            <List className="flex-row">
                             { Object.values(TrimesterEnum).map(trimester =>
                                 (<CheckBoxListItem 
                                     key={trimester}
@@ -201,7 +200,8 @@ export default function StudentDetailsPage() {
                                 >
                                     <td className="ps-2 ">
                                         <Chip value={studentTest.test.trimester} size="sm" className="inline me-2" />
-                                        {studentTest.test.name.length > 5 ? (studentTest.test.name).split("", 5) : studentTest.test.name}
+                                        <span className="lg:hidden">{studentTest.test.name.length > 5 ? (studentTest.test.name).split("", 5) : studentTest.test.name}</span>
+                                        <span className="hidden lg:inline">{studentTest.test.name}</span>
                                     </td>
                                     <td>
                                         <span className="font-semibold">{studentTest.mark ?? 'x'}</span>

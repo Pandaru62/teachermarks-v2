@@ -54,6 +54,7 @@ const profileMenuItems = [
 function ProfileMenu() {
 
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+
   const navigate = useNavigate();
 
   const { logout } = useAuthStore();
@@ -167,6 +168,7 @@ function NavList() {
   const { isAuthenticated } = useAuthStore();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+  const [isEvalMenuOpen, setIsEvalMenuOpen] = React.useState(false);
   const evalMenu = [{
     label: "Mes évaluations",
     link: "/tests"
@@ -219,23 +221,38 @@ function NavList() {
               <ListItem
                 className="flex items-center gap-2 py-2 pr-4 font-medium text-white"
                 selected={isMenuOpen || isMobileMenuOpen}
-                onClick={() => setIsMobileMenuOpen((cur) => !cur)}
+                onClick={() => setIsEvalMenuOpen((cur) => !cur)}
               >
                 <DocumentDuplicateIcon className="h-5"/>
-                Mes évaluations
+                Évaluations
                 <ChevronDownIcon
                   strokeWidth={2.5}
                   className={`hidden h-3 w-3 transition-transform lg:block ${
-                    isMenuOpen ? "rotate-180" : ""
+                    isEvalMenuOpen ? "rotate-180" : ""
                   }`}
                 />
                 <ChevronDownIcon
                   strokeWidth={2.5}
                   className={`block h-3 w-3 transition-transform lg:hidden ${
-                    isMobileMenuOpen ? "rotate-180" : ""
+                    isEvalMenuOpen ? "rotate-180" : ""
                   }`}
                 />
               </ListItem>
+              <Collapse open={isEvalMenuOpen} className="overflow-scroll">
+              {evalMenu.map((em) => (
+                <NavLink key={em.label} to={em.link}>
+                  <Typography
+                    variant="small"
+                    color="white"
+                    className="font-semibold"
+                  >
+                    <MenuItem className="flex items-center gap-2 lg:rounded-lg">
+                      <span className="ps-7" > {em.label}</span>
+                    </MenuItem>
+                  </Typography>
+                </NavLink>
+              ))}
+              </Collapse>
             </Typography>
           </MenuHandler>
           <MenuList className="hidden max-w-screen-xl rounded-xl lg:block">
@@ -248,17 +265,11 @@ function NavList() {
       </>
       ) : (visitorNavListItems.map(({ label, link }) => (
           <NavLink key={label} to={link}>
-            {({isActive}) => (
-            <Typography
-              variant="small"
-              color="gray"
-              className="text-blue-gray-500"
-            >
-              <MenuItem className="flex items-center gap-2 lg:rounded-full">
-                <span className={isActive ? "font-bold text-gray-700" : "text-gray-900"}> {label}</span>
+            <Typography variant="small">
+              <MenuItem className="flex items-center gap-2 lg:rounded-full hover:text-black">
+                <span> {label}</span>
               </MenuItem>
             </Typography>
-            )}
           </NavLink>
       ))) }
     </ul>
@@ -322,6 +333,7 @@ export default function Header() {
       <Collapse open={isNavOpen} className="overflow-scroll">
           <NavList />
       </Collapse>
+
     </Navbar>
   );
 }

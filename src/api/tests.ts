@@ -1,5 +1,5 @@
 import { useApi } from "../hooks/useApi";
-import { CreateTestInterface, EditTestInterface } from "../interfaces/test.interface";
+import TestInterface, { CreateTestInterface, EditTestInterface } from "../interfaces/test.interface";
 
 const api = useApi()
 
@@ -39,7 +39,7 @@ export async function editTest(test : EditTestInterface, id : number) {
     }
 }
 
-export async function deleteTest(id : number) {
+export async function deleteTest(id : number): Promise<TestInterface> {
     try {
         const { data } = await api.delete('tests/' + id);
 		return data

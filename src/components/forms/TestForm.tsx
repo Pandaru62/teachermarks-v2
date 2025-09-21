@@ -5,10 +5,15 @@ import TextInput from "../ui/formInput/textInput";
 import Wrapper from "../ui/wrapper";
 import { TestFormProps, useTestForm } from "../../hooks/test/useTestForm";
 import SelectInput from "../ui/formInput/selectInput";
-import { TrimesterEnum } from "../../interfaces/test.interface";
+import TestInterface, { TrimesterEnum } from "../../interfaces/test.interface";
 import SelectEnumInput from "../ui/formInput/selectEnumInput";
 import useSkillsQuery from "../../hooks/skill/useSkillsQuery";
 import SelectSkills from "../ui/formInput/selectSkills";
+import DeleteButton from "../ui/deleteButton";
+import { showWarningAlert } from "../../utils/alerts/warningAlert";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import { deleteTest } from "../../api/tests";
 
 
 export default function TestForm({ initialValues, editTestId, schoolClasses }: TestFormProps) {
@@ -19,6 +24,24 @@ export default function TestForm({ initialValues, editTestId, schoolClasses }: T
         setSelectedSkills
     } = useTestForm({initialValues, editTestId});
     const {skills, skillsError, skillsLoading} = useSkillsQuery();
+    const queryClient = useQueryClient();
+    const navigate = useNavigate();
+
+
+    const handleDelete = () => {
+        if(editTestId) {
+            showWarningAlert("Voulez-vous supprimer cette évaluation ?", () => mutation.mutate(editTestId), "Évaluation supprimée avec succès", () => navigate("/tests"))
+        }
+    }
+
+    const mutation = useMutation({
+        mutationFn: deleteTest,
+        onSuccess: (deletedTest : TestInterface) => {
+            queryClient.setQueryData(['allTests'], (oldTests : TestInterface[]) =>
+                oldTests ? oldTests.filter((test) => test.id !== deletedTest.id) : []);
+        
+        },
+      });
 
     return(
         <form onSubmit={formik.handleSubmit}>
@@ -26,9 +49,10 @@ export default function TestForm({ initialValues, editTestId, schoolClasses }: T
                 <Card 
                     className="mt-6 py-5 bg-test-200 text-black flex justify-between items-center"
                 >
-                    <div className="flex gap-3">
+                    <div className="w-full flex justify-between items-center p-3">
                         <BackButton/>
                         <h1 className="text-black mb-3">Mon évaluation</h1>
+                        <DeleteButton onClick={handleDelete}/>
                     </div>
                     <div className="flex flex-col gap-5 w-[96%]">
                         <TextInput
