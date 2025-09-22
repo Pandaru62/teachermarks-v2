@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import useStudentQuery from "../../hooks/student/useStudentQuery";
 import Wrapper from "../../components/ui/wrapper";
-import { Card, IconButton } from "@material-tailwind/react";
+import { Card } from "@material-tailwind/react";
 import BackButton from "../../components/ui/backButton";
 import StudentForm from "../../components/forms/StudentForm";
 import { showWarningAlert } from "../../utils/alerts/warningAlert";
@@ -9,6 +9,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import StudentInterface from "../../interfaces/student.interface";
 import { deleteStudent } from "../../api/student";
 import { showSuccessAlert } from "../../utils/alerts/showSuccessAlert";
+import DefaultIconButton from "../../components/ui/defaultIconButton";
 
 export default function StudentEditPage() {
 
@@ -29,7 +30,6 @@ export default function StudentEditPage() {
     });
     
     const handleConfirmDelete = () => {
-        alert("Supprimer ?")
         showWarningAlert("Voulez-vous vraiment supprimer cet élève ?", () => mutation.mutate(studentId), "Elève supprimé avec succès")
     }
 
@@ -42,9 +42,7 @@ export default function StudentEditPage() {
                     <div className="flex gap-5 justify-between">
                         <BackButton/>
                         <h1 className="text-black">Modifier un élève</h1>
-                        <IconButton color="white" className={`rounded-xl`} onClick={() => handleConfirmDelete}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24"><path fill="currentColor" d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21zm2-4h2V8H9zm4 0h2V8h-2z"></path></svg>
-                        </IconButton>
+                        <DefaultIconButton onClick={handleConfirmDelete} />
                     </div>
                     <StudentForm
                         initialValues={{firstName: student.firstName, lastName: student.lastName}}

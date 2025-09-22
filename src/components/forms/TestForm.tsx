@@ -9,7 +9,7 @@ import TestInterface, { TrimesterEnum } from "../../interfaces/test.interface";
 import SelectEnumInput from "../ui/formInput/selectEnumInput";
 import useSkillsQuery from "../../hooks/skill/useSkillsQuery";
 import SelectSkills from "../ui/formInput/selectSkills";
-import DeleteButton from "../ui/deleteButton";
+import DeleteButton from "../ui/defaultIconButton";
 import { showWarningAlert } from "../../utils/alerts/warningAlert";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";

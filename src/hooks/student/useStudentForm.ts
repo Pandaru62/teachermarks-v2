@@ -29,8 +29,11 @@ export const useStudentForm = (props : StudentFormProps) => {
           editStudentId
         );
         if(editedStudent) {
+          console.log("🚀 ~ useStudentForm ~ editedStudent:", editedStudent)
+
           queryClient.setQueryData(['students'], (oldStudents : StudentInterface[]) =>
           oldStudents ? oldStudents.map((student) => student.id === editStudentId ? editedStudent : student) : []);
+          console.log("Avant confirm")
 
           queryClient.setQueryData(['student', editStudentId], editedStudent)
 

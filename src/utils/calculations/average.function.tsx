@@ -21,18 +21,15 @@ export function getStudentAverage(studentTests: StudentTestByStudentInterface[])
   const validTests = studentTests.filter(
     (st) => !st.isAbsent && !st.isUnmarked
   );
-  console.log("🚀 ~ getStudentAverage ~ validTests:", validTests)
 
   const marks = validTests.map(
     (st) => st.mark * st.test.coefficient
   );
-  console.log("🚀 ~ getStudentAverage ~ marks:", marks)
 
   const totalScale = validTests.reduce(
     (acc, st) => acc + st.test.coefficient * st.test.scale,
     0
   );
-  console.log("🚀 ~ getStudentAverage ~ totalScale:", totalScale)
 
   return totalScale > 0 ? calculateStudentAverage(marks, totalScale) : 0;
 }

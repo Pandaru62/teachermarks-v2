@@ -12,7 +12,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteSkill } from "../../api/skill";
 import SkillInterface from "../../interfaces/skill.interface";
 import { SkillLevelEnum } from "../../interfaces/student-test.interface";
-import DeleteButton from "../ui/deleteButton";
+import DeleteButton from "../ui/defaultIconButton";
 
 export interface SkillFormProps {
   initialValues: { name: string; description: string; abbreviation: string };

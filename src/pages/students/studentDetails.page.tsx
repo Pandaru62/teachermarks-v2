@@ -23,8 +23,8 @@ export default function StudentDetailsPage() {
     const studentId = Number(useParams().id);
     const {student, studentError,studentLoading, studentReports} = useStudentQuery(studentId);
     const [classId, setClassId] = useState<number | null>(null)
-    const { students } = useStudentsByClassQuery(classId!, {
-    enabled: !!classId});
+    // 22-09 deleted the ! after classId! on line 27
+    const { students } = useStudentsByClassQuery(classId, {enabled: !!classId});
     const [trimesterFilters, setTrimesterFilters] = useState<TrimesterEnum[]>([TrimesterEnum.TR1, TrimesterEnum.TR2, TrimesterEnum.TR3])
     const {studentTests, studentTestsError, studentTestsLoading, average, uniqueSkills, averageSkills} = useStudentTestsByStudentIdQuery(studentId);
     const [filteredTests, setFilteredTests] = useState<StudentTestByStudentInterface[]>(studentTests ?? []);
@@ -109,7 +109,7 @@ export default function StudentDetailsPage() {
                             <div className="flex justify-between items-center">
                                 <div className="flex flex-col justify-center">
                                     <div>
-                                        <span className="font-semibold">Note</span> : {average} / 20
+                                        <span className="font-semibold">Note</span> : {average.toFixed(2)} / 20
                                     </div>
                                     <ul>
                                         {uniqueSkills.map((sk) => (
@@ -118,7 +118,7 @@ export default function StudentDetailsPage() {
                                                     letter={sk.abbr}
                                                     level={getAverageSkillById(studentTests, sk.id).level}
                                                 />
-                                                <span className="font-semibold">{sk.name}</span> : {isNaN(sk.avg) ? "Non évalué" : sk.avg + "/4"}
+                                                <span className="font-semibold">{sk.name}</span> : {isNaN(sk.avg) ? "Non évalué" : sk.avg.toFixed(1) + "/4"}
                                             </li>
                                         ))}
                                     </ul>

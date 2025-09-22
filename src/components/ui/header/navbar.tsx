@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Navbar,
   Typography,
@@ -9,7 +9,6 @@ import {
   MenuItem,
   IconButton,
   Collapse,
-  ListItem,
 } from "@material-tailwind/react";
 import {
   UserCircleIcon,
@@ -18,26 +17,28 @@ import {
   AcademicCapIcon,
   DocumentDuplicateIcon,
   SquaresPlusIcon,
+  DocumentPlusIcon,
+  UserIcon,
 } from "@heroicons/react/24/solid";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "zustand";
-import { useAuthStore } from "../../hooks/useAuthStore";
+import { useAuthStore } from "../../../hooks/useAuthStore";
 import { useMutation } from "@tanstack/react-query";
-import { logOutClearCookies } from "../../pages/auth/service/auth.service";
+import { logOutClearCookies } from "../../../pages/auth/service/auth.service";
 import { AxiosError } from "axios";
-import StudentSearchBar from "./StudentSearchBar";
+import NavBarLink from "./NavBarLink";
 
 // profile menu component
 const profileMenuItems = [
   {
     label: "Mon profil",
     icon: UserCircleIcon,
-    path: "/profile"
+    link: "/profile"
   },
   {
     label: "Mes compétences",
     icon: SquaresPlusIcon,
-    path: "/skills"
+    link: "/skills"
   },
   // {
   //   label: "Paramètres",
@@ -51,12 +52,8 @@ const profileMenuItems = [
   // }
 ];
 
-function ProfileMenu() {
-
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-
+export function useLogout() {
   const navigate = useNavigate();
-
   const { logout } = useAuthStore();
 
   const mutation = useMutation({
@@ -71,10 +68,17 @@ function ProfileMenu() {
       throw new Error(error.message);
     },
   });
-  
-  const handleLogout = () => {
-    mutation.mutate();
+
+  return {
+    logout: () => mutation.mutate(),
   };
+}
+
+function ProfileMenu() {
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const { logout } = useLogout();
  
   const closeMenu = () => setIsMenuOpen(false);
  
@@ -98,13 +102,13 @@ function ProfileMenu() {
       </MenuHandler>
       {useStore(useAuthStore).isAuthenticated && (
       <MenuList className="p-1">
-        {profileMenuItems.map(({ label, icon, path }) => {
+        {profileMenuItems.map(({ label, icon, link }) => {
           return (
             <MenuItem
               key={label}
               className={`flex items-center gap-2 rounded`}
             >
-              <Link to={path} className="flex size-full items-center gap-2" onClick={closeMenu}>
+              <Link to={link} className="flex size-full items-center gap-2" onClick={closeMenu}>
                 {React.createElement(icon, {
                   className: `h-4 w-4`,
                   strokeWidth: 2,
@@ -122,7 +126,7 @@ function ProfileMenu() {
         })}
         <MenuItem
           className={`flex items-center gap-2 rounded`}
-          onClick={handleLogout}
+          onClick={logout}
         >
           {React.createElement(PowerIcon, {
             className: `h-4 w-4`,
@@ -150,127 +154,70 @@ const loggedNavListItems = [
     label: "Mes classes",
     icon: AcademicCapIcon,
     link: "/forms"
+  },
+  {
+    label: "Mes évaluations",
+    icon: DocumentDuplicateIcon,
+    link: "/tests"
+  },
+  {
+    label: "Nouvelle évaluation",
+    icon: DocumentPlusIcon,
+    link: "/tests/new"
   }
 ];
 
 const visitorNavListItems = [
   {
     label: "Connexion",
+    icon: UserIcon,
     link: "/signin"
   },
   {
     label: "Inscription",
+    icon: UserIcon,
     link: "/signup"
   }
 ];
  
 function NavList() {
   const { isAuthenticated } = useAuthStore();
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
-  const [isEvalMenuOpen, setIsEvalMenuOpen] = React.useState(false);
-  const evalMenu = [{
-    label: "Mes évaluations",
-    link: "/tests"
-  }, {
-    label: "Ajouter une évaluation",
-    link: "/tests/new"
-  }];
-
-  const renderItems = evalMenu.map(({label, link}) => (
-    <Link to={link} key={link}>
-      <MenuItem className="flex flex-row items-center gap-3 rounded-lg">
-            <Typography
-              variant="h6"
-              color="blue-gray"
-              className="flex items-center text-sm font-bold"
-            >
-              {label}
-            </Typography>
-        </MenuItem>
-    </Link>
-  ))
+  const { logout } = useLogout();
 
   return (
     <ul className="po mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center">
       {isAuthenticated ? (
       <>
         {loggedNavListItems.map(({ label, icon, link }) => (
-          <NavLink key={label} to={link}>
-            <Typography
-              variant="small"
-              color="white"
-              className="font-semibold"
-            >
-              <MenuItem className="flex items-center gap-2 lg:rounded-lg">
-                {React.createElement(icon, { className: "h-[18px] w-[18px]" })}{" "}
-                <span > {label}</span>
-              </MenuItem>
-            </Typography>
-          </NavLink>
+          <NavBarLink label={label} icon={icon} link={link} key={link}/>
         ))}
-        <Menu
-        open={isMenuOpen}
-        handler={setIsMenuOpen}
-        offset={{ mainAxis: 20 }}
-        placement="bottom"
-        allowHover={true}
-        >
-          <MenuHandler>
-            <Typography as="div" variant="small" className="font-medium">
-              <ListItem
-                className="flex items-center gap-2 py-2 pr-4 font-medium text-white"
-                selected={isMenuOpen || isMobileMenuOpen}
-                onClick={() => setIsEvalMenuOpen((cur) => !cur)}
-              >
-                <DocumentDuplicateIcon className="h-5"/>
-                Évaluations
-                <ChevronDownIcon
-                  strokeWidth={2.5}
-                  className={`hidden h-3 w-3 transition-transform lg:block ${
-                    isEvalMenuOpen ? "rotate-180" : ""
-                  }`}
-                />
-                <ChevronDownIcon
-                  strokeWidth={2.5}
-                  className={`block h-3 w-3 transition-transform lg:hidden ${
-                    isEvalMenuOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </ListItem>
-              <Collapse open={isEvalMenuOpen} className="overflow-scroll">
-              {evalMenu.map((em) => (
-                <NavLink key={em.label} to={em.link}>
-                  <Typography
-                    variant="small"
-                    color="white"
-                    className="font-semibold"
-                  >
-                    <MenuItem className="flex items-center gap-2 lg:rounded-lg">
-                      <span className="ps-7" > {em.label}</span>
-                    </MenuItem>
-                  </Typography>
-                </NavLink>
-              ))}
-              </Collapse>
+        <div className="lg:hidden">
+          <hr />
+          {profileMenuItems.map(({ label, icon, link }) => (
+            <NavBarLink label={label} icon={icon} link={link} key={link}/>
+          ))}
+          <hr />
+          <MenuItem
+            className={`flex items-center gap-2 rounded`}
+            onClick={logout}
+          >
+            {React.createElement(PowerIcon, {
+              className: `h-4 w-4`,
+              color: "red"
+            })}
+            <Typography
+              as="span"
+              variant="small"
+              className="font-bold"
+              color="red"
+            >
+              Déconnexion
             </Typography>
-          </MenuHandler>
-          <MenuList className="hidden max-w-screen-xl rounded-xl lg:block">
-            <ul className="outline-none outline-0">
-              {renderItems}
-            </ul>
-          </MenuList>
-        </Menu>
-        <StudentSearchBar/>
+          </MenuItem>
+        </div>
       </>
-      ) : (visitorNavListItems.map(({ label, link }) => (
-          <NavLink key={label} to={link}>
-            <Typography variant="small">
-              <MenuItem className="flex items-center gap-2 lg:rounded-full hover:text-black">
-                <span> {label}</span>
-              </MenuItem>
-            </Typography>
-          </NavLink>
+      ) : (visitorNavListItems.map(({ label, link, icon}) => (
+          <NavBarLink label={label} icon={icon} link={link} key={link}/>
       ))) }
     </ul>
   );
@@ -280,14 +227,21 @@ export default function Header() {
 
   const { isAuthenticated } = useAuthStore();
 
-  const [isNavOpen, setIsNavOpen] = React.useState(false);
+  const location = useLocation()
+
+  const [isMobileNavOpen, setIsMobileNavOpen] = React.useState(false);
+
+  // closes the mobile menu after click
+  useEffect(() => {
+    setIsMobileNavOpen(false);
+  }, [location.pathname]);
  
-  const toggleIsNavOpen = () => setIsNavOpen((cur) => !cur);
+  const toggleIsNavOpen = () => setIsMobileNavOpen((cur) => !cur);
  
   React.useEffect(() => {
     window.addEventListener(
       "resize",
-      () => window.innerWidth >= 960 && setIsNavOpen(false),
+      () => window.innerWidth >= 960 && setIsMobileNavOpen(false),
     );
   }, []);
  
@@ -306,16 +260,14 @@ export default function Header() {
           <div className="hidden lg:flex justify-center w-4/5">
             <NavList />
           </div>
-          <div className="ml-auto ">
+          <div className="ml-auto hidden lg:flex">
             <ProfileMenu />
           </div>
         </>
         ) : (
-        <div className="hidden lg:flex ml-auto">
-          {visitorNavListItems.map(({label, link}) => 
-          <Link key={label} to={link} className="me-5">
-            <Button color="white" variant="outlined">{label}</Button>
-          </Link>
+        <div className="hidden lg:flex ml-auto me-2">
+          {visitorNavListItems.map(({label, link, icon}) => 
+            <NavBarLink label={label} icon={icon} link={link} key={link}/>
           )}
         </div>
         )}
@@ -327,10 +279,10 @@ export default function Header() {
           onClick={toggleIsNavOpen}
           className="mr-2 lg:hidden"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24"><g fill="white"><path d="M8 6.983a1 1 0 1 0 0 2h8a1 1 0 1 0 0-2zM7 12a1 1 0 0 1 1-1h8a1 1 0 1 1 0 2H8a1 1 0 0 1-1-1m1 3.017a1 1 0 1 0 0 2h8a1 1 0 1 0 0-2z"/><path fillRule="evenodd" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10m-2 0a8 8 0 1 1-16 0a8 8 0 0 1 16 0" clipRule="evenodd"/></g></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" viewBox="0 0 24 24"><g fill="white"><path d="M8 6.983a1 1 0 1 0 0 2h8a1 1 0 1 0 0-2zM7 12a1 1 0 0 1 1-1h8a1 1 0 1 1 0 2H8a1 1 0 0 1-1-1m1 3.017a1 1 0 1 0 0 2h8a1 1 0 1 0 0-2z"/><path fillRule="evenodd" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10m-2 0a8 8 0 1 1-16 0a8 8 0 0 1 16 0" clipRule="evenodd"/></g></svg>
         </IconButton>
       </div>
-      <Collapse open={isNavOpen} className="overflow-scroll">
+      <Collapse open={isMobileNavOpen} className="overflow-scroll">
           <NavList />
       </Collapse>
 
