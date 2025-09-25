@@ -11,7 +11,7 @@ import DefaultIconButton from "../../components/ui/defaultIconButton";
 export default function TestsListPage() {
 
     const {allTests, allTestsError, allTestsLoading} = useAllTestsQuery();
-    const [trimesterFilters, setTrimesterFilters] = useState<TrimesterEnum[]>([])
+    const [trimesterFilters, setTrimesterFilters] = useState<TrimesterEnum[]>([TrimesterEnum.TR1, TrimesterEnum.TR2, TrimesterEnum.TR3])
     const [schoolClassFilters, setSchoolClassFilters] = useState<string[]>([])
     const [filteredTests, setFilteredTests] = useState<TestInterface[]>(allTests ?? [])
     const navigate = useNavigate();
@@ -92,7 +92,6 @@ export default function TestsListPage() {
                                         {test.name}
                                     </Typography>
                                 </CardBody>
-                            
                             </Card>
                         </Link>
                     </li>
