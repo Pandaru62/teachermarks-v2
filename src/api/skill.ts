@@ -50,3 +50,12 @@ export async function archiveSkill(id: number) {
     throw new Error(error);
   }
 }
+
+export async function deleteSkill(id: number) {
+  try {
+    const { data } = await api.delete("skills/" + id);
+    return data;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+}

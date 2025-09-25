@@ -43,6 +43,7 @@ export default function TestFilterSection(props : TestFilterSectionProps) {
                         onClick={() => handleTrimesterFilters(trimester)}
                         id={trimester}
                         label={trimester}
+                        checked={trimesterFilters.includes(trimester)}
                     />))}
                 </List>
             </fieldset>
@@ -55,6 +56,7 @@ export default function TestFilterSection(props : TestFilterSectionProps) {
                         onClick={() => handleSchoolClassFilters(schoolClass.name)}
                         id={schoolClass.name}
                         label={schoolClass.name}
+                        checked={schoolClassFilters.includes(schoolClass.name)}
                     />))}
                 </List>
             </fieldset>

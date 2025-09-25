@@ -4,6 +4,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { signup } from "./auth.service";
 import Swal from 'sweetalert2';
+import { useNavigate } from "react-router-dom";
 
 export interface LoginFormValues {
   email: string;
@@ -11,6 +12,7 @@ export interface LoginFormValues {
 }
 
 export function useSignUpPageService() {
+  const navigate = useNavigate();
 
   const mutation = useMutation({
     mutationFn: async (values: LoginFormValues) => {
@@ -21,12 +23,13 @@ export function useSignUpPageService() {
       const response = await signup(dataToSubmit);
       return response;
     },
-    onSuccess: (response : any) => {
+    onSuccess: () => {
       Swal.fire({
         title: "Compte créé avec succès",
-        text: `Un e-mail de validation vient d'être envoyé à l'adresse ${response.email}. Veuillez cliquer sur le lien pour activer votre compte et vous connecter.`,
+        text: `Votre compte a bien été créé. Vous pouvez désormais vous connecter avec vos identfiants.`,
         icon: "success"
       });
+      navigate("/signin");
     },
     onError: (error: AxiosError<{ message: string }>) => {
       throw new Error(error.message);

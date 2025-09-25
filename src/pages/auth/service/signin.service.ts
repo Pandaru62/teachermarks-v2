@@ -14,6 +14,7 @@ export interface LoginFormValues {
 
 export function useLoginPageService() {
   const navigate = useNavigate();
+  
   // Lire la valeur initiale depuis localStorage
   const savedEmail = localStorage.getItem("email");
   const [rememberMe, setRememberMe] = useState(!!savedEmail);

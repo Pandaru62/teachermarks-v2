@@ -35,7 +35,7 @@ export const useSkillForm = (props : SkillFormProps) => {
 
           queryClient.setQueryData(['skill', editSkillId], editedSkill)
 
-          showSuccessAlert("Compétence modifiée avec succès !", () => navigate("/skills/" + editSkillId));
+          showSuccessAlert("Compétence modifiée avec succès !", () => navigate("/skills/"));
         }
       } else {
         const newSkill = await createSkill(

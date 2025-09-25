@@ -13,7 +13,7 @@ export default function SkillList(props : SkillListProps) {
 
     return (
     <>
-        <div className="hidden lg:grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="hidden lg:grid grid-cols-2 lg:grid-cols-5 gap-3">
         {skills?.filter((skill) => skill.isArchived === isArchivedFilter).map((skill) => (
             <Link to={`/skills/${skill.id}`} key={skill.id}>
                 <Button
@@ -27,7 +27,7 @@ export default function SkillList(props : SkillListProps) {
         </div>
 
         <div className="lg:hidden relative w-full p-2 rounded-xl">
-            <div className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory px-4 py-4 hide-scrollbar">
+            <div className="flex justify-between gap-3 overflow-x-auto scroll-smooth snap-x snap-mandatory px-4 py-4 hide-scrollbar">
                 {skills?.map((skill) => (
                 <Link
                     to={`/skills/${skill.id}`}

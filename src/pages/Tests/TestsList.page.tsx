@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAllTestsQuery from "../../hooks/test/useAllTestsQuery"
 import { Card, CardBody, Chip, Typography } from "@material-tailwind/react";
 import BackButton from "../../components/ui/backButton";
@@ -6,14 +6,15 @@ import TestFilterSection from "../../components/ui/TestFilterSection";
 import TestInterface, { TrimesterEnum } from "../../interfaces/test.interface";
 import { useEffect, useState } from "react";
 import { CalendarIcon } from "@heroicons/react/24/solid";
+import DefaultIconButton from "../../components/ui/defaultIconButton";
 
 export default function TestsListPage() {
 
     const {allTests, allTestsError, allTestsLoading} = useAllTestsQuery();
-    const [trimesterFilters, setTrimesterFilters] = useState<TrimesterEnum[]>([])
+    const [trimesterFilters, setTrimesterFilters] = useState<TrimesterEnum[]>([TrimesterEnum.TR1, TrimesterEnum.TR2, TrimesterEnum.TR3])
     const [schoolClassFilters, setSchoolClassFilters] = useState<string[]>([])
     const [filteredTests, setFilteredTests] = useState<TestInterface[]>(allTests ?? [])
-
+    const navigate = useNavigate();
     
     useEffect(() => {
         if (!allTests) return;
@@ -42,9 +43,10 @@ export default function TestsListPage() {
         <Card 
             className="mt-6 py-5 bg-test-200 text-black flex justify-between items-center"
         >
-            <div className="flex gap-3">
+            <div className="w-full flex justify-between p-3">
                 <BackButton/>
-                <h1 className="text-black mb-3">Mes évaluations</h1>
+                <h2 className="text-black mb-3">Mes évaluations</h2>
+                <DefaultIconButton onClick={() => {navigate("/tests/new")}} type="add"/>
             </div>
             <div className="flex flex-col gap-5 w-[96%]">
                 <TestFilterSection
@@ -58,7 +60,7 @@ export default function TestsListPage() {
                         <>
                             <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24"><path fill="green" d="M16.972 6.251a2 2 0 0 0-2.72.777l-3.713 6.682l-2.125-2.125a2 2 0 1 0-2.828 2.828l4 4c.378.379.888.587 1.414.587l.277-.02a2 2 0 0 0 1.471-1.009l5-9a2 2 0 0 0-.776-2.72"></path></svg>
                             <span>
-                                {filteredTests.length} évaluations correspondent à vos critères.
+                                {filteredTests.length === 1 ? "1 évaluation correspond à vos critères." : filteredTests.length + " évaluations correspondent à vos critères."}
                             </span>
                         </>
                     ): (
@@ -90,7 +92,6 @@ export default function TestsListPage() {
                                         {test.name}
                                     </Typography>
                                 </CardBody>
-                            
                             </Card>
                         </Link>
                     </li>

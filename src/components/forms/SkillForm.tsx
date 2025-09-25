@@ -1,4 +1,4 @@
-import { Card, IconButton, Typography } from "@material-tailwind/react";
+import { Card, Typography } from "@material-tailwind/react";
 import BackButton from "../ui/backButton";
 import DefaultButton from "../ui/defaultButton";
 import TextInput from "../ui/formInput/textInput";
@@ -9,9 +9,10 @@ import { useSkillForm } from "../../hooks/skill/useSkillForm";
 import { showWarningAlert } from "../../utils/alerts/warningAlert";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { archiveSkill } from "../../api/skill";
+import { deleteSkill } from "../../api/skill";
 import SkillInterface from "../../interfaces/skill.interface";
 import { SkillLevelEnum } from "../../interfaces/student-test.interface";
+import DeleteButton from "../ui/defaultIconButton";
 
 export interface SkillFormProps {
   initialValues: { name: string; description: string; abbreviation: string };
@@ -27,12 +28,10 @@ export default function SkillForm({ initialValues, editSkillId }: SkillFormProps
 
     const queryClient = useQueryClient();
     const mutation = useMutation({
-        mutationFn: archiveSkill,
-        onSuccess: (editedSkill: SkillInterface) => {
+        mutationFn: deleteSkill,
+        onSuccess: (deletedSkill: SkillInterface) => {
         queryClient.setQueryData(['skills'], (oldSkills : SkillInterface[]) =>
-            oldSkills ? oldSkills.map((skill) => skill.id === editSkillId ? editedSkill : skill) : []);
-        
-        queryClient.setQueryData(['skill', editSkillId], editedSkill)
+            oldSkills ? oldSkills.filter((skill) => skill.id !== deletedSkill.id) : []);
         },
     });
 
@@ -42,13 +41,11 @@ export default function SkillForm({ initialValues, editSkillId }: SkillFormProps
                 <Card 
                     className="mt-6 p-5 bg-test-200 text-black flex justify-between items-center"
                 >
-                    <div className="flex gap-3">
+                    <div className="w-full flex p-3 justify-between items-center">
                         <BackButton/>
                         <h1 className="text-black mb-3">Ma compétence</h1>
                         {editSkillId && (
-                            <IconButton color="white" onClick={() => showWarningAlert("Voulez-vous archiver cette compétence ?", () => mutation.mutate(editSkillId), "Classe archivée avec succès", () => navigate("/skills"))}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#F46030" d="m12 18l4-4l-1.4-1.4l-1.6 1.6V10h-2v4.2l-1.6-1.6L8 14zM5 8v11h14V8zm0 13q-.825 0-1.412-.587T3 19V6.525q0-.35.113-.675t.337-.6L4.7 3.725q.275-.35.687-.538T6.25 3h11.5q.45 0 .863.188t.687.537l1.25 1.525q.225.275.338.6t.112.675V19q0 .825-.587 1.413T19 21zm.4-15h13.2l-.85-1H6.25zm6.6 7.5"/></svg>
-                            </IconButton>
+                            <DeleteButton onClick={() => showWarningAlert("Voulez-vous supprimer cette compétence ?", () => mutation.mutate(editSkillId), "Compétence archivée avec succès", () => navigate("/skills"))}/>
                         )}
                     </div>
 

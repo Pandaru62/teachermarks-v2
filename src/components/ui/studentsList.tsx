@@ -18,18 +18,21 @@ export default function StudentsList(props : StudentsListProp) {
     return (
     <>
         {students !== undefined && students.length > 0 ? (
-        <table className="w-full min-w-max table-auto text-left">
+        <table className="w-full table-auto text-left">
             <tbody>
             {students.map(({ lastName, firstName, id }) => (
                 <tr key={id} className="even:bg-test-200 bg-opacity-60">
-                    <td className="p-2 border-r-8 border-white text-center">
+                    <td className="w-1/2 p-2 border-r-8 border-white text-center">
                         <Link  to={`/student/${id}`} className="">
-                            <Typography variant="small" color="blue-gray" className="font-normal">
+                            <Typography variant="small" color="blue-gray" className="font-normal md:hidden">
+                                {lastName.length > 12 ? lastName.slice(0, 12) + '...' : lastName}
+                            </Typography>
+                            <Typography variant="small" color="blue-gray" className="font-normal hidden md:inline">
                                 {lastName}
                             </Typography>
                         </Link>
                     </td>
-                    <td className="p-2 text-center">
+                    <td className="w-1/2 p-2 text-center">
                         <Link  to={`/student/${id}`} className="">
                             <Typography variant="small" color="blue-gray" className="font-normal">
                                 {firstName}

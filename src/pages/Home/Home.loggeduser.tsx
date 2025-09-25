@@ -30,7 +30,7 @@ export default function HomeLoggedUser() {
                 )}
             </Card>
 
-            <div className="row-span-1 flex flex-col mt-5 gap-5 lg:flex-row items-stretch justify-center">
+            <div className="row-span-1 flex flex-col mt-3 lg:gap-2 lg:flex-row items-stretch justify-center">
                 <Link to="/forms" className="h-[75px] lg:w-1/2">
                     <Button className="w-full rounded-[15px] custom-shadow  bg-test-300 text-black" size="lg">
                         <Typography className="font-[Teachers] font-extrabold text-2xl">Mes classes</Typography>
@@ -43,11 +43,19 @@ export default function HomeLoggedUser() {
                     </Button>
                 </Link>
                 ) : (
-                <Link to="/tests/new" className="h-[75px] lg:w-1/2">
-                    <Button className="w-full rounded-[15px] custom-shadow bg-test-400 bg-opacity-80 text-black" size="lg">
-                        <Typography className="font-[Teachers] font-extrabold text-2xl">Nouvelle évaluation</Typography>
-                    </Button>
-                </Link>
+                
+                <>
+                    <Link to="/tests/new" className="h-[75px] lg:w-1/2">
+                        <Button className="w-full rounded-[15px] custom-shadow bg-test-400 bg-opacity-80 text-black" size="lg">
+                            <Typography className="font-[Teachers] font-extrabold text-2xl">Créer une éval<span className="lg:hidden xl:inline">uation</span></Typography>
+                        </Button>
+                    </Link>
+                    <Link to="/tests" className="h-[75px] lg:w-1/2">
+                        <Button className="w-full rounded-[15px] custom-shadow bg-test-300 bg-opacity-80 text-black" size="lg">
+                            <Typography className="font-[Teachers] font-extrabold text-2xl">Mes évaluations</Typography>
+                        </Button>
+                    </Link>
+                </>
                 )}
             </div>
 

@@ -125,7 +125,7 @@ export default function StudentReportPdf(props: StudentReportPdfProps) {
           </Text>
           <View style={styles.headerBoxes}>
             <View style={styles.headerBox}>
-                <Text>Moyenne générale : {average} / 20</Text>
+                <Text>Moyenne générale : {average.toFixed(2)} / 20</Text>
                 {skills.map((skill) => (
                 <Text key={skill.id}>
                     {skill.name} : {skill.result.average}/4
