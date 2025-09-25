@@ -27,7 +27,6 @@ import { useMutation } from "@tanstack/react-query";
 import { logOutClearCookies } from "../../../pages/auth/service/auth.service";
 import { AxiosError } from "axios";
 import NavBarLink from "./NavBarLink";
-import logo from '../../../assets/Logo_TeacherMarks/OrangeM.png';
 
 // profile menu component
 const profileMenuItems = [
@@ -254,7 +253,7 @@ export default function Header() {
           href="/"
           className="mr-4 ml-2 cursor-pointer py-1.5 font-medium"
         >
-            <img src={logo} alt="logo" className="w-[205px] h-auto"/>
+            <img src="/Logo_TeacherMarks/OrangeM.png" alt="Teachermarks" className="w-[205px] h-auto"/>
         </Typography>
         {isAuthenticated ? (
         <>
