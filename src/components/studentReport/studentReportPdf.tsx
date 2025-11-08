@@ -245,7 +245,7 @@ export default function StudentReportPdf(props: StudentReportPdfProps) {
                       >
                           <View style={styles.skillLevelWrapper}>
                               {result && (<View style={[styles.skillDot, { backgroundColor: color }]} />)}
-                              <Text>{result?.level ?? "X"}</Text>
+                              <Text>{result?.level ? "Niveau " + result.level[3] : "X"}</Text>
                           </View>
                       </View>
                     );
