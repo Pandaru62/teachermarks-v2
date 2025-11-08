@@ -1,8 +1,10 @@
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+import { useEffect, useState } from 'react';
+import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import { SkillLevelEnum, StudentTestByStudentInterface } from '../../interfaces/student-test.interface';
 import StudentInterface from '../../interfaces/student.interface';
 import { getAverageSkillById } from '../../utils/calculations/average.function';
 import ReportInterface from '../../interfaces/report.interface';
+import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend, ChartOptions } from 'chart.js';
 
 interface StudentReportPdfProps {
   tests: StudentTestByStudentInterface[];
@@ -13,7 +15,100 @@ interface StudentReportPdfProps {
 }
 
 export default function StudentReportPdf(props: StudentReportPdfProps) {
-    const { tests, student, uniqueSkills, average, reports } = props;
+  const { tests, student, uniqueSkills, average, reports } = props;
+
+  function getSkillColor(level: SkillLevelEnum): string {
+    switch (level) {
+      case SkillLevelEnum.LVL0: return "#000000";
+      case SkillLevelEnum.LVL1: return "#F46030";
+      case SkillLevelEnum.LVL2: return "#FAC215";
+      case SkillLevelEnum.LVL3: return "#54C3B2";
+      case SkillLevelEnum.LVL4: return "#558F72"; 
+      case SkillLevelEnum.NN:
+      default:
+      return "#f0f9ff"; 
+    }
+  }
+
+  // Build skill average and level data
+  const skills = uniqueSkills.map(skill => ({
+      id: skill.id,
+      name: skill.name,
+      result: getAverageSkillById(tests, skill.id),
+  }));
+
+  // chart image data url (generated in the browser using Chart.js)
+  const [chartDataUrl, setChartDataUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    // only run in browser
+    try {
+      if (typeof window === 'undefined') return;
+
+      ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
+
+      const labels = skills.map(s => s.name);
+      const dataset = skills.map(s => s.result.average);
+
+      const data = {
+        labels,
+        datasets: [
+          {
+            label: 'Moyenne',
+            data: dataset,
+            backgroundColor: 'rgba(255,99,132,0.2)',
+            borderColor: 'rgba(255,99,132,1)',
+            borderWidth: 1,
+          },
+        ],
+      };
+      
+
+    const dpr = typeof window !== 'undefined' ? (window.devicePixelRatio || 1) : 1;
+
+    const options: ChartOptions<'radar'> = {
+      responsive: false,
+      maintainAspectRatio: false,
+      animation: false,
+      devicePixelRatio: dpr,
+      scales: { r: { beginAtZero: true, min: 0, max: 4, ticks: { stepSize: 1 } } },
+      plugins: { legend: { position: 'top' } },
+    };
+
+    // create offscreen canvas, draw chart, convert to data URL
+    const canvas = document.createElement('canvas');
+    const size = 400;
+    // account for device pixel ratio so plotted points match visual coordinates
+    const pixelRatio = (typeof window !== 'undefined' && window.devicePixelRatio) ? window.devicePixelRatio : 1;
+    canvas.width = Math.round(size * pixelRatio);
+    canvas.height = Math.round(size * pixelRatio);
+    canvas.style.width = `${size}px`;
+    canvas.style.height = `${size}px`;
+    canvas.style.display = 'none';
+    document.body.appendChild(canvas);
+
+    // @ts-ignore - Chart.js constructor
+    const chart = new (ChartJS as any)(canvas.getContext('2d'), { type: 'radar', data, options });
+
+      // give chart a tick to render then extract dataURL
+      // use a slightly longer timeout to ensure Chart.js finishes layout
+      setTimeout(() => {
+                try {
+                    const url = canvas.toDataURL('image/png');
+                    setChartDataUrl(url);
+                } catch (e) {
+                    console.warn('Failed to export chart to data URL', e);
+                } finally {
+                    chart?.destroy?.();
+                    if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
+                }
+      }, 120);
+    } catch (e) {
+      // fallback: chart not available
+      console.warn('Chart generation skipped', e);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tests, uniqueSkills]);
 
     const styles = StyleSheet.create({
         page: {
@@ -26,13 +121,18 @@ export default function StudentReportPdf(props: StudentReportPdfProps) {
         headerBoxes: {
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        gap: 10
         },
         headerBox : {
-            padding: 5,
-            borderStyle: 'solid',
-            borderColor: 'black',
-            borderWidth: 1
+          padding: 5,
+          borderStyle: 'solid',
+          borderColor: 'black',
+          borderWidth: 1
+        },
+        simpleBox : {
+          padding: 5,
+          display: 'flex',
+          justifyContent: 'flex-end'
         },
         section: {
             marginBottom: 20,
@@ -96,48 +196,14 @@ export default function StudentReportPdf(props: StudentReportPdfProps) {
         }
     });
 
-    function getSkillColor(level: SkillLevelEnum): string {
-        switch (level) {
-            case SkillLevelEnum.LVL0: return "#000000";
-            case SkillLevelEnum.LVL1: return "#F46030";
-            case SkillLevelEnum.LVL2: return "#FAC215";
-            case SkillLevelEnum.LVL3: return "#54C3B2";
-            case SkillLevelEnum.LVL4: return "#558F72"; 
-            case SkillLevelEnum.NN:
-            default:
-            return "#f0f9ff"; 
-        }
-    }
 
-    // Build skill average and level data
-    const skills = uniqueSkills.map(skill => ({
-        id: skill.id,
-        name: skill.name,
-        result: getAverageSkillById(tests, skill.id),
-    }));
 
     return (
     <Document>
       <Page size="A4" orientation="landscape" style={styles.page}>
-        <View style={styles.header}>
-          <Text style={styles.title}>
-            Résultats de {student.firstName} {student.lastName.toUpperCase()} {student.classes ? `(${student.classes[0]})` : ''}
-          </Text>
-          <View style={styles.headerBoxes}>
-            <View style={styles.headerBox}>
-                <Text>Moyenne générale : {average.toFixed(2)} / 20</Text>
-                {skills.map((skill) => (
-                <Text key={skill.id}>
-                    {skill.name} : {skill.result.average}/4
-                </Text>
-              ))}
-            </View>
-            {/* <View style={styles.headerBox}>
-                <Text>Diagramme</Text>
-            </View> */}
-          </View>
-        </View>
-
+        <Text style={styles.title}>
+          Résultats de {student.firstName} {student.lastName.toUpperCase()} {student.classes ? `(${student.classes[0].name})` : ''}
+        </Text>
         <View style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
           <View style={styles.section}>
             <View style={styles.table}>
@@ -189,13 +255,33 @@ export default function StudentReportPdf(props: StudentReportPdfProps) {
 
             </View>
           </View>
-          <View style={{flexGrow: 1}} /> 
-          <View style={styles.comment}>
-            <Text style={{fontWeight: 700, marginBottom: 5}}> Appréciations : </Text>
-            {reports.map(report => (
-              report.description.length > 1 && (<Text key={report.id}>{report.trimester}: {report.description}</Text>)
+          
+        </View>
+        <View style={styles.headerBoxes}>
+          <View style={[styles.headerBox, { alignItems: 'center', justifyContent: 'center' }]}>
+            {chartDataUrl ? (
+              // embed generated chart image into PDF
+              <Image src={chartDataUrl} style={{ width: 200, height: 200 }} />
+            ) : (
+              <Text>Diagramme non disponible</Text>
+            )}
+          </View>
+          <View style={styles.simpleBox}>
+            <Text>
+              Moyenne générale : {average.toFixed(2)} / 20 
+            </Text>
+            {skills.map((skill) => (
+            <Text key={skill.id}>
+                {skill.name} : {skill.result.average}/4
+            </Text>
             ))}
           </View>
+        </View>
+        <View style={styles.comment}>
+          <Text style={{fontWeight: 700, marginBottom: 5}}> Appréciations : </Text>
+          {reports.map(report => (
+            report.description.length > 1 && (<Text key={report.id}>{report.trimester}: {report.description}</Text>)
+          ))}
         </View>
       </Page>
     </Document>

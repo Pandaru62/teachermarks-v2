@@ -3,7 +3,7 @@ import StudentTestInterface, { SkillLevelEnum } from "../../interfaces/student-t
 import { DialogBody, IconButton, Chip, DialogFooter, Button } from "@material-tailwind/react";
 import CheckBoxListItem from "../ui/formInput/checkboxListItem";
 import SkillBubbleButton from "../ui/skill/skillBubbleButton";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import StudentInterface from "../../interfaces/student.interface";
 import useStudentTestEditor from "../../hooks/studentTest/useStudentTestEditor";
 
@@ -29,9 +29,41 @@ export default function QuickEditModal(props: QuickEditModalProps) {
         currentStudentId
     } = useStudentTestEditor({ test, studentTests, students, startingStudentId });
 
+    const markRef = useRef<HTMLInputElement | null>(null);
+
     useEffect(() => {
         if (formik.dirty) setIsSaved(false);
     }, [formik.dirty]);
+
+    // When a save operation completes (isSaved === true), automatically move to the next student
+    useEffect(() => {
+        if (!isSaved) return;
+        // small delay so UI has time to reflect the saved state before navigating
+        const t = setTimeout(() => {
+            handleNext();
+        }, 250);
+        return () => clearTimeout(t);
+    }, [isSaved]);
+
+    // autofocus the mark input when modal opens or when the current student changes
+    useEffect(() => {
+        const el = markRef.current;
+        if (!el) return;
+        // small timeout to ensure the element is in the DOM and visible
+        const t = setTimeout(() => {
+            try {
+                el.focus();
+                el.select();
+            } catch (e) {
+                // eslint-disable-next-line no-console
+                console.warn('Failed to focus mark input', e);
+            }
+        }, 50);
+        return () => clearTimeout(t);
+    }, [currentStudentId]);
+
+    // avoid sorting inline in JSX (mutates array) — create a sorted copy for rendering
+    const sortedSkills = formik.values.skills ? [...formik.values.skills].sort((a, b) => a.skillId - b.skillId) : [];
 
 
     const handleNext = () => {
@@ -48,7 +80,7 @@ export default function QuickEditModal(props: QuickEditModalProps) {
 
     return (
         <form onSubmit={formik.handleSubmit}>
-            <DialogBody className="text-black">
+        <DialogBody className="text-black overflow-auto max-h-[65vh] pb-24">
                 <div className="mb-3 flex justify-between text-center">
                     <IconButton variant="outlined" className="rounded-full" onClick={handlePrevious}>
                         ←
@@ -69,21 +101,57 @@ export default function QuickEditModal(props: QuickEditModalProps) {
                     <div className="mb-3">
                         <div className="flex justify-between">
                             <CheckBoxListItem
-                            id="isUnmarked"
-                            label="Non Noté"
-                            checked={formik.values.isUnmarked}
-                            onClick={() => {
-                                formik.setFieldValue("isUnmarked", !formik.values.isUnmarked);
-                                formik.setFieldValue("mark", 0);
-                            }}
+                                id="isUnmarked"
+                                label="Non Noté"
+                                checked={formik.values.isUnmarked}
+                                onClick={() => {
+                                    const newVal = !formik.values.isUnmarked;
+                                    formik.setFieldValue("isUnmarked", newVal);
+                                    // when setting to unmarked: unset absent, zero mark, and set all skills to NN
+                                    if (newVal) {
+                                        formik.setFieldValue("isAbsent", false);
+                                        formik.setFieldValue("mark", 0);
+                                        formik.setFieldValue(
+                                            "skills",
+                                            sortedSkills.map(s => ({ skillId: s.skillId, level: SkillLevelEnum.NN }))
+                                        );
+                                    } else {
+                                        // restore saved values for this student if available
+                                        const saved = studentTests.find(st => st.student.id === currentStudentId);
+                                        if (saved) {
+                                            formik.setFieldValue(
+                                                "skills",
+                                                saved.studenttesthasskill.map(s => ({ skillId: s.skill.id, level: s.level }))
+                                            );
+                                            formik.setFieldValue("mark", saved.mark ?? 0);
+                                        }
+                                    }
+                                }}
                             />
                             <CheckBoxListItem
                                 id="isAbsent"
                                 label="Absent"
                                 checked={formik.values.isAbsent}
                                 onClick={() => {
-                                    formik.setFieldValue("isAbsent", !formik.values.isAbsent);
-                                    formik.setFieldValue("mark", 0);
+                                    const newVal = !formik.values.isAbsent;
+                                    formik.setFieldValue("isAbsent", newVal);
+                                    if (newVal) {
+                                        formik.setFieldValue("isUnmarked", false);
+                                        formik.setFieldValue("mark", 0);
+                                        formik.setFieldValue(
+                                            "skills",
+                                            sortedSkills.map(s => ({ skillId: s.skillId, level: SkillLevelEnum.ABS }))
+                                        );
+                                    } else {
+                                        const saved = studentTests.find(st => st.student.id === currentStudentId);
+                                        if (saved) {
+                                            formik.setFieldValue(
+                                                "skills",
+                                                saved.studenttesthasskill.map(s => ({ skillId: s.skill.id, level: s.level }))
+                                            );
+                                            formik.setFieldValue("mark", saved.mark ?? 0);
+                                        }
+                                    }
                                 }}
                             />
                         </div>
@@ -103,13 +171,13 @@ export default function QuickEditModal(props: QuickEditModalProps) {
                                     onFocus={(e) => e.target.select()}
                                     value={formik.values.mark}
                                     disabled={formik.values.isUnmarked || formik.values.isAbsent}
-                                    autoFocus
+                                    ref={markRef}
                                 />
                                 <span>/{test.scale}</span>
                             </div>
                         </div>
                     </div>
-                    {formik.values.skills.sort((a, b) => a.skillId - b.skillId).map(skill => (
+                    {sortedSkills.map(skill => (
                         <li key={skill.skillId} className="flex flex-col lg:flex-row gap-3 items-center mb-3">
                             <Chip value={test.skills.find(sk => skill.skillId === sk.id)?.name} color="cyan" className="w-40 text-center" variant="outlined" />
                             <div className="flex col-span-2 gap-2">
@@ -127,7 +195,7 @@ export default function QuickEditModal(props: QuickEditModalProps) {
                     ))}
                 </ul>
             </DialogBody>
-            <DialogFooter>
+            <DialogFooter className="sticky bottom-0 z-10 bg-white/95 backdrop-blur-sm px-4 py-3">
                 <Button variant="text" color="red" onClick={handleOpen} className="mr-1">
                     Fermer & annuler
                 </Button>

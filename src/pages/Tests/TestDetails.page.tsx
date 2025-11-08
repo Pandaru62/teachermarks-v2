@@ -149,7 +149,15 @@ export default function TestDetailsPage() {
                                     </Link>
                                 </td>
                                 <td>
-                                    <span className="font-semibold">{studentTests.find((st) => st.student.id === student.id)?.mark ?? 'x'}</span><span className="text-xs">/{test.scale}</span>
+                                    {studentTests.find((st) => st.student.id === student.id)?.isAbsent ? (
+                                        <span className="font-semibold">ABS</span>
+                                    ) : studentTests.find((st) => st.student.id === student.id)?.isUnmarked ? (
+                                        <span className="font-semibold">NN</span>
+                                    ) : (
+                                        <>
+                                            <span className="font-semibold">{studentTests.find((st) => st.student.id === student.id)?.mark ?? 'x'}</span>
+                                            <span className="text-xs">/{test.scale}</span>
+                                        </>)}
                                 </td>
                                 {test.skills.map(skill => (
                                 <td key={skill.id} className="pe-2">

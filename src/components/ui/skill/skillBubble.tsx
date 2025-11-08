@@ -29,7 +29,7 @@ export default function SkillBubble(props : SkillBubbleProps) {
             color = 'bg-test-600';
             break;
         case SkillLevelEnum.ABS:
-            color = 'bg-test-50 opacity-50';
+            color = 'bg-test-20 opacity-20';
             break;
         default :
             color = 'bg-test-50 opacity-50';
@@ -37,7 +37,7 @@ export default function SkillBubble(props : SkillBubbleProps) {
 
     return (
         <div className={`rounded-full h-${bubbleSize} w-${bubbleSize} my-1 ${color} flex justify-center items-center`}>
-            <span className={color === 'bg-test-600' || color === 'bg-black' || color === 'bg-test-100' || color === 'bg-test-400' ? `text-${textSize} font-logo text-white` : `text-${textSize} font-logo text-black`}>{letter}</span>
+            <span className={color === 'bg-test-600' || color === 'bg-black' || color === 'bg-test-100' || color === 'bg-test-400' ? `text-${textSize} font-logo text-white` : `text-${textSize} font-logo text-black`}>{level == SkillLevelEnum.ABS ? "ABS" : level == SkillLevelEnum.NN ? "x" : letter}</span>
         </div>
     )
 }
