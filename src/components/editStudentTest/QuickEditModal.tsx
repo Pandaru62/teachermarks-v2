@@ -64,6 +64,7 @@ export default function QuickEditModal(props: QuickEditModalProps) {
 
     // avoid sorting inline in JSX (mutates array) — create a sorted copy for rendering
     const sortedSkills = formik.values.skills ? [...formik.values.skills].sort((a, b) => a.skillId - b.skillId) : [];
+    console.log("🚀 ~ QuickEditModal ~ sortedSkills:", sortedSkills)
 
 
     const handleNext = () => {
@@ -163,7 +164,7 @@ export default function QuickEditModal(props: QuickEditModalProps) {
                                     id="mark"
                                     name="mark"
                                     type="number"
-                                    step="0.25"
+                                    step="0.01"
                                     max={test.scale}
                                     min={0}
                                     className="w-10 text-right me-2 pe-1 border-gray-500 border-2 disabled:bg-gray-300 disabled:text-gray-300"

@@ -17,87 +17,89 @@ interface DiagramModalProps {
     handleOpen: () => void;
     student : StudentInterface;
     averageSkills: AverageBySkillByTrimesterInterface[];
+    isModal?: boolean;
 }
 
 export default function DiagramModal(props : DiagramModalProps) {
 
-    const {handleOpen, student, averageSkills} = props;
+  const {handleOpen, student, averageSkills, isModal = true} = props;
 
-ChartJS.register(
-  RadialLinearScale,
-  PointElement,
-  LineElement,
-  Filler,
-  Tooltip,
-  Legend
-);
+  ChartJS.register(
+    RadialLinearScale,
+    PointElement,
+    LineElement,
+    Filler,
+    Tooltip,
+    Legend
+  );
 
-const data = {
-  labels: averageSkills[0].skills.map(sk => sk.name),
-  datasets: [
-    {
-      label: 'TR1',
-      data: averageSkills[0].skills.map(sk => sk.result),
-      backgroundColor: 'rgba(255, 99, 132, 0.2)',
-      borderColor: 'rgba(255, 99, 132, 1)',
-      borderWidth: 1,
-    },
-    {
-      label: 'TR2',
-      data: averageSkills[1].skills.map(sk => sk.result),
-      backgroundColor: 'rgba(132, 255, 99, 0.2)',
-      borderColor: 'rgba(132, 255, 99, 1)',
-      borderWidth: 1,
-    },
-    {
-      label: 'TR3',
-      data: averageSkills[2].skills.map(sk => sk.result),
-      backgroundColor: 'rgba(132, 99, 255, 0.2)',
-      borderColor: 'rgba(132, 99, 255, 1)',
-      borderWidth: 1,
-    },
-  ],
-};
-
-const options: ChartOptions<'radar'> = {
-  responsive: true,
-  maintainAspectRatio: false,
-  scales: {
-    r: {
-      beginAtZero: true,
-      min: 0,
-      max: 4,
-      ticks: {
-        stepSize: 1,
-        color: '#555',
+  const data = {
+    labels: averageSkills[0].skills.map(sk => sk.name),
+    datasets: [
+      {
+        label: 'TR1',
+        data: averageSkills[0].skills.map(sk => sk.result),
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        borderWidth: 1,
       },
-      pointLabels: {
-        font: {
-          size: 14,
+      {
+        label: 'TR2',
+        data: averageSkills[1].skills.map(sk => sk.result),
+        backgroundColor: 'rgba(132, 255, 99, 0.2)',
+        borderColor: 'rgba(132, 255, 99, 1)',
+        borderWidth: 1,
+      },
+      {
+        label: 'TR3',
+        data: averageSkills[2].skills.map(sk => sk.result),
+        backgroundColor: 'rgba(132, 99, 255, 0.2)',
+        borderColor: 'rgba(132, 99, 255, 1)',
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const options: ChartOptions<'radar'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      r: {
+        beginAtZero: true,
+        min: 0,
+        max: 4,
+        ticks: {
+          stepSize: 1,
+          color: '#555',
         },
-        color: '#333',
-      },
-      grid: {
-        color: '#ccc',
-      },
-      angleLines: {
-        color: '#ddd',
-      },
-    },
-  },
-  plugins: {
-    legend: {
-      position: 'top',
-      labels: {
-        color: '#444',
-        font: { size: 12 },
+        pointLabels: {
+          font: {
+            size: 14,
+          },
+          color: '#333',
+        },
+        grid: {
+          color: '#ccc',
+        },
+        angleLines: {
+          color: '#ddd',
+        },
       },
     },
-  },
-};
+    plugins: {
+      legend: {
+        position: 'top',
+        labels: {
+          color: '#444',
+          font: { size: 12 },
+        },
+      },
+    },
+  };
 
-    return (
-        <>
+  return (
+    isModal ? (
+      <>
         <DialogHeader>Progression de {student.firstName} {student.lastName}</DialogHeader>
         <DialogBody>
             <div style={{ width: '400px', height: '400px', margin: 'auto' }}>
@@ -109,6 +111,11 @@ const options: ChartOptions<'radar'> = {
             <span>Fermer</span>
           </Button>
         </DialogFooter>
-        </>
+      </>
+    ) : (
+      <div style={{ width: '300px', height: '300px', margin: 'auto' }}>
+        <Radar data={data} options={options} />
+      </div>
     )
+  )
 }

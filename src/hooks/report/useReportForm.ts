@@ -20,7 +20,7 @@ export const useReportForm = (props : SchoolClassFormProps) => {
       description: report?.description ?? " "
     },
     validationSchema: Yup.object({
-      description: Yup.string().required('Appréciation requise'),
+      description: Yup.string().required('Appréciation requise').max(400, 'L\'appréciation ne peut pas dépasser 400 caractères'),
     }),
     onSubmit: async (values) => {
       const editedReport = await editReport(

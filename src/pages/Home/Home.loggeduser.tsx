@@ -10,12 +10,11 @@ export default function HomeLoggedUser() {
     const currentUser = useStore(useAuthStore);
 
     return(
-        <div className="grid grid-rows-3">
+        <div className="grid grid-rows-2">
             {currentUser.user?.is_first_visit && (
                 <TutoAlert/>
             )}
-            <Card className="row-span-2 mt-6 py-5 px-4 bg-test-200 text-black flex justify-between items-center">
-                <h1 className="text-black">Bienvenue</h1>
+            <Card className="row-span-1 mt-6 py-3 px-4 bg-test-200 text-black flex justify-between items-center">
                 <Typography as="h2" className="text-xl font-semibold">Bonjour <span className="text-test-400">{currentUser.user?.firstname} {currentUser.user?.lastname}</span> !</Typography>
                 <img src={smilingPostit} alt="smiling post-it"/>
                 {currentUser.user?.is_first_visit ? (
@@ -30,16 +29,16 @@ export default function HomeLoggedUser() {
                 )}
             </Card>
 
-            <div className="row-span-1 flex flex-col mt-3 lg:gap-2 lg:flex-row items-stretch justify-center">
+            <div className="row-span-1 flex flex-col mt-3 lg:flex-row lg:gap-2 items-stretch justify-center">
                 <Link to="/forms" className="h-[75px] lg:w-1/2">
                     <Button className="w-full rounded-[15px] custom-shadow  bg-test-300 text-black" size="lg">
-                        <Typography className="font-[Teachers] font-extrabold text-2xl">Mes classes</Typography>
+                        <Typography className="font-[Teachers] font-extrabold text-lg xl:text-2xl">Mes classes</Typography>
                     </Button>
                 </Link>
                 {currentUser.user?.is_first_visit ? (
                 <Link to="/skills" className="h-[75px] lg:w-1/2">
                     <Button className="w-full rounded-[15px] custom-shadow  bg-test-300 text-black" size="lg">
-                        <Typography className="font-[Teachers] font-extrabold text-2xl">Mes compétences</Typography>
+                        <Typography className="font-[Teachers] font-extrabold text-lg xl:text-2xl">Mes compétences</Typography>
                     </Button>
                 </Link>
                 ) : (
@@ -47,12 +46,12 @@ export default function HomeLoggedUser() {
                 <>
                     <Link to="/tests/new" className="h-[75px] lg:w-1/2">
                         <Button className="w-full rounded-[15px] custom-shadow bg-test-400 bg-opacity-80 text-black" size="lg">
-                            <Typography className="font-[Teachers] font-extrabold text-2xl">Créer une éval<span className="lg:hidden xl:inline">uation</span></Typography>
+                            <Typography className="font-[Teachers] font-extrabold text-lg xl:text-2xl">Créer une éval<span className="hidden lg:inline">uation</span></Typography>
                         </Button>
                     </Link>
                     <Link to="/tests" className="h-[75px] lg:w-1/2">
                         <Button className="w-full rounded-[15px] custom-shadow bg-test-300 bg-opacity-80 text-black" size="lg">
-                            <Typography className="font-[Teachers] font-extrabold text-2xl">Mes évaluations</Typography>
+                            <Typography className="font-[Teachers] font-extrabold text-lg xl:text-2xl">Mes évaluations</Typography>
                         </Button>
                     </Link>
                 </>

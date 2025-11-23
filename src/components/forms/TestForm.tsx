@@ -105,7 +105,7 @@ export default function TestForm({ initialValues, editTestId, schoolClasses }: T
                             )}
 
                             <TextInput
-                                label="Barème"
+                                label="Note sur"
                                 name="scale"
                                 type="number"
                                 value={formik.values.scale}
@@ -135,8 +135,6 @@ export default function TestForm({ initialValues, editTestId, schoolClasses }: T
                                 setSelectedSkills={setSelectedSkills}
                             />
                         )}
-                        
-
                         
                     </div>
                     

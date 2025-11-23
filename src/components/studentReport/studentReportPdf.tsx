@@ -231,10 +231,13 @@ export default function StudentReportPdf(props: StudentReportPdfProps) {
                 <View key={test.id} style={styles.tableRow}>
                   <Text style={[styles.tableCell, styles.cellTR]}>{test.test.trimester}</Text>
                   <Text style={[styles.tableCell, styles.cellName]}>{test.test.name}</Text>
-                  <Text style={[styles.tableCell, styles.cellNote]}>{test.mark ?? 'x'}/{test.test.scale}</Text>
+                  <Text style={[styles.tableCell, styles.cellNote]}>
+                    {test.isAbsent ? 'ABS' : test.isUnmarked ? 'NN' :
+                    `${test.mark ?? 'x'}/${test.test.scale}`}
+                    </Text>
                   {skills.map((skill) => {
                       const result = test.studenttesthasskill.find((sths => sths.skill.id === skill.id));
-                      const color = getSkillColor(skill.result.level);
+                      const color = getSkillColor(result?.level ?? SkillLevelEnum.NN);
                     return (
                       <View
                           key={skill.id}
@@ -243,10 +246,12 @@ export default function StudentReportPdf(props: StudentReportPdfProps) {
                               styles.cellSkill,
                           ]}
                       >
+                        {result?.level && color !== '#f0f9ff' ? (
                           <View style={styles.skillLevelWrapper}>
-                              {result && (<View style={[styles.skillDot, { backgroundColor: color }]} />)}
-                              <Text>{result?.level ? "Niveau " + result.level[3] : "X"}</Text>
+                              <View style={[styles.skillDot, { backgroundColor: color }]} />
+                              <Text>{"Niveau " + result.level[3]}</Text>
                           </View>
+                        ) : (<Text> X </Text>)}
                       </View>
                     );
                   })}

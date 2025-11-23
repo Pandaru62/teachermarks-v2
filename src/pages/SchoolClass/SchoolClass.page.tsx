@@ -34,7 +34,7 @@ export default function SchoolClassPage() {
             </div>
             
             <div>
-            {schoolClasses && schoolClasses.length === 0 && (
+            {schoolClasses?.length === 0 && (
                 <Typography className="text-center font-semibold">
                     Timéo cherche sa classe
                 </Typography>

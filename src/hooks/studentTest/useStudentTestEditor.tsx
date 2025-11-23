@@ -42,9 +42,9 @@ export default function useStudentTestEditor({ test, studentTests, students, sta
             mark: studentTest?.mark ?? 0,
             isUnmarked: studentTest?.isUnmarked ?? false,
             isAbsent: studentTest?.isAbsent ?? false,
-            skills: studentTest?.studenttesthasskill.map(shs => ({
-                skillId: shs.skill.id,
-                level: shs.level,
+            skills: test.skills.map(sk => ({
+                skillId: sk.id,
+                level: studentTest?.studenttesthasskill.find(s => s.skill.id === sk.id)?.level ?? SkillLevelEnum.NN,
             })) ?? [],
         };
 

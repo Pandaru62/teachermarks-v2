@@ -12,25 +12,21 @@ export default function HomeVisitor() {
     }
 
     return(
-        <div className="flex flex-col items-center">
-            <Card className="mt-6 w-96 bg-test-200">
-                    <div className="h-[100px] flex items-center justify-center">
-                        <h1 className="text-black">Notez tous les progrès.</h1>
-                    </div>
-                    <img src={background} alt="flying background"/>
-                    <div className="h-[100px]">
-                    </div>
+        <div className="flex flex-col items-center w-full">
+            <Card className="w-full md:w-2/3 mt-6 py-3 bg-test-200">
+                <h1 className="text-black text-center">Notez tous les progrès.</h1>
+                <img src={background} alt="flying background" className="w-full h-48 md:h-80 lg:h-96 object-cover mt-3 rounded-md"/>
             </Card>
 
-            <div className="container-fluid flex flex-col mt-5 items-stretch">
+            <div className="w-full md:w-2/3 flex flex-col mt-5 items-stretch">
                 <h2 className="text-center">À vos marques, prêts...</h2>
                 {buttonIsDisplayed ?
                 (
-                    <Button className="rounded-[15px] custom-shadow h-[90px] bg-amber-custom text-black" size="lg" onClick={handleClick}>
-                        <Typography className="font-[Teachers] font-extrabold text-5xl">MARKEZ !</Typography>
+                    <Button className="rounded-[15px] custom-shadow bg-amber-custom text-black" size="lg" onClick={handleClick}>
+                        <Typography className="font-[Teachers] font-extrabold text-xl lg:text-3xl">MARKEZ !</Typography>
                     </Button>
                 ) : (
-                    <div className="flex gap-4">
+                    <div className="w-full flex gap-4">
                         <Link to={'/signin'} className="w-1/2 block">
                             <Button className="w-full rounded-[15px] custom-shadow h-[90px] bg-amber-custom bg-opacity-60 text-black" size="md">
                                 <Typography className="font-[Teachers] font-bold text-xl">ME CONNECTER</Typography>

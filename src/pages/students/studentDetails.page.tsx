@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import Wrapper from "../../components/ui/wrapper";
 import useStudentQuery from "../../hooks/student/useStudentQuery";
-import { Card, IconButton, Typography, Button, Chip, List, Dialog } from "@material-tailwind/react";
+import { Card, IconButton, Typography, Button, Chip, List, Dialog, Select, Option, Drawer } from "@material-tailwind/react";
 import BackButton from "../../components/ui/backButton";
 import useStudentTestsByStudentIdQuery from "../../hooks/studentTest/useStudentTestsByStudentIdQuery";
 import { getAverageSkillById } from "../../utils/calculations/average.function";
@@ -29,7 +29,7 @@ export default function StudentDetailsPage() {
     const {studentTests, studentTestsError, studentTestsLoading, average, uniqueSkills, averageSkills} = useStudentTestsByStudentIdQuery(studentId);
     const [filteredTests, setFilteredTests] = useState<StudentTestByStudentInterface[]>(studentTests ?? []);
     const [diagramModal, setDiagramModal] = useState<boolean>(false);
-    const [reportModal, setReportModal] = useState<boolean>(false);
+    const [openReportDrawer, setOpenReportDrawer] = useState<boolean>(false);
     const [nextStudent, setNextStudent] = useState<StudentInterface | null>(null);
     const [previousStudent, setPreviousStudent] = useState<StudentInterface | null>(null);
 
@@ -51,8 +51,8 @@ export default function StudentDetailsPage() {
         setDiagramModal(!diagramModal);
     }
 
-    const handleReportModal = () => {
-        setReportModal(!reportModal);
+    const handleReportDrawer = () => {
+        setOpenReportDrawer(!openReportDrawer);
     }
 
     const handleTrimesterFilters = (trimester : TrimesterEnum) => {
@@ -82,31 +82,48 @@ export default function StudentDetailsPage() {
             {student && studentTests && (
             <>
                 <Card className={`mt-6 py-5 bg-test-200 text-black flex p-5`}>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between gap-5">
                         <BackButton/>
+    
                         <div className="flex gap-2 items-center">
-                            <h3 className="text-black text-center">{student.lastName}<br/> {student.firstName}</h3>
+                            <h3 className="text-black text-center bg-white p-2 rounded-xl">{student.lastName} {student.firstName}</h3>
                         </div>
                         <IconButton color="white" className={`rounded-xl`} onClick={() => navigate(`/student/${studentId}/edit`)}>
                             <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24"><g fill="none" stroke="#F46030" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></g></svg>
                         </IconButton>
                     </div>
                     {previousStudent && nextStudent &&(
-                    <div className="flex justify-between mt-2">
-                        <Button color="white" className="rounded-full" onClick={() => navigate("/student/" + previousStudent.id)}>
-                            ← <span className="hidden lg:inline">{previousStudent.lastName + " " + previousStudent.firstName}</span>
+                    <div className="grid grid-cols-3 items-center w-full mt-4 gap-3">
+                        <Button color="white" className="rounded-full text-left w-fit" onClick={() => navigate("/student/" + previousStudent.id)}>
+                            ← <span className="hidden lg:inline">{previousStudent.lastName + " " + previousStudent.firstName[0] + "."}</span>
                         </Button>
-                        <Chip value={student.classes[0].name} />
-                        <Button color="white" className="rounded-full" onClick={() => navigate("/student/" + nextStudent.id)}>
-                            <span className="hidden lg:inline">{nextStudent.lastName + " " + nextStudent.firstName}</span> →
+                        <Button color="black" className="rounded-lg w-fit ms-auto me-auto" onClick={() => navigate("/forms/" + student.classes[0].id)}>
+                            {student.classes[0].name}
+                        </Button>
+                        <Button color="white" className="rounded-full text-right w-fit ms-auto" onClick={() => navigate("/student/" + nextStudent.id)}>
+                            <span className="hidden lg:inline">{nextStudent.lastName + " " + nextStudent.firstName[0] + "."}</span> →
                         </Button>
                     </div>
                         )}
+                    {students && students.length > 1 && (
+                    <div className="w-full lg:w-1/2 mt-3 ms-auto me-auto">
+                        <Select 
+                            className="rounded-md bg-white text-black !text-center text-lg" 
+                            label={`Aller vers un autre élève de ${student.classes[0]?.name}`}
+                        >
+                            {students.map((s) => (
+                            <Option key={s.id} value={s.id.toString()} onClick={() => navigate("/student/" + s.id)}>
+                                {s.lastName + " " + s.firstName}
+                            </Option>
+                            ))}
+                        </Select>
+                    </div>
+                    )}
                     <div className="flex flex-col lg:flex-row lg:gap-3">
                         <div className="mt-5 bg-white rounded-xl p-3 flex-row items-center justify-between w-full">
                             <Typography as="h3" className="font-logo text-center">Moyenne annuelle</Typography>
                             {studentTests.length > 0 ? (
-                            <div className="flex justify-between items-center">
+                            <div className="">
                                 <div className="flex flex-col justify-center">
                                     <div>
                                         <span className="font-semibold">Note</span> : {average.toFixed(2)} / 20
@@ -118,18 +135,20 @@ export default function StudentDetailsPage() {
                                                     letter={sk.abbr}
                                                     level={getAverageSkillById(studentTests, sk.id).level}
                                                 />
-                                                <span className="font-semibold">{sk.name}</span> : {isNaN(sk.avg) ? "Non évalué" : sk.avg.toFixed(1) + "/4"}
+                                                <span className="font-semibold">{sk.name}</span> : {Number.isNaN(sk.avg) ? "Non évalué" : sk.avg.toFixed(1) + "/4"}
                                             </li>
                                         ))}
                                     </ul>
                                 </div>
-                                <div className="grid grid-cols-2 gap-2">
-                                    <IconButton onClick={handleDiagramModal}>
+                                <hr className="my-3" />
+                                <div className="w-full grid grid-cols-2 gap-3 items-center">
+                                    <Button onClick={handleDiagramModal} className="flex items-center gap-2">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" fillRule="evenodd" d="M14 20.5V4.25c0-.728-.002-1.2-.048-1.546c-.044-.325-.115-.427-.172-.484s-.159-.128-.484-.172C12.949 2.002 12.478 2 11.75 2s-1.2.002-1.546.048c-.325.044-.427.115-.484.172s-.128.159-.172.484c-.046.347-.048.818-.048 1.546V20.5z" clipRule="evenodd"/><path fill="currentColor" d="M8 8.75A.75.75 0 0 0 7.25 8h-3a.75.75 0 0 0-.75.75V20.5H8zm12 5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75v6.75H20z" opacity="0.7"/><path fill="currentColor" d="M1.75 20.5a.75.75 0 0 0 0 1.5h20a.75.75 0 0 0 0-1.5z" opacity="0.5"/></svg>
-                                    </IconButton>
+                                        <span className="hidden lg:inline">Voir le diagramme</span>
+                                    </Button>
                                     {studentReports && (
                                         <PDFDownloadLink 
-                                        document={<StudentReportPdf
+                                            document={<StudentReportPdf
                                             tests={filteredTests} 
                                             student={student} 
                                             uniqueSkills={uniqueSkills}
@@ -138,17 +157,20 @@ export default function StudentDetailsPage() {
                                         />} 
                                     fileName={`${student.lastName}_${student.firstName}.pdf`}
                                     >
-                                        <IconButton>
+                                        <Button className="w-full flex items-center gap-2">
                                             <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24"><g fill="none" fillRule="evenodd"><path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z"></path><path fill="currentColor" d="M13.586 2a2 2 0 0 1 1.284.467l.13.119L19.414 7a2 2 0 0 1 .578 1.238l.008.176V20a2 2 0 0 1-1.85 1.995L18 22H6a2 2 0 0 1-1.995-1.85L4 20V4a2 2 0 0 1 1.85-1.995L6 2zM12 4H6v16h12V10h-4.5a1.5 1.5 0 0 1-1.493-1.356L12 8.5zm.988 7.848a6.22 6.22 0 0 0 2.235 3.872c.887.717.076 2.121-.988 1.712a6.22 6.22 0 0 0-4.47 0c-1.065.41-1.876-.995-.989-1.712a6.22 6.22 0 0 0 2.235-3.872c.178-1.127 1.8-1.126 1.977 0m-.99 2.304l-.688 1.196h1.38zM14 4.414V8h3.586z"></path></g></svg>
-                                        </IconButton>
+                                            <span className="hidden lg:inline">Exporter en PDF</span>
+                                        </Button>
                                     </PDFDownloadLink>
                                     )}
-                                    <IconButton onClick={handleReportModal}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width={32} height={32} viewBox="0 0 32 32"><path fill="currentColor" d="M10 18h8v2h-8zm0-5h12v2H10zm0 10h5v2h-5z"></path><path fill="currentColor" d="M25 5h-3V4a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v1H7a2 2 0 0 0-2 2v21a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2M12 4h8v4h-8Zm13 24H7V7h3v3h12V7h3Z"></path></svg>
-                                    </IconButton>
-                                    <IconButton disabled>
+                                    <Button onClick={handleReportDrawer} className="w-full flex items-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 32 32"><path fill="currentColor" d="M10 18h8v2h-8zm0-5h12v2H10zm0 10h5v2h-5z"></path><path fill="currentColor" d="M25 5h-3V4a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v1H7a2 2 0 0 0-2 2v21a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2M12 4h8v4h-8Zm13 24H7V7h3v3h12V7h3Z"></path></svg>
+                                        <span className="hidden lg:inline">Appréciations</span>
+                                    </Button>
+                                    <Button disabled className="w-full flex items-center gap-2">
                                         <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24"><path fill="currentColor" d="M4 20q-.825 0-1.412-.587T2 18V6q0-.825.588-1.412T4 4h16q.825 0 1.413.588T22 6v12q0 .825-.587 1.413T20 20zm8-7l8-5V6l-8 5l-8-5v2z"></path></svg>
-                                    </IconButton>
+                                        <span className="hidden lg:inline">Partager par e-mail</span>
+                                    </Button>
                                 </div>
                             </div>
                             ):(
@@ -161,23 +183,32 @@ export default function StudentDetailsPage() {
                             </div>
                             )}
                         </div>
-                        <div className="mt-5 bg-white rounded-xl p-3 flex-col">
-                            <Typography as="h3" className="font-logo text-center">Filtrer</Typography>
-                            <List className="flex-row">
-                            { Object.values(TrimesterEnum).map(trimester =>
-                                (<CheckBoxListItem 
-                                    key={trimester}
-                                    onClick={() => handleTrimesterFilters(trimester)}
-                                    checked={trimesterFilters.includes(trimester)}
-                                    id={trimester}
-                                    label={trimester}
-                                />))}
-                            </List>
+                        <div className="hidden md:flex mt-5 bg-white rounded-xl p-3 flex-col">
+                            <Typography as="h3" className="font-logo text-center">Diagramme</Typography>
+                            <DiagramModal 
+                                handleOpen={handleDiagramModal}
+                                student={student}
+                                averageSkills={averageSkills}
+                                isModal={false}
+                            />
                         </div>
                     </div>
                 </Card>
                 <Card className="mt-3 p-3 h-full w-full overflow-scroll text-black">
-                    <h3>Évaluations</h3>
+                    <div className="flex flex-col lg:flex-row">
+                        <h3 className="flex items-center">Évaluations</h3>
+                        <List className="flex-row justify-center items-center">
+                            { Object.values(TrimesterEnum).map(trimester =>
+                            (<CheckBoxListItem 
+                                key={trimester}
+                                onClick={() => handleTrimesterFilters(trimester)}
+                                checked={trimesterFilters.includes(trimester)}
+                                id={trimester}
+                                label={trimester}
+                            />))}
+                        </List>
+                    </div>
+                    <hr className="my-3" />
                     <table className="w-full min-w-max table-auto text-left">
                         <thead className="hidden">
                             <tr>
@@ -233,13 +264,16 @@ export default function StudentDetailsPage() {
                 </Dialog>
 
                 {studentReports && (
-                    <Dialog open={reportModal} handler={handleReportModal}>
-                        <ReportModal 
-                            handleOpen={handleReportModal}
-                            reports={studentReports}
-                            student={student}
-                        />
-                    </Dialog>
+                <Drawer 
+                    open={openReportDrawer} 
+                    onClose={handleReportDrawer}
+                    overlayProps={{ className: "hidden" }}
+                >
+                    <ReportModal 
+                        reports={studentReports}
+                        student={student}
+                    />
+                </Drawer>
                 )}
             </>
             )}
