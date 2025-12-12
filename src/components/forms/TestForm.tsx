@@ -118,6 +118,7 @@ export default function TestForm({ initialValues, editTestId, schoolClasses }: T
                                 label="Coefficient"
                                 name="coefficient"
                                 type="number"
+                                step="0.01"
                                 value={formik.values.coefficient}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}

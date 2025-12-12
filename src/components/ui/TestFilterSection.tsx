@@ -33,10 +33,10 @@ export default function TestFilterSection(props : TestFilterSectionProps) {
     }
 
     return (
-        <Card>
-            <fieldset className="border-2 border-dashed m-3 rounded-xl">
+        <Card className="flex flex-col sm:flex-row justify-center">
+            <fieldset className="border-2 border-dashed m-3 rounded-xl sm:w-full">
                 <legend className="ms-3">Filtrer par trimestre</legend>
-                <List className="flex-row ">
+                <List className="flex-col md:flex-row">
                 { Object.values(TrimesterEnum).map(trimester =>
                     (<CheckBoxListItem 
                         key={trimester}
@@ -47,9 +47,9 @@ export default function TestFilterSection(props : TestFilterSectionProps) {
                     />))}
                 </List>
             </fieldset>
-            <fieldset className="border-2 border-dashed m-3 rounded-xl">
+            <fieldset className="border-2 border-dashed m-3 rounded-xl sm:w-full">
                 <legend className="ms-3">Filtrer par classe</legend>
-                <List className="grid grid-cols-2">
+                <List className="grid md:grid-cols-2">
                 { schoolClasses?.map(schoolClass =>
                     (<CheckBoxListItem 
                         key={schoolClass.id}

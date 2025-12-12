@@ -8,11 +8,12 @@ interface PropsInterface {
     onChange?: (e: React.ChangeEvent<any>) => void
     onBlur?: React.FocusEventHandler<HTMLInputElement>
     error? : any
+    step?: string | number
 }
 
 export default function TextInput(props: PropsInterface) {
 
-    const {label, type = "text", name, onChange, value, onBlur, error} = props;
+    const {label, type = "text", name, onChange, value, onBlur, error, step} = props;
 
     return (
         <div className="flex flex-col">
@@ -24,6 +25,7 @@ export default function TextInput(props: PropsInterface) {
             onChange={onChange}
             onBlur={onBlur}
             value={value}
+            step={step}
             className="rounded-xl p-2 text-black text-center border-2"
             />
             {error && (

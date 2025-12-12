@@ -120,8 +120,8 @@ export default function StudentDetailsPage() {
                     </div>
                     )}
                     <div className="flex flex-col lg:flex-row lg:gap-3">
-                        <div className="mt-5 bg-white rounded-xl p-3 flex-row items-center justify-between w-full">
-                            <Typography as="h3" className="font-logo text-center">Moyenne annuelle</Typography>
+                        <div className="mt-5 bg-white rounded-xl p-3 flex-row items-center justify-between">
+                            <Typography as="h3" className="font-logo text-center tracking-wide">Moyenne annuelle</Typography>
                             {studentTests.length > 0 ? (
                             <div className="">
                                 <div className="flex flex-col justify-center">
@@ -183,8 +183,8 @@ export default function StudentDetailsPage() {
                             </div>
                             )}
                         </div>
-                        <div className="hidden md:flex mt-5 bg-white rounded-xl p-3 flex-col">
-                            <Typography as="h3" className="font-logo text-center">Diagramme</Typography>
+                        <div className="hidden md:flex mt-5 bg-white rounded-xl p-3 flex-col w-2/3">
+                            <Typography as="h3" className="font-logo text-center tracking-wide">Diagramme</Typography>
                             <DiagramModal 
                                 handleOpen={handleDiagramModal}
                                 student={student}

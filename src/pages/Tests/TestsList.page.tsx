@@ -45,7 +45,7 @@ export default function TestsListPage() {
         >
             <div className="w-full flex justify-between p-3">
                 <BackButton/>
-                <h2 className="text-black mb-3">Mes évaluations</h2>
+                <h2 className="text-black mb-3 text-center">Mes évaluations</h2>
                 <DefaultIconButton onClick={() => {navigate("/tests/new")}} type="add"/>
             </div>
             <div className="flex flex-col gap-5 w-[96%]">
@@ -99,5 +99,6 @@ export default function TestsListPage() {
             </ul>
             )}
         </Card>
+
     )
 }

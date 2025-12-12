@@ -41,6 +41,8 @@ export default function TestDetailsPage() {
     if (testLoading || studentTestsLoading) return <p>Chargement en cours</p>
     if (testError || studentTestsError) return <p>Une erreur est survenue</p>
 
+    console.log(test)
+
     return(
         <>
         {test && studentTests && students && (
@@ -48,25 +50,22 @@ export default function TestDetailsPage() {
             <Card className={`mt-6 py-5 bg-test-200 text-black flex p-5`}>
                 <div className="flex justify-between">
                     <BackButton/>
-                    <h1 className="text-black text-center">Mon évaluation</h1>
+                    <Typography as="h2" className="text-xl font-semibold text-center">
+                            {test.name}
+                        </Typography>
                     <IconButton color="white" className={`rounded-xl`} onClick={() => navigate(`/tests/${testId}/edit`)}>
                         <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24"><g fill="none" stroke="#F46030" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></g></svg>
                     </IconButton>
                 </div>
                 <div className="flex flex-col gap-1">
-                    <div className="flex gap-3 justify-center">
-                        <Typography as="h2" className="text-xl font-semibold text-center">
-                            {test.name}
-                        </Typography>
-                        <Chip value={test.schoolclass?.name} className="w-min"/>
-                    </div>
 
                     {test.description && (
-                        <div className="bg-white bg-opacity-60 rounded-xl p-2 mb-1">
+                        <div className="bg-white bg-opacity-60 rounded-xl p-2 my-2">
                             <Typography as="p">{test.description}</Typography>
                         </div>
                     )}
                     <div className="flex gap-3 justify-center">
+                        <Chip value={test.schoolclass?.name} className="w-min" style={{ backgroundColor: test.schoolclass?.color ?? 'black'}}/>
                         <Chip value={"Trimestre " + test.trimester[2]} className="w-min"/>
                         <Chip 
                             value={ new Date(test.date).toLocaleDateString()}

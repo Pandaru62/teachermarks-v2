@@ -26,13 +26,13 @@ export default function HomeVisitor() {
                         <Typography className="font-[Teachers] font-extrabold text-xl lg:text-3xl">MARKEZ !</Typography>
                     </Button>
                 ) : (
-                    <div className="w-full flex gap-4">
-                        <Link to={'/signin'} className="w-1/2 block">
+                    <div className="w-full flex flex-col md:flex-row gap-4">
+                        <Link to={'/signin'} className="w-full">
                             <Button className="w-full rounded-[15px] custom-shadow h-[90px] bg-amber-custom bg-opacity-60 text-black" size="md">
                                 <Typography className="font-[Teachers] font-bold text-xl">ME CONNECTER</Typography>
                             </Button>
                         </Link>
-                        <Link to={'/signup'} className="w-1/2 block">
+                        <Link to={'/signup'} className="w-full">
                             <Button className="w-full rounded-[15px] custom-shadow h-[90px] bg-amber-custom text-black" size="md">
                                 <Typography className="font-[Teachers] font-bold text-xl">M'INSCRIRE</Typography>
                             </Button>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import { SkillLevelEnum, StudentTestByStudentInterface } from '../../interfaces/student-test.interface';
 import StudentInterface from '../../interfaces/student.interface';
 import { getAverageSkillById } from '../../utils/calculations/average.function';
@@ -12,6 +12,13 @@ interface StudentReportPdfProps {
   reports : ReportInterface[];
   uniqueSkills: { id: number; name: string }[];
   average: number;
+}
+
+function getProgressColor(avg: number): string {
+  if (avg > 3.6) return "#558F72";
+  if (avg > 2.9) return "#54C3B2";
+  if (avg > 1.9) return "#FAC215";
+  return "#F46030";
 }
 
 export default function StudentReportPdf(props: StudentReportPdfProps) {
@@ -130,8 +137,8 @@ export default function StudentReportPdf(props: StudentReportPdfProps) {
           borderWidth: 1
         },
         simpleBox : {
-          padding: 5,
           display: 'flex',
+          padding: 5,
           justifyContent: 'flex-end'
         },
         section: {
@@ -193,6 +200,38 @@ export default function StudentReportPdf(props: StudentReportPdfProps) {
             borderStyle: 'solid',
             borderColor: 'black',
             borderWidth: 2
+        }
+        ,
+        // progress bar styles
+        progressContainer: {
+          marginTop: 6,
+          marginBottom: 6,
+        },
+        progressLabels: {
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          marginBottom: 4,
+        },
+        progressBarOuter: {
+          height: 8,
+          backgroundColor: '#e6e6e6',
+          borderRadius: 4,
+          overflow: 'hidden',
+        },
+        progressBarInner: {
+          height: 8,
+          backgroundColor: '#54C3B2',
+          borderRadius: 4,
+        }
+        ,
+        // two-column layout for skills
+        skillsTwoColRow: {
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          marginBottom: 6,
+        },
+        skillCol: {
+          width: '48%'
         }
     });
 
@@ -262,25 +301,38 @@ export default function StudentReportPdf(props: StudentReportPdfProps) {
           </View>
           
         </View>
-        <View style={styles.headerBoxes}>
-          <View style={[styles.headerBox, { alignItems: 'center', justifyContent: 'center' }]}>
-            {chartDataUrl ? (
-              // embed generated chart image into PDF
-              <Image src={chartDataUrl} style={{ width: 200, height: 200 }} />
-            ) : (
-              <Text>Diagramme non disponible</Text>
-            )}
-          </View>
-          <View style={styles.simpleBox}>
-            <Text>
-              Moyenne générale : {average.toFixed(2)} / 20 
-            </Text>
-            {skills.map((skill) => (
-            <Text key={skill.id}>
-                {skill.name} : {skill.result.average}/4
-            </Text>
-            ))}
-          </View>
+        <View style={styles.simpleBox}>
+          <Text>
+            Moyenne générale : {average.toFixed(2)} / 20 
+          </Text>
+            {(() => {
+              const rows: (typeof skills)[] = [];
+              for (let i = 0; i < skills.length; i += 2) {
+                rows.push([skills[i], skills[i + 1]]);
+              }
+              return rows.map((pair, rIdx) => (
+                <View key={`skill-row-${rIdx}`} style={styles.skillsTwoColRow}>
+                  {pair.map((skillItem, cIdx) => {
+                    if (!skillItem) return <View key={`empty-${cIdx}`} style={styles.skillCol} />;
+                    const pct = Math.round((skillItem.result.average / 4) * 100);
+                    const color = getProgressColor(skillItem.result.average);
+                    return (
+                      <View key={skillItem.id} style={styles.skillCol}>
+                        <View style={styles.progressContainer}>
+                          <View style={styles.progressLabels}>
+                            <Text>{skillItem.name}</Text>
+                            <Text>{skillItem.result.average.toFixed(2)}/4</Text>
+                          </View>
+                          <View style={styles.progressBarOuter}>
+                            <View style={[styles.progressBarInner, { width: `${pct}%`, backgroundColor: color }]} />
+                          </View>
+                        </View>
+                      </View>
+                    );
+                  })}
+                </View>
+              ));
+            })()}
         </View>
         <View style={styles.comment}>
           <Text style={{fontWeight: 700, marginBottom: 5}}> Appréciations : </Text>

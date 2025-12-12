@@ -74,7 +74,23 @@ export const useTestForm = (props : TestFormProps) => {
               }
             }
           });
-        }
+        } else {
+          const editedTest = await editTest(
+                {
+                  ...values, schoolClassId: values.schoolClassId ?? 0, date: new Date(values.date), skills: selectedSkills
+                },
+              editTestId
+              );
+              if(editedTest) {
+                queryClient.setQueryData(['tests'], (oldTests : TestInterface[]) =>
+                  oldTests ? oldTests.map((test) => test.id === editTestId ? editedTest : test) : []);
+
+                queryClient.setQueryData(['test', editTestId], editedTest);
+
+                showSuccessAlert("Evaluation modifiée avec succès !", () => navigate("/tests/" + editTestId));
+              }
+            }
+        
       } else {
         const formatDate = new Date(values.date).toISOString();
         const newTest = await createTest(
