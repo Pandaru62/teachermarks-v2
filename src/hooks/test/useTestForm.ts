@@ -20,7 +20,8 @@ export interface TestFormProps {
     schoolClassId?: number;
     scale: number;
     coefficient: number;
-    skills?: Pick<SkillInterface, "id" | "name" | "abbreviation">[]
+    skills?: Pick<SkillInterface, "id" | "name" | "abbreviation">[],
+    testTagId?: number
   };
   editTestId?: number;
   schoolClasses? : SchoolClassInterface[]
@@ -43,6 +44,7 @@ export const useTestForm = (props : TestFormProps) => {
       schoolClassId: Yup.number().required("Veuillez indiquer une classe"),
       scale: Yup.number().positive().required("Veuillez indiquer la note maximale possible"),
       coefficient: Yup.number().positive().required("Veuillez indiquer un coefficient"),
+      testTagId: Yup.number(),
     }),
     onSubmit: async (values) => {
       if(editTestId) {
@@ -60,7 +62,7 @@ export const useTestForm = (props : TestFormProps) => {
             if (result.isConfirmed) {
               const editedTest = await editTest(
                 {
-                  ...values, schoolClassId: values.schoolClassId ?? 0, date: new Date(values.date), skills: selectedSkills
+                  ...values, coefficient: Number(values.coefficient), schoolClassId: values.schoolClassId ?? 0, date: new Date(values.date), skills: selectedSkills
                 },
               editTestId
               );
@@ -77,7 +79,7 @@ export const useTestForm = (props : TestFormProps) => {
         } else {
           const editedTest = await editTest(
                 {
-                  ...values, schoolClassId: values.schoolClassId ?? 0, date: new Date(values.date), skills: selectedSkills
+                  ...values, coefficient: Number(values.coefficient),schoolClassId: values.schoolClassId ?? 0, date: new Date(values.date), skills: selectedSkills
                 },
               editTestId
               );

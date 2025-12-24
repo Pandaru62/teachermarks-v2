@@ -10,6 +10,11 @@ export type UserWithoutPassword = {
   school: string;
   is_first_visit: boolean;
   current_trimester: TrimesterEnum;
+  lastNotif?: {
+    title: string;
+    message: string;
+    createdAt: string;
+  }
 };
 
 type AuthStore = {

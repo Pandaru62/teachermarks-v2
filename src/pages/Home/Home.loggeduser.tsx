@@ -4,6 +4,7 @@ import { useStore } from "zustand";
 import { useAuthStore } from "../../hooks/useAuthStore";
 import TutoAlert from "../../components/ui/tutoAlert";
 import smilingPostit from "../../assets/smiling_postit.svg";
+import LastNotifAlert from "../../components/ui/lastNotifAlert";
 
 export default function HomeLoggedUser() {
 
@@ -14,6 +15,11 @@ export default function HomeLoggedUser() {
             {currentUser.user?.is_first_visit && (
                 <TutoAlert/>
             )}
+            {
+                currentUser.user?.lastNotif && (
+                    <LastNotifAlert/>
+                )
+            }
             <Card className="row-span-1 mt-6 py-3 px-4 bg-test-200 text-black flex justify-between items-center">
                 <Typography as="h2" className="text-xl font-semibold">Bonjour <span className="text-test-400">{currentUser.user?.firstname} {currentUser.user?.lastname}</span> !</Typography>
                 <img src={smilingPostit} alt="smiling post-it"/>

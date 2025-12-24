@@ -69,8 +69,8 @@ import Wrapper from "../../components/ui/wrapper";
             </CardBody>
           </Card>
         <h2 className="text-center mt-5">Je suis <i>enfin</i> prêt...</h2>
-        <Button type="submit" className="rounded-[15px] custom-shadow h-[75px] bg-amber-custom text-black" size="md" disabled={mutation.isPending}>
-          <Typography className="font-[Teachers] font-extrabold text-4xl">{mutation.isPending ? "Connexion en cours..." : "Me connecter"}</Typography>
+        <Button type="submit" className="rounded-[15px] custom-shadow h-[75px] w-full md:w-96 bg-amber-custom text-black" size="md" disabled={mutation.isPending}>
+          <Typography className="font-[Teachers] font-extrabold text-xl">{mutation.isPending ? "Connexion en cours..." : "Me connecter"}</Typography>
         </Button>
         {mutation.isError && (
         <Typography className="text-center" variant="small" color="red">

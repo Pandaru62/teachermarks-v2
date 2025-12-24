@@ -14,6 +14,8 @@ import { showWarningAlert } from "../../utils/alerts/warningAlert";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { deleteTest } from "../../api/tests";
+import useTestTags from "../../hooks/test/useTestTagsQuery";
+import SelectTagInput from "../ui/formInput/selectTagInput";
 
 
 export default function TestForm({ initialValues, editTestId, schoolClasses }: TestFormProps) {
@@ -42,6 +44,8 @@ export default function TestForm({ initialValues, editTestId, schoolClasses }: T
         
         },
       });
+    
+    const {testTags} = useTestTags();
 
     return(
         <form onSubmit={formik.handleSubmit}>
@@ -124,6 +128,18 @@ export default function TestForm({ initialValues, editTestId, schoolClasses }: T
                                 onBlur={formik.handleBlur}
                                 error={formik.touched.coefficient && formik.errors.coefficient}
                             />
+
+                            {testTags && testTags?.length > 0 && (
+                             <SelectTagInput
+                                label="Tag"
+                                value={formik.values.testTagId ?? testTags[0].id}
+                                name="tagId"
+                                tags={testTags}
+                                onChange={(e) => formik.setFieldValue("testTagId", Number(e.target.value))}     
+                                error={formik.touched.schoolClassId && formik.errors.schoolClassId}
+                            />
+                            )}
+
                         </div>
                         {skillsLoading && <p>Chargement des compétences en cours.</p>}
                         {skillsError && <p>Impossible de charger les compétences. Veuillez réactualiser</p>}

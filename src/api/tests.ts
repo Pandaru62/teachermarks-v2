@@ -12,6 +12,15 @@ export default async function getAllTests() {
     }
 }
 
+export async function getTestTags() {
+    try {
+        const { data } = await api.get('testtags');
+		return data
+    } catch (error: any) {
+        throw new Error(error);
+    }
+}
+
 export async function getTestById(id:number) {
     try {
         const { data } = await api.get('tests/' + id);

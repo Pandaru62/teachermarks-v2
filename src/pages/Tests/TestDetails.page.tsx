@@ -9,9 +9,10 @@ import SkillBubble from "../../components/ui/skill/skillBubble";
 import { SkillLevelEnum } from "../../interfaces/student-test.interface";
 import { CalendarIcon } from "@heroicons/react/24/solid";
 import { getAverageSkillById } from "../../utils/calculations/average.function";
-import SkillAverageLine from "../../components/ui/skill/skillAverageLine";
 import { useState } from "react";
 import QuickEditModal from "../../components/editStudentTest/QuickEditModal";
+import HorizontalTestChart from "../../components/ui/horizontalTestChart";
+import { RadialSkillIndicator } from "../../components/ui/radialSkillIndicator";
 
 export default function TestDetailsPage() {
 
@@ -41,87 +42,102 @@ export default function TestDetailsPage() {
     if (testLoading || studentTestsLoading) return <p>Chargement en cours</p>
     if (testError || studentTestsError) return <p>Une erreur est survenue</p>
 
-    console.log(test)
 
     return(
         <>
         {test && studentTests && students && (
         <Wrapper>
             <Card className={`mt-6 py-5 bg-test-200 text-black flex p-5`}>
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center">
                     <BackButton/>
-                    <Typography as="h2" className="text-xl font-semibold text-center">
-                            {test.name}
-                        </Typography>
                     <IconButton color="white" className={`rounded-xl`} onClick={() => navigate(`/tests/${testId}/edit`)}>
                         <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24"><g fill="none" stroke="#F46030" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></g></svg>
                     </IconButton>
                 </div>
-                <div className="flex flex-col gap-1">
+                <div className="gap-3">
+                    <div className="mt-5 bg-white rounded-xl p-3 flex-row items-center justify-between w-full">
+                            <Typography as="h2" className="font-logo text-center border-0 border-black border-b-2 mb-2">{test.name}</Typography>
+                        <div className="flex gap-2 mb-2 flex-wrap justify-center">
+                            <Chip value={test.schoolclass?.name} className="w-min" style={{ backgroundColor: test.schoolclass?.color ?? 'black'}}/>
+                            {test.testTag && (
+                                <Chip 
+                                value={test.testTag.name} 
+                                className="w-min" 
+                                style={{ backgroundColor: test.testTag.color ?? 'black'}}
+                                icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6Z" />
+                                    </svg>}
+                            />
+                        )}
 
-                    {test.description && (
-                        <div className="bg-white bg-opacity-60 rounded-xl p-2 my-2">
-                            <Typography as="p">{test.description}</Typography>
+                            <Chip value={"Trimestre " + test.trimester[2]} className="w-min"/>
+                            <Chip 
+                                value={ new Date(test.date).toLocaleDateString()}
+                                icon={<CalendarIcon/>}
+                                className="w-min"/>
+                            <Chip value={"coeff. " + test.coefficient} className="w-min"/>
                         </div>
-                    )}
-                    <div className="flex gap-3 justify-center">
-                        <Chip value={test.schoolclass?.name} className="w-min" style={{ backgroundColor: test.schoolclass?.color ?? 'black'}}/>
-                        <Chip value={"Trimestre " + test.trimester[2]} className="w-min"/>
-                        <Chip 
-                            value={ new Date(test.date).toLocaleDateString()}
-                            icon={<CalendarIcon/>}
-                            className="w-min"/>
-                        <Chip value={"coeff. " + test.coefficient} className="w-min"/>
-                    </div>
-                </div>
-                    <div className="flex flex-col lg:flex-row lg:gap-3 lg:justify-stretch w-full">
-                        <div className="mt-5 bg-white rounded-xl p-3 flex-row items-center justify-between w-full">
-                            <Typography as="h3" className="font-logo text-center">Résumé</Typography>
-                            {numUnmarked !== test.schoolclass?.count ? (
-                            <div className="flex justify-between items-center">
-                                <ul>
-                                    <li>{numMarked} / {test.schoolclass?.count} élèves évalués</li>
-                                    <li>ABS : {numAbsent} | Non évalué : {test.schoolclass?.count ? test.schoolclass.count - numMarked - numAbsent : '?'}</li>
-                                    <li><span className="font-semibold">Moyenne</span> : {average.toFixed(2)} / {test.scale}</li>
-                                </ul>
-                                <IconButton disabled>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" fillRule="evenodd" d="M14 20.5V4.25c0-.728-.002-1.2-.048-1.546c-.044-.325-.115-.427-.172-.484s-.159-.128-.484-.172C12.949 2.002 12.478 2 11.75 2s-1.2.002-1.546.048c-.325.044-.427.115-.484.172s-.128.159-.172.484c-.046.347-.048.818-.048 1.546V20.5z" clipRule="evenodd"/><path fill="currentColor" d="M8 8.75A.75.75 0 0 0 7.25 8h-3a.75.75 0 0 0-.75.75V20.5H8zm12 5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75v6.75H20z" opacity="0.7"/><path fill="currentColor" d="M1.75 20.5a.75.75 0 0 0 0 1.5h20a.75.75 0 0 0 0-1.5z" opacity="0.5"/></svg>
-                                </IconButton>
-                            </div>
-                            ):(
-                            <div className="flex flex-col p-3">
-                                <span className="text-center">Aucun élève n'a encore été évalué.</span>
-                                <Button 
-                                    onClick={() => navigate(`/`)}
-                                    className="bg-test-300 text-black"
-                                    disabled
-                                >Saisissez les résultats</Button>
-                            </div>
+                        <div className=" border-0 border-black border-b-2 pb-2 mb-2">
+                            {test.description && (
+                                <Typography as="p" className="text-center">{test.description}</Typography>
                             )}
                         </div>
-                        <div className="mt-5 bg-white rounded-xl p-3 w-full">
-                            <Typography as="h3" className="font-logo text-center">Compétences évaluées</Typography>
-                            {test.skills.length > 0 ? (
-                                <div className="flex justify-between items-center">
-                                    <ul>
-                                    {test.skills.map(skill => (
-                                        <SkillAverageLine key={skill.id} calcAvg={getAverageSkillById(studentTests, skill.id)} skill={skill} />
-                                    ))}
-                                    </ul>
-                                </div>
-                            ) : 
-                                <div className="flex flex-col p-3">
-                                    <span className="text-center">Aucune compétence évaluée.</span>
-                                    <Button 
-                                        onClick={() => navigate(`/tests/${testId}/edit`)}
-                                        className="bg-test-300 text-black"
-                                    >
-                                        Ajoutez des compétences à évaluer
-                                    </Button>
-                                </div>
-                            }
+                        {numUnmarked !== test.schoolclass?.count ? (
+                        <div className="flex flex-col justify-between items-start">
+                            <div className="w-full">
+                            <HorizontalTestChart
+                                data={{
+                                    graduated: numMarked,
+                                    nonGraduated: studentTests.filter(st => st.isUnmarked).length,
+                                    absent: numAbsent,
+                                    total: test.schoolclass?.count ?? 0
+                                }}
+                                />
+                            </div>
+                            <div>
+                                <span className="font-semibold mt-1">Moyenne</span> : <b>{average.toFixed(2)}</b> / {test.scale}
+                            </div>
                         </div>
+                        ):(
+                        <div className="flex flex-col p-3">
+                            <span className="text-center">Aucun élève n'a encore été évalué.</span>
+                            <Button 
+                                onClick={() => navigate(`/`)}
+                                className="bg-test-300 text-black"
+                                disabled
+                            >Saisissez les résultats</Button>
+                        </div>
+                        )}
                     </div>
+                    <div className="mt-5 bg-white rounded-xl p-3 w-full">
+                        <Typography as="h3" className="font-logo text-center border-0 border-black border-b-2 mb-2">Compétences évaluées</Typography>
+                        {test.skills.length > 0 ? (
+                            <div className="flex justify-around items-center flex-wrap">
+                                {test.skills.map(skill => (
+                                    <div key={skill.id} className="inline-block m-3">
+                                        <Typography className="text-center">{skill.name}</Typography>
+                                        <RadialSkillIndicator 
+                                            level={getAverageSkillById(studentTests, skill.id)} 
+                                            size={60}
+                                            strokeWidth={6}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        ) : 
+                            <div className="flex flex-col p-3">
+                                <span className="text-center">Aucune compétence évaluée.</span>
+                                <Button 
+                                    onClick={() => navigate(`/tests/${testId}/edit`)}
+                                    className="bg-test-300 text-black"
+                                >
+                                    Ajoutez des compétences à évaluer
+                                </Button>
+                            </div>
+                        }
+                    </div>
+                </div>
             </Card>
 
             <Card className="mt-3 p-3 h-full w-full overflow-scroll text-black">
@@ -142,16 +158,16 @@ export default function TestDetailsPage() {
                         {students.map(student => (
                             <tr key={student.id} className="hover:bg-test-200 hover:bg-opacity-30 cursor-pointer" onClick={() => handleTestEdit(student.id)}>
                                 <td className="ps-2">
-                                    <Link to={`/student/${student.id}`}>
+                                    <Link to={`/student/${student.id}`} className="hover:underline text-gray-800">
                                         <span className="hidden md:inline">{student.lastName.toUpperCase()} {student.firstName}</span>
                                         <span className="md:hidden">{student.lastName.slice(0,12).toUpperCase()}  {student.firstName[0]}.</span>
                                     </Link>
                                 </td>
-                                <td>
+                                <td className="text-center">
                                     {studentTests.find((st) => st.student.id === student.id)?.isAbsent ? (
-                                        <span className="font-semibold">ABS</span>
+                                        <span className="font-semibold text-center">ABS</span>
                                     ) : studentTests.find((st) => st.student.id === student.id)?.isUnmarked ? (
-                                        <span className="font-semibold">NN</span>
+                                        <span className="font-semibold text-center">NN</span>
                                     ) : (
                                         <>
                                             <span className="font-semibold">{studentTests.find((st) => st.student.id === student.id)?.mark ?? 'x'}</span>

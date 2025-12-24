@@ -10,7 +10,6 @@ export default function TestEditPage() {
     const {test, testError, testLoading} = useTestQuery(testId);
     const {schoolClasses} = useSchoolClassesQueries();
 
-
     return(
         <Wrapper>
             {testError && <p>Une erreur est survenue. Veuillez réessayer.</p>}
@@ -25,7 +24,8 @@ export default function TestEditPage() {
                     scale: test.scale,
                     trimester: test.trimester,
                     schoolClassId: test.schoolClassId,
-                    skills: test.skills
+                    skills: test.skills,
+                    testTagId: test.testTag?.id
                 }}
                 schoolClasses={schoolClasses}
                 editTestId={testId}

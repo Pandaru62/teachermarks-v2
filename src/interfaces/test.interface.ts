@@ -12,6 +12,7 @@ export default interface TestInterface {
     trimester: TrimesterEnum,
     scale: number,
     coefficient: number,
+    testTagId?: number,
     schoolclass?: {
       name: string,
       count: number,
@@ -24,9 +25,16 @@ export default interface TestInterface {
       id: number,
       name: string,
       abbreviation: string
-    }[]
+    }[],
+    testTag?: testtag
 }
 
-export type CreateTestInterface = Pick<TestInterface, "name" | "description" | "date" | "trimester" | "scale" | "coefficient" | "schoolClassId" | "skills">;
+export type testtag = {
+  id: number,
+  name: string,
+  color: string
+};
 
-export type EditTestInterface = Pick<TestInterface, "name" | "description" | "date" | "trimester" | "scale" | "coefficient" | "schoolClassId" | "skills">;
+export type CreateTestInterface = Pick<TestInterface, "name" | "description" | "date" | "trimester" | "scale" | "coefficient" | "schoolClassId" | "skills" | "testTagId">;
+
+export type EditTestInterface = Pick<TestInterface, "name" | "description" | "date" | "trimester" | "scale" | "coefficient" | "schoolClassId" | "skills" | "testTagId">;
