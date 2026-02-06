@@ -7,15 +7,17 @@ import useStudentTestsByStudentIdQuery from "../../hooks/studentTest/useStudentT
 import { getAverageSkillById } from "../../utils/calculations/average.function";
 import SkillBubble from "../../components/ui/skill/skillBubble";
 import { useEffect, useState } from "react";
-import { SkillLevelEnum, StudentTestByStudentInterface } from "../../interfaces/student-test.interface";
+import { SkillLevelEnum } from "../../interfaces/student-test.interface";
 import CheckBoxListItem from "../../components/ui/formInput/checkboxListItem";
-import { TrimesterEnum } from "../../interfaces/test.interface";
+import TestInterface, { TrimesterEnum } from "../../interfaces/test.interface";
 import DiagramModal from "../../components/ui/DiagramModal";
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import StudentReportPdf from "../../components/studentReport/studentReportPdf";
 import ReportModal from "../../components/ui/ReportModal";
 import useStudentsByClassQuery from "../../hooks/student/useStudentsByClassQuery";
 import StudentInterface from "../../interfaces/student.interface";
+import useTestsByClassQuery from "../../hooks/test/useTestsByClassQuery";
+import useSkillsQuery from "../../hooks/skill/useSkillsQuery";
 
 export default function StudentDetailsPage() {
 
@@ -23,11 +25,12 @@ export default function StudentDetailsPage() {
     const studentId = Number(useParams().id);
     const {student, studentError,studentLoading, studentReports} = useStudentQuery(studentId);
     const [classId, setClassId] = useState<number | null>(null)
-    // 22-09 deleted the ! after classId! on line 27
+    const {allTestsByClass} = useTestsByClassQuery(classId, {enabled: !!classId});
     const { students } = useStudentsByClassQuery(classId, {enabled: !!classId});
+    const { skills } = useSkillsQuery();
     const [trimesterFilters, setTrimesterFilters] = useState<TrimesterEnum[]>([TrimesterEnum.TR1, TrimesterEnum.TR2, TrimesterEnum.TR3])
     const {studentTests, studentTestsError, studentTestsLoading, average, uniqueSkills, averageSkills} = useStudentTestsByStudentIdQuery(studentId);
-    const [filteredTests, setFilteredTests] = useState<StudentTestByStudentInterface[]>(studentTests ?? []);
+    const [filteredTests, setFilteredTests] = useState<TestInterface[]>(allTestsByClass ?? []);
     const [diagramModal, setDiagramModal] = useState<boolean>(false);
     const [openReportDrawer, setOpenReportDrawer] = useState<boolean>(false);
     const [nextStudent, setNextStudent] = useState<StudentInterface | null>(null);
@@ -64,16 +67,16 @@ export default function StudentDetailsPage() {
     }
 
     useEffect(() => {
-            if (!studentTests) return;
-    
-            let filtered = [...studentTests];
-    
-                filtered = filtered.filter(st =>
-                trimesterFilters.includes(st.test.trimester)
-                );
-            
-            setFilteredTests(filtered);
-        }, [trimesterFilters, studentTests]);
+        if (!allTestsByClass) return;
+
+        let filtered = [...allTestsByClass];
+
+            filtered = filtered.filter(test =>
+            trimesterFilters.includes(test.trimester)
+            );
+        
+        setFilteredTests(filtered);
+    }, [trimesterFilters, allTestsByClass]);
 
     return (
        <Wrapper>
@@ -119,11 +122,11 @@ export default function StudentDetailsPage() {
                         </Select>
                     </div>
                     )}
+                    {skills && studentTests.length > 0 ? (
                     <div className="flex flex-col lg:flex-row lg:gap-3">
                         <div className="mt-5 bg-white rounded-xl p-3 flex-row items-center justify-between">
                             <Typography as="h3" className="font-logo text-center tracking-wide">Moyenne annuelle</Typography>
-                            {studentTests.length > 0 ? (
-                            <div className="">
+                            <div>
                                 <div className="flex flex-col justify-center">
                                     <div>
                                         <span className="font-semibold">Note</span> : {average.toFixed(2)} / 20
@@ -149,7 +152,7 @@ export default function StudentDetailsPage() {
                                     {studentReports && (
                                         <PDFDownloadLink 
                                             document={<StudentReportPdf
-                                            tests={filteredTests} 
+                                            tests={studentTests} 
                                             student={student} 
                                             uniqueSkills={uniqueSkills}
                                             average={average}
@@ -173,15 +176,7 @@ export default function StudentDetailsPage() {
                                     </Button>
                                 </div>
                             </div>
-                            ):(
-                            <div className="flex flex-col p-3">
-                                <span className="text-center">Cet élève n'a pas encore été évalué.</span>
-                                <Button 
-                                    onClick={() => navigate(`/tests/new`)}
-                                    className="bg-test-300 text-black"
-                                >Ajoutez une évaluation</Button>
-                            </div>
-                            )}
+                            
                         </div>
                         <div className="hidden md:flex mt-5 bg-white rounded-xl p-3 flex-col w-2/3">
                             <Typography as="h3" className="font-logo text-center tracking-wide">Diagramme</Typography>
@@ -193,6 +188,11 @@ export default function StudentDetailsPage() {
                             />
                         </div>
                     </div>
+                    ) : (
+                    <div className="mt-5 bg-white rounded-xl p-3 flex items-center justify-center">  
+                        <span>Cet élève n'a pas encore été évalué.</span>
+                    </div>
+                    )}
                 </Card>
                 <Card className="mt-3 p-3 h-full w-full overflow-scroll text-black">
                     <div className="flex flex-col lg:flex-row">
@@ -214,42 +214,45 @@ export default function StudentDetailsPage() {
                             <tr>
                                 <th rowSpan={2}>Evaluation</th>
                                 <th rowSpan={2}>Note</th>
-                                <th colSpan={uniqueSkills.length}>Compétences évaluées</th>
+                                <th colSpan={skills?.length}>Compétences évaluées</th>
                             </tr>
                             <tr>
-                                {uniqueSkills.map(skill => (
+                                {skills?.map(skill => (
                                     <th key={skill.id}>{skill.name}</th>
                                 ))}
                             </tr>
                         </thead>
                         <tbody className="py-3">
-                            {filteredTests.map(studentTest => (
-                                <tr
-                                    key={studentTest.id}
-                                    onClick={() => navigate(`/tests/${studentTest.test.id}`)}
-                                    className="hover:bg-test-200 hover:bg-opacity-30 cursor-pointer"
-                                >
-                                    <td className="ps-2 ">
-                                        <Chip value={studentTest.test.trimester} size="sm" className="inline me-2" />
-                                        <span className="lg:hidden">{studentTest.test.name.length > 5 ? (studentTest.test.name).split("", 5) : studentTest.test.name}</span>
-                                        <span className="hidden lg:inline">{studentTest.test.name}</span>
-                                    </td>
-                                    <td>
-                                        <span className="font-semibold">{studentTest.mark ?? 'x'}</span>
-                                        <span className="text-xs">/{studentTest.test.scale}</span>
-                                    </td>
-                                    {uniqueSkills.map(skill => (
+                            {filteredTests.map((test) => {
+                                const studentTest = studentTests.find(st => st.test.id === test.id);
+                                return (
+                                    <tr
+                                        key={test.id}
+                                        onClick={() => navigate(`/tests/${test.id}`)}
+                                        className="hover:bg-test-200 hover:bg-opacity-30 cursor-pointer"
+                                    >
+                                        <td className="ps-2 ">
+                                            <Chip value={test.trimester} size="sm" className="inline me-2" />
+                                            <span className="lg:hidden">{test.name.length > 5 ? (test.name).split("", 5) : test.name}</span>
+                                            <span className="hidden lg:inline">{test.name}</span>
+                                        </td>
+                                        <td>
+                                            <span className="font-semibold">{studentTest?.mark ?? 'x'}</span>
+                                            <span className="text-xs">/{test.scale}</span>
+                                        </td>
+                                        {skills?.map(skill => (
                                         <td key={skill.id}>
-                                        <SkillBubble 
-                                            bubbleSize={9}
-                                            textSize="lg"
-                                            letter={studentTest.studenttesthasskill.find((sths => sths.skill.id === skill.id))?.skill.abbreviation ?? "X"}
-                                            level={studentTest.studenttesthasskill.find((sths => sths.skill.id === skill.id))?.level ?? SkillLevelEnum.NN}
+                                            <SkillBubble 
+                                                bubbleSize={9}
+                                                textSize="lg"
+                                                letter={studentTest?.studenttesthasskill.find((sths => sths.skill.id === skill.id))?.skill.abbreviation ?? "X"}
+                                                level={studentTest?.studenttesthasskill.find((sths => sths.skill.id === skill.id))?.level ?? SkillLevelEnum.NN}
                                             />
-                                    </td>
-                                    ))}
-                                </tr>
-                            ))}
+                                        </td>
+                                        ))}
+                                    </tr>
+                                )
+                            })}
                         </tbody>
                     </table>
                 </Card>

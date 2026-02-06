@@ -1,6 +1,6 @@
 import TestInterface from "../../interfaces/test.interface";
 import StudentTestInterface, { SkillLevelEnum } from "../../interfaces/student-test.interface";
-import { DialogBody, IconButton, Chip, DialogFooter, Button } from "@material-tailwind/react";
+import { DialogBody, IconButton, Chip, DialogFooter, Button, Textarea } from "@material-tailwind/react";
 import CheckBoxListItem from "../ui/formInput/checkboxListItem";
 import SkillBubbleButton from "../ui/skill/skillBubbleButton";
 import { useEffect, useRef } from "react";
@@ -64,8 +64,6 @@ export default function QuickEditModal(props: QuickEditModalProps) {
 
     // avoid sorting inline in JSX (mutates array) — create a sorted copy for rendering
     const sortedSkills = formik.values.skills ? [...formik.values.skills].sort((a, b) => a.skillId - b.skillId) : [];
-    console.log("🚀 ~ QuickEditModal ~ sortedSkills:", sortedSkills)
-
 
     const handleNext = () => {
         const currentIndex = students.findIndex(s => s.id === currentStudentId);
@@ -116,17 +114,23 @@ export default function QuickEditModal(props: QuickEditModalProps) {
                                             "skills",
                                             sortedSkills.map(s => ({ skillId: s.skillId, level: SkillLevelEnum.NN }))
                                         );
-                                    } else {
-                                        // restore saved values for this student if available
-                                        const saved = studentTests.find(st => st.student.id === currentStudentId);
-                                        if (saved) {
-                                            formik.setFieldValue(
-                                                "skills",
-                                                saved.studenttesthasskill.map(s => ({ skillId: s.skill.id, level: s.level }))
-                                            );
-                                            formik.setFieldValue("mark", saved.mark ?? 0);
-                                        }
-                                    }
+                                    } 
+                                    // else {
+                                    //     // restore saved values for this student if available
+                                    //     const saved = studentTests.find(st => st.student.id === currentStudentId);
+                                    //     if (saved) {
+                                    //         formik.setFieldValue(
+                                    //             "skills",
+                                    //             saved.studenttesthasskill.map(s => ({ skillId: s.skill.id, level: s.level }))
+                                    //         );
+                                    //         formik.setFieldValue("mark", saved.mark ?? 0);
+                                    //     } else {
+                                    //         formik.setFieldValue(
+                                    //         "skills",
+                                    //         sortedSkills.map(s => ({ skillId: s.skillId, level: SkillLevelEnum.NN }))
+                                    //     );
+                                    //     }
+                                    // }
                                 }}
                             />
                             <CheckBoxListItem
@@ -143,16 +147,17 @@ export default function QuickEditModal(props: QuickEditModalProps) {
                                             "skills",
                                             sortedSkills.map(s => ({ skillId: s.skillId, level: SkillLevelEnum.ABS }))
                                         );
-                                    } else {
-                                        const saved = studentTests.find(st => st.student.id === currentStudentId);
-                                        if (saved) {
-                                            formik.setFieldValue(
-                                                "skills",
-                                                saved.studenttesthasskill.map(s => ({ skillId: s.skill.id, level: s.level }))
-                                            );
-                                            formik.setFieldValue("mark", saved.mark ?? 0);
-                                        }
-                                    }
+                                    } 
+                                    // else {
+                                    //     const saved = studentTests.find(st => st.student.id === currentStudentId);
+                                    //     if (saved) {
+                                    //         formik.setFieldValue(
+                                    //             "skills",
+                                    //             saved.studenttesthasskill.map(s => ({ skillId: s.skill.id, level: s.level }))
+                                    //         );
+                                    //         formik.setFieldValue("mark", saved.mark ?? 0);
+                                    //     }
+                                    // }
                                 }}
                             />
                         </div>
@@ -194,6 +199,17 @@ export default function QuickEditModal(props: QuickEditModalProps) {
                             </div>
                         </li>
                     ))}
+                    <div className="flex flex-col md:flex-row gap-3 items-center mb-3">
+                        <Chip value="Commentaire" color="cyan" className="w-40 text-center" variant="outlined" />
+                        <Textarea
+                            name="comment"
+                            label="Appréciation ou remarques"
+                            value={formik.values.comment}
+                            onChange={formik.handleChange}
+                            rows={3}
+                        />
+
+                    </div>
                 </ul>
             </DialogBody>
             <DialogFooter className="sticky bottom-0 z-10 bg-white/95 backdrop-blur-sm px-4 py-3">

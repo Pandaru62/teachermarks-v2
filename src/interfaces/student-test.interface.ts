@@ -15,6 +15,7 @@ export default interface StudentTestInterface {
     mark: number,
     isAbsent: boolean,
     isUnmarked: boolean,
+    comment?: string,
     student: {
         id: number,
         lastName: string,

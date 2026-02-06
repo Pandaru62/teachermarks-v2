@@ -35,18 +35,20 @@ export default function useStudentTestEditor({ test, studentTests, students, sta
                 level: SkillLevelEnum.NN,
                 skill,
             })),
+            comment: ""
         };
     }
 
     const initialValues = {
-            mark: studentTest?.mark ?? 0,
-            isUnmarked: studentTest?.isUnmarked ?? false,
-            isAbsent: studentTest?.isAbsent ?? false,
-            skills: test.skills.map(sk => ({
-                skillId: sk.id,
-                level: studentTest?.studenttesthasskill.find(s => s.skill.id === sk.id)?.level ?? SkillLevelEnum.NN,
-            })) ?? [],
-        };
+        mark: studentTest?.mark ?? 0,
+        isUnmarked: studentTest?.isUnmarked ?? false,
+        isAbsent: studentTest?.isAbsent ?? false,
+        skills: test.skills.map(sk => ({
+            skillId: sk.id,
+            level: studentTest?.studenttesthasskill.find(s => s.skill.id === sk.id)?.level ?? SkillLevelEnum.NN,
+        })) ?? [],
+        comment: studentTest?.comment ?? ""
+    };
 
     const formik = useFormik({
         enableReinitialize: true,
@@ -81,7 +83,7 @@ export default function useStudentTestEditor({ test, studentTests, students, sta
 
     const confirmAndNavigate = (nextId: number) => {
         if (formik.dirty && !isSaved) {
-            const confirmed = window.confirm("Des modifications non enregistrées seront perdues. Continuer ?");
+            const confirmed = globalThis.confirm("Des modifications non enregistrées seront perdues. Continuer ?");
             if (!confirmed) return;
         }
         setCurrentStudentId(nextId);

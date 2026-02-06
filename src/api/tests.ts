@@ -30,6 +30,15 @@ export async function getTestById(id:number) {
     }
 }
 
+export async function getTestsByClassId(id:number) {
+    try {
+        const { data } = await api.get('tests/class/' + id);
+		return data
+    } catch (error: any) {
+        throw new Error(error);
+    }
+}
+
 export async function createTest(test : CreateTestInterface) {
     try {
         const { data } = await api.post('tests', test);
