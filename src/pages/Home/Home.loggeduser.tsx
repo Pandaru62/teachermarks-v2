@@ -11,7 +11,7 @@ export default function HomeLoggedUser() {
 
     const currentUser = useStore(useAuthStore);
 
-    const { dashboard, dashboardLoading, dashboardError } = useDashboardQuery()
+    const { dashboard } = useDashboardQuery()
     
     return(
         <div className="grid grid-rows-2">
