@@ -1,5 +1,6 @@
 import { createPortal } from "react-dom";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { ChangeEvent, Dispatch, RefObject, SetStateAction } from "react";
 import {
   List,
   Input,
@@ -19,6 +20,10 @@ import {
   FORMAT_TEXT_COMMAND,
   $createParagraphNode,
   SELECTION_CHANGE_COMMAND,
+  type BaseSelection,
+  type EditorState,
+  type LexicalEditor,
+  type RangeSelection,
 } from "lexical";
 import {
   $isListNode,
@@ -55,6 +60,7 @@ import { $wrapNodes, $isAtNodeEnd } from "@lexical/selection";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { $getNearestNodeOfType, mergeRegister } from "@lexical/utils";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
@@ -72,7 +78,7 @@ const supportedBlockTypes = new Set([
   "ol",
 ]);
  
-const blockTypeToBlockName = {
+const blockTypeToBlockName: Record<string, string> = {
   code: "Code",
   h1: "Large Heading",
   h2: "Small Heading",
@@ -97,7 +103,14 @@ function Placeholder() {
   );
 }
  
-function Select({ onChange, className, options, value }) {
+type SelectProps = {
+  onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+  className: string;
+  options: string[];
+  value: string;
+};
+
+function Select({ onChange, className, options, value }: SelectProps) {
   return (
     <select className={className} onChange={onChange} value={value}>
       <option hidden={true} value="" />
@@ -110,7 +123,7 @@ function Select({ onChange, className, options, value }) {
   );
 }
  
-function getSelectedNode(selection) {
+function getSelectedNode(selection: RangeSelection) {
   const anchor = selection.anchor;
   const focus = selection.focus;
   const anchorNode = selection.anchor.getNode();
@@ -131,8 +144,13 @@ function BlockOptionsDropdownList({
   blockType,
   toolbarRef,
   setShowBlockOptionsDropDown,
+}: {
+  editor: LexicalEditor;
+  blockType: string;
+  toolbarRef: RefObject<HTMLDivElement>;
+  setShowBlockOptionsDropDown: Dispatch<SetStateAction<boolean>>;
 }) {
-  const dropDownRef = useRef(null);
+  const dropDownRef = useRef<HTMLDivElement>(null);
  
   useEffect(() => {
     const toolbar = toolbarRef.current;
@@ -150,9 +168,12 @@ function BlockOptionsDropdownList({
     const toolbar = toolbarRef.current;
  
     if (dropDown !== null && toolbar !== null) {
-      const handle = (event) => {
+      const handle = (event: MouseEvent) => {
         const target = event.target;
  
+        if (!(target instanceof Node)) {
+          return;
+        }
         if (!dropDown.contains(target) && !toolbar.contains(target)) {
           setShowBlockOptionsDropDown(false);
         }
@@ -206,18 +227,18 @@ function BlockOptionsDropdownList({
  
   const formatBulletList = () => {
     if (blockType !== "ul") {
-      editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND);
+      editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
     } else {
-      editor.dispatchCommand(REMOVE_LIST_COMMAND);
+      editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
     }
     setShowBlockOptionsDropDown(false);
   };
  
   const formatNumberedList = () => {
     if (blockType !== "ol") {
-      editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND);
+      editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
     } else {
-      editor.dispatchCommand(REMOVE_LIST_COMMAND);
+      editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
     }
     setShowBlockOptionsDropDown(false);
   };
@@ -570,7 +591,7 @@ function BlockOptionsDropdownList({
   );
 }
  
-function positionEditorElement(editor, rect) {
+function positionEditorElement(editor: HTMLElement, rect: DOMRect | null) {
   if (rect === null) {
     editor.style.opacity = "0";
     editor.style.top = "-1000px";
@@ -584,13 +605,13 @@ function positionEditorElement(editor, rect) {
   }
 }
  
-function FloatingLinkEditor({ editor }) {
-  const editorRef = useRef(null);
-  const inputRef = useRef(null);
+function FloatingLinkEditor({ editor }: { editor: LexicalEditor }) {
+  const editorRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const mouseDownRef = useRef(false);
   const [linkUrl, setLinkUrl] = useState("");
   const [isEditMode, setEditMode] = useState(false);
-  const [lastSelection, setLastSelection] = useState(null);
+  const [lastSelection, setLastSelection] = useState<BaseSelection | null>(null);
  
   const updateLinkEditor = useCallback(() => {
     const selection = $getSelection();
@@ -616,6 +637,7 @@ function FloatingLinkEditor({ editor }) {
     const rootElement = editor.getRootElement();
     if (
       selection !== null &&
+      nativeSelection !== null &&
       !nativeSelection.isCollapsed &&
       rootElement !== null &&
       rootElement.contains(nativeSelection.anchorNode)
@@ -623,8 +645,8 @@ function FloatingLinkEditor({ editor }) {
       const domRange = nativeSelection.getRangeAt(0);
       let rect;
       if (nativeSelection.anchorNode === rootElement) {
-        let inner = rootElement;
-        while (inner.firstElementChild != null) {
+        let inner: HTMLElement = rootElement;
+        while (inner.firstElementChild instanceof HTMLElement) {
           inner = inner.firstElementChild;
         }
         rect = inner.getBoundingClientRect();
@@ -750,16 +772,15 @@ function FloatingLinkEditor({ editor }) {
  
 function ToolbarPlugin() {
   const [editor] = useLexicalComposerContext();
-  const toolbarRef = useRef(null);
+  const toolbarRef = useRef<HTMLDivElement>(null);
   const [blockType, setBlockType] = useState("paragraph");
-  const [selectedElementKey, setSelectedElementKey] = useState(null);
+  const [selectedElementKey, setSelectedElementKey] = useState<string | null>(null);
   const [showBlockOptionsDropDown, setShowBlockOptionsDropDown] =
     useState(false);
   const [codeLanguage, setCodeLanguage] = useState("");
   const [isLink, setIsLink] = useState(false);
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
-  const [isStrikethrough, setIsStrikethrough] = useState(false);
   const [isCode, setIsCode] = useState(false);
  
   const updateToolbar = useCallback(() => {
@@ -791,7 +812,6 @@ function ToolbarPlugin() {
       // Update text format
       setIsBold(selection.hasFormat("bold"));
       setIsItalic(selection.hasFormat("italic"));
-      setIsStrikethrough(selection.hasFormat("strikethrough"));
       setIsCode(selection.hasFormat("code"));
  
       // Update links
@@ -814,7 +834,7 @@ function ToolbarPlugin() {
       }),
       editor.registerCommand(
         SELECTION_CHANGE_COMMAND,
-        (_payload, newEditor) => {
+        () => {
           updateToolbar();
           return false;
         },
@@ -825,7 +845,7 @@ function ToolbarPlugin() {
  
   const codeLanguges = useMemo(() => getCodeLanguages(), []);
   const onCodeLanguageSelect = useCallback(
-    (e) => {
+    (e: ChangeEvent<HTMLSelectElement>) => {
       editor.update(() => {
         if (selectedElementKey !== null) {
           const node = $getNodeByKey(selectedElementKey);
@@ -1022,7 +1042,7 @@ function ToolbarPlugin() {
  
 const editorConfig = {
   namespace: "MyEditor",
-  onError(error) {
+  onError(error: Error) {
     throw error;
   },
   nodes: [
@@ -1037,8 +1057,8 @@ const editorConfig = {
   ],
 };
 
-export function TextEditorReact({onChange}) {
-  const handleChange = (editorState, editor) => {
+export function TextEditorReact({ onChange }: { onChange: (html: string) => void }) {
+  const handleChange = (editorState: EditorState, editor: LexicalEditor) => {
     editorState.read(() => {
       const html = $generateHtmlFromNodes(editor);
       onChange(html);
@@ -1055,7 +1075,7 @@ export function TextEditorReact({onChange}) {
               <ContentEditable className="lexical min-h-[280px] resize-none px-2.5 py-4 text-base caret-gray-900 outline-none" />
             }
             placeholder={<Placeholder />}
-            ErrorBoundary={null}
+            ErrorBoundary={LexicalErrorBoundary}
           />
 
           <OnChangePlugin onChange={handleChange}/>
