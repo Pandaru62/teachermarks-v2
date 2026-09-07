@@ -13,7 +13,6 @@ export default function useSchoolClassesQueries() {
         queryFn: () => getSchoolClasses(),
       });
 
-
     return( 
         {schoolClasses,
         schoolClassesLoading,

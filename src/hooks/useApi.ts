@@ -14,6 +14,7 @@ export function useApi() {
 
   api.interceptors.request.use((config) => {
     const currentToken = useAuthStore.getState().accessToken;
+    console.log("🚀 ~ useApi ~ currentToken:", currentToken)
     if (currentToken) {
       config.headers.Authorization = `Bearer ${currentToken}`;
     }
@@ -24,33 +25,38 @@ export function useApi() {
     (response) => response,
     async (error) => {
       const originalRequest = error.config;
+      console.log("🚀 ~ useApi ~ originalRequest:", originalRequest)
 
       // If 401
       if (error.response.status === 401 && originalRequest && !originalRequest._retry) {
         originalRequest._retry = true;
         try {
           // Call to refresh endpoint
-          const refreshResponse = await axios.get("/auth/refresh-token", {
-            baseURL: import.meta.env.VITE_API_BASE_URL,
+
+          // ERASE VITE_API_BASE_URL to check if it works
+          const refreshResponse = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/auth/refresh-token`, {
             withCredentials: true,
           });
+  
+          console.log("🚀 ~ useApi ~ refreshResponse:", refreshResponse)
 
-          const { access_token: newAccessToken } = refreshResponse.data;
+          const { newAccessToken } = refreshResponse.data;
 
           // Store new access token
           useAuthStore.setState({
             accessToken: newAccessToken
           });
+          console.log("🚀 ~ useApi ~ newAccessToken:", newAccessToken)
 
           // Retry original request
           if (originalRequest?.headers) {
             originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-            return axios(originalRequest);
+            return api(originalRequest);
           }
         } catch (refreshError) {
           // If error, redirect to login page
           useAuthStore.getState().logout();
-          window.location.href = "/signin";
+          globalThis.location.href = "/signin";
           return Promise.reject(refreshError);
         }
       }

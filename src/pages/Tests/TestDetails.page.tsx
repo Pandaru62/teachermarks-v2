@@ -13,6 +13,7 @@ import { useState } from "react";
 import QuickEditModal from "../../components/editStudentTest/QuickEditModal";
 import HorizontalTestChart from "../../components/ui/horizontalTestChart";
 import { RadialSkillIndicator } from "../../components/ui/radialSkillIndicator";
+import TestTagChip from "../../components/ui/TestTagChip";
 
 export default function TestDetailsPage() {
 
@@ -59,18 +60,7 @@ export default function TestDetailsPage() {
                             <Typography as="h2" className="font-logo text-center border-0 border-black border-b-2 mb-2">{test.name}</Typography>
                         <div className="flex gap-2 mb-2 flex-wrap justify-center">
                             <Chip value={test.schoolclass?.name} className="w-min" style={{ backgroundColor: test.schoolclass?.color ?? 'black'}}/>
-                            {test.testTag && (
-                                <Chip 
-                                value={test.testTag.name} 
-                                className="w-min" 
-                                style={{ backgroundColor: test.testTag.color ?? 'black'}}
-                                icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6Z" />
-                                    </svg>}
-                            />
-                        )}
-
+                            {test.testTag && ( <TestTagChip testTag={test.testTag} /> )}
                             <Chip value={"Trimestre " + test.trimester[2]} className="w-min"/>
                             <Chip 
                                 value={ new Date(test.date).toLocaleDateString()}

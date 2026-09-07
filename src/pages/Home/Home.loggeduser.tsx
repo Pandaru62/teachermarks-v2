@@ -5,11 +5,14 @@ import { useAuthStore } from "../../hooks/useAuthStore";
 import TutoAlert from "../../components/ui/tutoAlert";
 import smilingPostit from "../../assets/smiling_postit.svg";
 import LastNotifAlert from "../../components/ui/lastNotifAlert";
+import useDashboardQuery from "../../hooks/dashboard/useDashboardQuery";
 
 export default function HomeLoggedUser() {
 
     const currentUser = useStore(useAuthStore);
 
+    const { dashboard, dashboardLoading, dashboardError } = useDashboardQuery()
+    
     return(
         <div className="grid grid-rows-2">
             {currentUser.user?.is_first_visit && (
@@ -34,6 +37,17 @@ export default function HomeLoggedUser() {
                 </>
                 )}
             </Card>
+
+            <div>
+                <Typography as="h2" className="text-xl font-semibold">Dernières évaluations</Typography>
+                {dashboard && (
+                    <ul>
+                        {dashboard.lastTests.map(test => (
+                            <li key={test.id}>{new Date(test.date).toISOString()} | {test.name} | classe : {test.schoolclass.name} | Terminé à {test.completion} %</li>
+                        ))}
+                    </ul>
+                )}
+            </div>
 
             <div className="row-span-1 flex flex-col mt-3 lg:flex-row lg:gap-2 items-stretch justify-center">
                 <Link to="/forms" className="h-[75px] lg:w-1/2">

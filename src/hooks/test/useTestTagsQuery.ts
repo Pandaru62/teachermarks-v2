@@ -9,7 +9,7 @@ export default function useTestTags() {
         isLoading: testTagsLoading,
         isError: testTagsError,
       } = useQuery<testtag[]>({
-        queryKey: ["tests"],
+        queryKey: ["tags"],
         queryFn: () => getTestTags(),
       });
 

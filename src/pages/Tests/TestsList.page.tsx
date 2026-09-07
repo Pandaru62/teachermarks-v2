@@ -7,12 +7,14 @@ import TestInterface, { TrimesterEnum } from "../../interfaces/test.interface";
 import { useEffect, useState } from "react";
 import { CalendarIcon } from "@heroicons/react/24/solid";
 import DefaultIconButton from "../../components/ui/defaultIconButton";
+import TestTagChip from "../../components/ui/TestTagChip";
 
 export default function TestsListPage() {
 
     const {allTests, allTestsError, allTestsLoading} = useAllTestsQuery();
-    const [trimesterFilters, setTrimesterFilters] = useState<TrimesterEnum[]>([TrimesterEnum.TR1, TrimesterEnum.TR2, TrimesterEnum.TR3])
+    const [trimesterFilters, setTrimesterFilters] = useState<TrimesterEnum[]>([])
     const [schoolClassFilters, setSchoolClassFilters] = useState<string[]>([])
+    const [testTagFilters, setTestTagFilters] = useState<string[]>([])
     const [filteredTests, setFilteredTests] = useState<TestInterface[]>(allTests ?? [])
     const navigate = useNavigate();
     
@@ -33,8 +35,14 @@ export default function TestsListPage() {
             );
         }
 
+        if (testTagFilters.length > 0) {
+            filtered = filtered.filter(test =>
+            testTagFilters.includes(test.testTag?.name ?? "")
+            );
+        }
+
         setFilteredTests(filtered);
-    }, [trimesterFilters, schoolClassFilters, allTests]);
+    }, [trimesterFilters, schoolClassFilters, testTagFilters, allTests]);
     
     if (allTestsLoading) return <p>Chargement en cours ...</p>
     if (allTestsError) return <p>Erreur. Veuillez réessayer</p>
@@ -54,6 +62,8 @@ export default function TestsListPage() {
                     setSchoolClassFilters={setSchoolClassFilters}
                     setTrimesterFilters={setTrimesterFilters}
                     trimesterFilters={trimesterFilters}
+                    testTagFilters={testTagFilters}
+                    setTestTagFilters={setTestTagFilters}
                 />
                 <div className="flex justify-center items-center text-center bg-white bg-opacity-60 rounded-xl">
                     {filteredTests.length > 0 ? (
@@ -87,6 +97,7 @@ export default function TestsListPage() {
                                         value={ new Date(test.date).toLocaleDateString()}
                                         icon={<CalendarIcon/>}
                                         className="w-min"/>
+                                        {test.testTag && ( <TestTagChip testTag={test.testTag} /> )}
                                     </div>
                                     <Typography as="h3" className="text-black text-lg mt-2 font-semibold">
                                         {test.name}

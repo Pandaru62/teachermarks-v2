@@ -13,6 +13,7 @@ function Icon() {
 export default function LastNotifAlert() {
     const [open, setOpen] = useState(true); 
     const currentUser = useStore(useAuthStore);
+    const htmlMessage = currentUser.user?.lastNotif?.message
     
   return (
       <Alert
@@ -20,16 +21,18 @@ export default function LastNotifAlert() {
         className=""
         icon={<Icon />}
         onClose={() => setOpen(false)}
-        color="brown"
+        color="cyan"
       >
-        <Typography variant="h5" color="white">
+        <Typography variant="h3" color="white">
           Nouveautés sur Teachermarks
         </Typography>
         <Typography color="white" className="mt-2 font-normal">
-            Le {currentUser.user?.lastNotif?.createdAt}
-            {currentUser.user?.lastNotif?.title}
-            {currentUser.user?.lastNotif?.message}
+           Le {currentUser.user?.lastNotif?.createdAt}
         </Typography>
+        <Typography>
+          {currentUser.user?.lastNotif?.title}
+        </Typography>
+        <div dangerouslySetInnerHTML={{__html: htmlMessage ?? ''}} className="bg-white text-black border-2 p-3 w-full"></div>
       </Alert>
   );
 }
