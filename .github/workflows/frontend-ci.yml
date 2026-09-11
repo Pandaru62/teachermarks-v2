@@ -1,0 +1,37 @@
+name: Frontend CI
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+        env:
+          VITE_API_BASE_URL: https://api-teachermarks.lbuchelet.fr/
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --build-arg VITE_API_BASE_URL="https://api-teachermarks.lbuchelet.fr/" \
+            -t teachermarks-front:test .
