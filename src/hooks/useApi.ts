@@ -14,7 +14,6 @@ export function useApi() {
 
   api.interceptors.request.use((config) => {
     const currentToken = useAuthStore.getState().accessToken;
-    console.log("🚀 ~ useApi ~ currentToken:", currentToken)
     if (currentToken) {
       config.headers.Authorization = `Bearer ${currentToken}`;
     }

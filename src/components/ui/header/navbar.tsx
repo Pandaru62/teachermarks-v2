@@ -246,7 +246,7 @@ export default function Header() {
   }, []);
  
   return (
-    <Navbar className="mx-auto mb-3 max-w-screen-xl p-2 lg:rounded-full lg:pl-6 bg-[#076A87] bg-opacity-100">
+    <Navbar className="mx-auto mb-1 p-2 rounded-none lg:rounded-full lg:pl-6 bg-[#076A87] bg-opacity-100">
       <div className="relative mx-auto flex items-center justify-between text-blue-gray-100">
         <Typography
           as="a"

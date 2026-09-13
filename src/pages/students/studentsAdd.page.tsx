@@ -42,7 +42,7 @@ export default function StudentsAddPage() {
 
     // Quand on clique "Continuer" à l'étape 0
     const handleParseStudents = () => {
-        const parsed = studentsArea.split("\n").map((line) => {
+        const parsed = studentsArea.trim().split("\n").map((line) => {
             const parts = line.trim().split(" ");
             const firstName = parts.pop() ?? "";
             const lastName = parts.join(" ");
