@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useApi } from "../../../hooks/useApi";
 import { LoginFormValues } from "./signin.service";
+import { SignUpFormValues } from "./signup.service";
 
 const api = useApi();
 
@@ -13,9 +14,12 @@ const api = useApi();
     }
   }
 
-  export async function signup(data: LoginFormValues) {
+  export async function signup(data: SignUpFormValues) {
     try {
-      const response = await axios.post(import.meta.env.VITE_API_BASE_URL || '/api/' + "auth/signup", data);
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL || '/api/'}auth/signup`,
+        data
+      );
       return response.data;
     } catch (error) {
       throw new Error(`Une erreur est survenue: ${error}`);

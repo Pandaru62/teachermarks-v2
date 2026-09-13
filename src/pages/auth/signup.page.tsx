@@ -40,6 +40,17 @@ import BackButton from "../../components/ui/backButton";
               />
             </div>
             <div>
+              <TextInput 
+                name="login" 
+                type="text" 
+                label="Mon pseudo"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.login}
+                error={formik.errors.login}
+              />
+            </div>
+            <div>
               <TextInput
                 name="password"
                 type="password"

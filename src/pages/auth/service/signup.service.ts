@@ -6,19 +6,21 @@ import { signup } from "./auth.service";
 import Swal from 'sweetalert2';
 import { useNavigate } from "react-router-dom";
 
-export interface LoginFormValues {
+export interface SignUpFormValues {
   email: string;
   password: string;
+  login: string;
 }
 
 export function useSignUpPageService() {
   const navigate = useNavigate();
 
   const mutation = useMutation({
-    mutationFn: async (values: LoginFormValues) => {
+    mutationFn: async (values: SignUpFormValues) => {
       const dataToSubmit = {
         email: values.email,
         password: values.password,
+        login: values.login
       };
       const response = await signup(dataToSubmit);
       return response;
@@ -40,6 +42,7 @@ export function useSignUpPageService() {
     initialValues: {
       email: "",
       password: "",
+      login: ""
     },
     validationSchema: Yup.object({
       email: Yup.string()
@@ -49,6 +52,9 @@ export function useSignUpPageService() {
       password: Yup.string()
         .min(8, "Le mot de passe doit contenir au moins 8 caractères")
         .required("Un mot de passe est requis"),
+      login: Yup.string()
+        .min(4, "Le pseudo doit contenir au moins 4 caractères")
+        .required("Un pseudo de connexion est requis"),
     }),
     onSubmit: async (values) => {
       mutation.mutate(values);
