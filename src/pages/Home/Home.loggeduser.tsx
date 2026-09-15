@@ -10,7 +10,6 @@ import {
     ClipboardDocumentListIcon,
     PlusCircleIcon,
     UsersIcon,
-    AcademicCapIcon,
     ChevronRightIcon,
     LightBulbIcon,
 } from "@heroicons/react/24/solid";
