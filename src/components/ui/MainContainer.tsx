@@ -6,7 +6,7 @@ interface MainContainerProps {
 
 export default function MainContainer({ children }: MainContainerProps) {
   return (
-    <div className="mx-2">
+    <div className="mx-2 mb-16">
       {children}
     </div>
   );

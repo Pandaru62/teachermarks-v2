@@ -12,6 +12,7 @@ import {
     UsersIcon,
     AcademicCapIcon,
     ChevronRightIcon,
+    LightBulbIcon,
 } from "@heroicons/react/24/solid";
 
 export default function HomeLoggedUser() {
@@ -24,40 +25,75 @@ export default function HomeLoggedUser() {
             {currentUser.user?.is_first_visit && <TutoAlert />}
             {currentUser.user?.lastNotif && <LastNotifAlert />}
 
-            {/* Bannière de bienvenue */}
-            <Card className="relative overflow-hidden rounded-2xl bg-test-200 text-black px-6 py-6 shadow-md">
-                <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                    <div className="flex-1 space-y-2 text-center md:text-left">
-                        <Typography as="h2" className="text-2xl md:text-3xl font-bold">
-                            Bonjour <span className="text-white">{currentUser.user?.firstname} {currentUser.user?.lastname}</span> !
-                        </Typography>
-
-                        {currentUser.user?.is_first_visit ? (
-                            <>
-                                <Typography as="p" className="text-lg opacity-90">
-                                    Vous êtes sur le point de commencer un suivi plus intuitif et rapide des compétences de vos élèves.
-                                </Typography>
-                                <Typography as="p" className="text-lg font-semibold">
-                                    Nous vous invitons à ajouter vos premières informations.
-                                </Typography>
-                            </>
-                        ) : (
-                            <>
-                                <Typography as="p" className="text-lg opacity-90">
-                                    Vos élèves viennent d'être évalués ?
-                                </Typography>
-                                <Typography as="p" className="text-lg font-semibold">
-                                    N'oubliez pas de marquer leurs succès.
-                                </Typography>
-                            </>
-                        )}
+            {/* Bannière compacte avec date */}
+            <div className="flex items-center justify-between bg-test-100/10 border border-test-100/15 rounded-2xl px-5 py-4">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-test-100/15 flex items-center justify-center">
+                        <img src={smilingPostit} alt="" className="w-6 h-6" />
                     </div>
+                    <Typography as="h2" className="text-lg font-semibold text-test-100">
+                        Bonjour, {currentUser.user?.firstname}
+                    </Typography>
+                </div>
+                <Typography className="text-sm text-test-100/70 capitalize">
+                    {new Date().toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+                </Typography>
+            </div>
 
-                    <img
-                        src={smilingPostit}
-                        alt="smiling post-it"
-                        className="w-24 h-24 md:w-32 md:h-32 shrink-0 drop-shadow-lg"
-                    />
+            {/* Encart conseil */}
+            <div className="flex items-center gap-2 bg-gray-50 border border-gray-100 rounded-xl px-4 py-2.5">
+                <LightBulbIcon className="w-4 h-4 text-test-400 shrink-0" />
+                <Typography className="text-sm text-gray-600">
+                    {currentUser.user?.is_first_visit
+                        ? "Ajoutez vos premières classes et compétences pour commencer."
+                        : "Vos élèves viennent d'être évalués ? N'oubliez pas de marquer leurs succès."}
+                </Typography>
+            </div>
+
+            {/* Mini cards classes */}
+            <Card className="rounded-2xl shadow-md p-5">
+                <div className="flex items-center gap-2 mb-4">
+                    <UsersIcon className="w-5 h-5 text-test-400" />
+                    <Typography as="h2" className="text-xl font-semibold">
+                        Mes classes
+                    </Typography>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                    {/* {dashboard?.schoolClasses.map((sc) => ( */}
+                    {[
+                        { id: 1, name: "6E2", studentCount: 27, testCount: 2, color: "#54C3B2" },
+                        { id: 2, name: "6E4", studentCount: 25, testCount: 3, color: "#F46030" },
+                        { id: 3, name: "3E5", studentCount: 22, testCount: 1, color: "#FAC215" },
+                    ].map((sc) => (
+                        <Link
+                            key={sc.id}
+                            to={`/forms/${sc.id}`}
+                            style={{ "--class-color": sc.color } as React.CSSProperties}
+                            className="group relative bg-white border border-gray-100 border-t-[3px] rounded-xl px-3 py-3 transition-all hover:shadow-md hover:border-[var(--class-color)]"
+                        >
+                            <div
+                                className="absolute top-0 left-0 right-0 h-[3px] rounded-t-xl"
+                                style={{ backgroundColor: sc.color }}
+                            />
+
+                            <div className="flex items-center gap-1.5">
+                                <span
+                                    className="w-2 h-2 rounded-full shrink-0"
+                                    style={{ backgroundColor: sc.color }}
+                                />
+                                <Typography className="font-medium text-sm truncate">{sc.name}</Typography>
+                            </div>
+
+                            <div className="flex items-center gap-1 text-xs text-gray-500 mt-1.5 transition-colors group-hover:text-[var(--class-color)]">
+                                <UsersIcon className="w-3.5 h-3.5" />
+                                {sc.studentCount} élèves
+                            </div>
+                            <div className="flex items-center gap-1 text-xs text-gray-500 mt-0.5 transition-colors group-hover:text-[var(--class-color)]">
+                                <ClipboardDocumentListIcon className="w-3.5 h-3.5" />
+                                {sc.testCount} évaluations
+                            </div>
+                        </Link>
+                    ))}
                 </div>
             </Card>
 
@@ -116,44 +152,32 @@ export default function HomeLoggedUser() {
 
             {/* Actions rapides - visibles seulement sur desktop, mobile utilise la BottomNav */}
             <div className="hidden lg:flex lg:flex-row gap-3">
-                <Link to="/forms" className="lg:w-1/2">
-                    <Button className="w-full h-[70px] flex items-center justify-center gap-2 rounded-2xl custom-shadow bg-test-300 text-black transition-transform hover:scale-[1.02]" size="lg">
-                        <UsersIcon className="w-5 h-5" />
-                        <Typography className="font-[Teachers] font-extrabold text-lg xl:text-2xl">
+                <Link to="/forms" className="lg:w-1/3">
+                    <Button className="w-full h-[52px] flex items-center justify-center gap-2 rounded-xl custom-shadow bg-test-300 text-black transition-transform hover:scale-[1.02]" size="md">
+                        <UsersIcon className="w-4 h-4" />
+                        <Typography className="font-[Teachers] font-extrabold text-base">
                             Mes classes
                         </Typography>
                     </Button>
                 </Link>
 
-                {currentUser.user?.is_first_visit ? (
-                    <Link to="/skills" className="lg:w-1/2">
-                        <Button className="w-full h-[70px] flex items-center justify-center gap-2 rounded-2xl custom-shadow bg-test-300 text-black transition-transform hover:scale-[1.02]" size="lg">
-                            <AcademicCapIcon className="w-5 h-5" />
-                            <Typography className="font-[Teachers] font-extrabold text-lg xl:text-2xl">
-                                Mes compétences
-                            </Typography>
-                        </Button>
-                    </Link>
-                ) : (
-                    <>
-                        <Link to="/tests/new" className="lg:w-1/2">
-                            <Button className="w-full h-[70px] flex items-center justify-center gap-2 rounded-2xl custom-shadow bg-test-400 bg-opacity-80 text-black transition-transform hover:scale-[1.02]" size="lg">
-                                <PlusCircleIcon className="w-5 h-5" />
-                                <Typography className="font-[Teachers] font-extrabold text-lg xl:text-2xl">
-                                    Créer une éval<span className="hidden lg:inline">uation</span>
-                                </Typography>
-                            </Button>
-                        </Link>
-                        <Link to="/tests" className="lg:w-1/2">
-                            <Button className="w-full h-[70px] flex items-center justify-center gap-2 rounded-2xl custom-shadow bg-test-300 bg-opacity-80 text-black transition-transform hover:scale-[1.02]" size="lg">
-                                <ClipboardDocumentListIcon className="w-5 h-5" />
-                                <Typography className="font-[Teachers] font-extrabold text-lg xl:text-2xl">
-                                    Mes évaluations
-                                </Typography>
-                            </Button>
-                        </Link>
-                    </>
-                )}
+                <Link to="/tests/new" className="lg:w-1/3">
+                    <Button className="w-full h-[52px] flex items-center justify-center gap-2 rounded-xl custom-shadow bg-test-400 bg-opacity-80 text-black transition-transform hover:scale-[1.02]" size="md">
+                        <PlusCircleIcon className="w-4 h-4" />
+                        <Typography className="font-[Teachers] font-extrabold text-base">
+                            Créer une éval<span className="hidden lg:inline">uation</span>
+                        </Typography>
+                    </Button>
+                </Link>
+
+                <Link to="/tests" className="lg:w-1/3">
+                    <Button className="w-full h-[52px] flex items-center justify-center gap-2 rounded-xl custom-shadow bg-test-300 bg-opacity-80 text-black transition-transform hover:scale-[1.02]" size="md">
+                        <ClipboardDocumentListIcon className="w-4 h-4" />
+                        <Typography className="font-[Teachers] font-extrabold text-base">
+                            Mes évaluations
+                        </Typography>
+                    </Button>
+                </Link>
             </div>
         </div>
     );
