@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { Card, Dialog } from "@material-tailwind/react";
 
-import Wrapper from "../../components/ui/wrapper";
 import QuickEditModal from "../../components/editStudentTest/QuickEditModal";
 import TestSummaryCard from "../../components/testDetails/TestSummaryCard";
 import ResultsTableToolbar from "../../components/testDetails/ResultsTableToolbar";
