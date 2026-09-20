@@ -8,5 +8,15 @@ export default interface DashboardInterface {
             name: string,
         },
         completion: number
+        absents: number
+    }[]
+    schoolClasses: {
+        id: number,
+        color: string,
+        name: string,
+        _count: {
+            students: number,
+            test: number
+        }
     }[]
 }

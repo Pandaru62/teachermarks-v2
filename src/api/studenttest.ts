@@ -39,3 +39,12 @@ export async function editStudentTest(testId: number, studentId: number, student
     }
 }
 
+export async function batchEditStudentTests(testId: number, studentTests : EditStudentTestInterface[]) {
+    try {
+        const { data } = await api.put(`student-test/${testId}/batch`, {studentTests: studentTests});
+		// const parsedData = { ...data, mark: Number(data.mark)}
+        return data
+    } catch (error: any) {
+        throw new Error(error);
+    }
+}

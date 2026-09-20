@@ -50,7 +50,7 @@ export default function HomeLoggedUser() {
             </div>
 
             {/* Mini cards classes */}
-            {/* <Card className="rounded-2xl shadow-md p-5">
+            <Card className="rounded-2xl shadow-md p-5">
                 <div className="flex items-center gap-2 mb-4">
                     <UsersIcon className="w-5 h-5 text-test-400" />
                     <Typography as="h2" className="text-xl font-semibold">
@@ -58,12 +58,7 @@ export default function HomeLoggedUser() {
                     </Typography>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                    {dashboard?.schoolClasses.map((sc) => ( 
-                    {[
-                        { id: 1, name: "6E2", studentCount: 27, testCount: 2, color: "#54C3B2" },
-                        { id: 2, name: "6E4", studentCount: 25, testCount: 3, color: "#F46030" },
-                        { id: 3, name: "3E5", studentCount: 22, testCount: 1, color: "#FAC215" },
-                    ].map((sc) => (
+                    {dashboard?.schoolClasses.map((sc) => (
                         <Link
                             key={sc.id}
                             to={`/forms/${sc.id}`}
@@ -85,16 +80,16 @@ export default function HomeLoggedUser() {
 
                             <div className="flex items-center gap-1 text-xs text-gray-500 mt-1.5 transition-colors group-hover:text-[var(--class-color)]">
                                 <UsersIcon className="w-3.5 h-3.5" />
-                                {sc.studentCount} élèves
+                                {sc._count.students} élèves
                             </div>
                             <div className="flex items-center gap-1 text-xs text-gray-500 mt-0.5 transition-colors group-hover:text-[var(--class-color)]">
                                 <ClipboardDocumentListIcon className="w-3.5 h-3.5" />
-                                {sc.testCount} évaluations
+                                {sc._count.test} évaluation{sc._count.test > 1 && 's'}
                             </div>
                         </Link>
                     ))}
                 </div>
-            </Card> */}
+            </Card>
 
             {/* Dernières évaluations */}
             <Card className="rounded-2xl shadow-md p-5">
@@ -136,6 +131,11 @@ export default function HomeLoggedUser() {
                                         >
                                             {test.completion} %
                                         </span>
+                                        {test.absents > 0 && (
+                                            <span className="text-red-600 text-sm">
+                                                {test.absents} élève(s) absents
+                                            </span>
+                                        )}
                                         <ChevronRightIcon className="w-4 h-4 text-gray-400" />
                                     </div>
                                 </Link>
