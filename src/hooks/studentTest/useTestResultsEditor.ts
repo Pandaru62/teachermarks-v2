@@ -60,7 +60,9 @@ export default function useTestResultsEditor({
 
     const handleEditMode = () => {
 
-        const initialValues: Record<number, EditableStudentTest> = {};
+        const initialValues: Record<number, EditableStudentTest> = {
+
+        };
 
         students.forEach(student => {
 
@@ -70,7 +72,7 @@ export default function useTestResultsEditor({
             initialValues[student.id] = {
                 mark: studentTest?.mark ?? null,
                 isAbsent: studentTest?.isAbsent ?? false,
-                isUnmarked: studentTest?.isUnmarked ?? true,
+                isUnmarked: studentTest?.isUnmarked ?? false,
                 comment: studentTest?.comment ?? "",
                 skills: Object.fromEntries(
                     test.skills.map(skill => [

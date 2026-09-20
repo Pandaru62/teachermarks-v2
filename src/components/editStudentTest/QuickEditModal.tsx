@@ -77,6 +77,8 @@ const inputValueToSkillLevel = (
     }
 };
 
+
+
 export default function QuickEditModal({
     handleOpen,
     test,
@@ -318,6 +320,36 @@ export default function QuickEditModal({
 
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
+    const touchStartX = useRef<number | null>(null);
+
+    const handleTouchStart = (event: React.TouchEvent) => {
+        touchStartX.current = event.touches[0].clientX;
+    };
+
+    const handleTouchEnd = async (event: React.TouchEvent) => {
+        if (touchStartX.current === null) {
+            return;
+        }
+
+        const touchEndX = event.changedTouches[0].clientX;
+        const deltaX = touchEndX - touchStartX.current;
+
+        touchStartX.current = null;
+
+        // Ignore les petits mouvements
+        if (Math.abs(deltaX) < 50) {
+            return;
+        }
+
+        if (deltaX < 0) {
+            // Swipe gauche → suivant
+            await handleNext();
+        } else {
+            // Swipe droite → précédent
+            await handlePrevious();
+        }
+    };
+
 
     return (
         <form
@@ -435,6 +467,8 @@ export default function QuickEditModal({
             {/* CONTENT */}
 
             <DialogBody
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
                 className="
                     overflow-auto
                     max-h-[calc(100vh-190px)]

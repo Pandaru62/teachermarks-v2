@@ -5,10 +5,24 @@ export default function calculateAverage(numbers : number[]): number {
     return (numbers.reduce((acc, number) => acc + number, 0)/numbers.length)
 }
 
-export function getTestAverageMark(studentTests : StudentTestInterface[]): number {
-    // only count students who were present and marked
-    const marks = studentTests.filter((sT) => sT.isAbsent === false && sT.isUnmarked === false).map((studentTest) => studentTest.mark);
-    return calculateAverage(marks);
+// export function getTestAverageMark(studentTests : StudentTestInterface[]): number {
+//     // only count students who were present and marked
+//     const marks = studentTests
+//       .filter((sT) => sT.isAbsent === false && sT.isUnmarked === false)
+//       .map((studentTest) => studentTest.mark)
+//       .filter((mark): mark is number => mark !== null);
+//     return calculateAverage(marks);
+// }
+
+export function getTestAverageMark(studentTests: StudentTestInterface[]): number | null {
+    const marks = studentTests
+        .filter(st => !st.isAbsent && !st.isUnmarked && st.mark != null)
+        .map(st => Number(st.mark))
+        .filter(mark => !Number.isNaN(mark));
+
+    if (marks.length === 0) return null;
+
+    return marks.reduce((sum, mark) => sum + mark, 0) / marks.length;
 }
 
 export function calculateStudentAverage(numbers : number[], totalScale : number): number {

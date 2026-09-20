@@ -45,8 +45,8 @@ export default function useStudentTestEditor({
         studentTest = {
             id: 0,
             isAbsent: false,
-            isUnmarked: true,
-            mark: 0,
+            isUnmarked: false,
+            mark: null,
             student,
             studenttesthasskill: test.skills.map(skill => ({
                 level: SkillLevelEnum.NN,

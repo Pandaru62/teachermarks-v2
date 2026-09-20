@@ -128,7 +128,7 @@ export default function TestDetailsPage() {
                         numAbsent={numAbsent}
                         numUnmarked={numUnmarked}
                         numMarked={numMarked}
-                        average={average}
+                        average={average ?? 0}
                         onEditTest={() => navigate(`/tests/${testId}/edit`)}
                         onGoHome={() => navigate("/")}
                     />

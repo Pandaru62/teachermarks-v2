@@ -12,7 +12,7 @@ export enum SkillLevelEnum {
 
 export default interface StudentTestInterface {
     id: number,
-    mark: number,
+    mark: number | null,
     isAbsent: boolean,
     isUnmarked: boolean,
     comment?: string,
