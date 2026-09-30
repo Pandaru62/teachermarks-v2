@@ -12,7 +12,7 @@ import {
 } from "@material-tailwind/react";
 
 import CheckBoxListItem from "../ui/formInput/checkboxListItem";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import StudentInterface from "../../interfaces/student.interface";
 
 import useStudentTestEditor from "../../hooks/studentTest/useStudentTestEditor";
@@ -318,8 +318,6 @@ export default function QuickEditModal({
         formik.values.isUnmarked ||
         formik.values.isAbsent;
 
-    const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-
     const touchStartX = useRef<number | null>(null);
 
     const handleTouchStart = (event: React.TouchEvent) => {
@@ -349,6 +347,30 @@ export default function QuickEditModal({
             await handlePrevious();
         }
     };
+
+    const [skillInputs, setSkillInputs] = useState<Record<number, string>>({});
+
+    useEffect(() => {
+        const values: Record<number, string> = {};
+
+        formik.values.skills.forEach(skill => {
+            values[skill.skillId] =
+                skillLevelToInputValue(skill.level);
+        });
+
+        setSkillInputs(values);
+    }, [currentStudentId]);
+
+    useEffect(() => {
+        const values: Record<number, string> = {};
+
+        sortedSkills.forEach(skill => {
+            values[skill.skillId] = skillLevelToInputValue(skill.level);
+        });
+
+        setSkillInputs(values);
+    }, [currentStudentId, sortedSkills]);
+    
 
 
     return (
@@ -606,7 +628,7 @@ export default function QuickEditModal({
                     >
 
                         {sortedSkills.map(
-                            (skillValue, index) => {
+                            (skillValue) => {
 
                                 const skill =
                                     getSkill(
@@ -624,6 +646,10 @@ export default function QuickEditModal({
 
                                 const handleSkillNN = (skillId: number) => {
                                     handleSkillChange(skillId, SkillLevelEnum.NN);
+                                    setSkillInputs(prev => ({
+                                        ...prev,
+                                        [skillId]: ""
+                                    }));
                                 };
 
 
@@ -709,14 +735,13 @@ export default function QuickEditModal({
 
                                         <input
                                             key={skillValue.skillId}
-                                            ref={element => {inputRefs.current[index] = element}}
                                             type="text"
                                             inputMode="numeric"
                                             maxLength={1}
                                             value={
                                                 isStudentDisabled
                                                     ? ""
-                                                    : inputValue
+                                                    : skillInputs[skillValue.skillId] ?? ""
                                             }
                                             disabled={
                                                 isStudentDisabled
@@ -730,16 +755,29 @@ export default function QuickEditModal({
                                             onChange={event => {
                                                 const value = event.target.value;
 
+                                                if (value === "") {
+                                                    setSkillInputs(prev => ({
+                                                        ...prev,
+                                                        [skillValue.skillId]: ""
+                                                    }));
+
+                                                    return;
+                                                }
+
                                                 if (!["0", "1", "2", "3", "4"].includes(value)) {
                                                     return;
                                                 }
+
+                                                setSkillInputs(prev => ({
+                                                    ...prev,
+                                                    [skillValue.skillId]: value
+                                                }));
 
                                                 handleSkillChange(
                                                     skillValue.skillId,
                                                     inputValueToSkillLevel(value)
                                                 );
 
-                                                inputRefs.current[index + 1]?.focus();
                                             }}
                                             onKeyDown={event => {
 
