@@ -1,11 +1,14 @@
 import { Button, Typography } from "@material-tailwind/react";
-import { CheckIcon, PencilIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { CheckIcon, PencilIcon, XMarkIcon, TableCellsIcon } from "@heroicons/react/24/solid";
+import useGenerateStudentTestCsv from "../../hooks/studentTest/useGenerateStudentTestCsv";
+import useGenerateStudentTestPdf from "../../hooks/studentTest/useGenerateStudentTestPdf";
 
 
 interface ResultsTableToolbarProps {
-    studentsCount: number;
+    studentsCount?: number;
     isEditMode: boolean;
     isSaving: boolean;
+    testId: number;
     onEdit: () => void;
     onEditMobile: () => void;
     onCancel: () => void;
@@ -21,7 +24,11 @@ export default function ResultsTableToolbar({
     onEditMobile,
     onCancel,
     onSave,
+    testId
 }: ResultsTableToolbarProps) {
+
+    const { downloadCsv, isDownloading } = useGenerateStudentTestCsv();
+    const { downloadPdf, isDownloading: isDownloadingPdf } = useGenerateStudentTestPdf();
 
     return (
         <>
@@ -30,15 +37,17 @@ export default function ResultsTableToolbar({
             {/* TABLE ACTION BAR                               */}
             {/* ============================================== */}
 
-            <div className="
+            <div className={
+                `
+                ${studentsCount !== undefined ? "justify-between" : "justify-end"}
                 flex
-                justify-between
                 items-start
                 gap-3
                 mb-3
                 px-1
-            ">
-
+                `
+            }>
+                {studentsCount !== undefined && (
                 <div>
 
                     <Typography
@@ -56,10 +65,46 @@ export default function ResultsTableToolbar({
                     </Typography>
 
                 </div>
-
-
+            )}
+                
                 {!isEditMode ? (
-                <>
+                <div className="flex gap-2">
+                    <Button
+                        onClick={() => downloadPdf(testId)}
+                        disabled={isDownloadingPdf}
+                        className="
+                            flex
+                            items-center
+                            gap-2
+                            bg-test-300
+                            text-black
+                            normal-case
+                            shadow-none
+                            hover:shadow-md
+                        "
+                    >
+                        <TableCellsIcon className="w-4 h-4" />
+                        PDF
+                    </Button>
+
+                    <Button
+                        onClick={() => downloadCsv(testId)}
+                        disabled={isDownloading}
+                        className="
+                            flex
+                            items-center
+                            gap-2
+                            bg-test-300
+                            text-black
+                            normal-case
+                            shadow-none
+                            hover:shadow-md
+                        "
+                    >
+                        <TableCellsIcon className="w-4 h-4" />
+                        CSV
+                    </Button>
+
                     <Button
                         onClick={onEdit}
                         className="
@@ -100,7 +145,7 @@ export default function ResultsTableToolbar({
                         Modifier
 
                     </Button>
-                </>
+                </div>
 
                 ) : (
 
@@ -163,7 +208,7 @@ export default function ResultsTableToolbar({
             {/* EDIT MODE HELP                                  */}
             {/* ============================================== */}
 
-            {isEditMode && (
+            {isEditMode && studentsCount !== undefined && (
 
                 <div className="
                     mb-3

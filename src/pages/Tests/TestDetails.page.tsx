@@ -142,6 +142,7 @@ export default function TestDetailsPage() {
                     ">
 
                         <ResultsTableToolbar
+                            testId={testId}
                             studentsCount={students.length}
                             isEditMode={isEditMode}
                             isSaving={isSaving}
@@ -166,6 +167,19 @@ export default function TestDetailsPage() {
                             onSkillChange={handleSkillChange}
                             onCommentChange={handleCommentChange}
                             onQuickEdit={handleTestEdit}
+                        />
+
+                        <ResultsTableToolbar
+                            testId={testId}
+                            isEditMode={isEditMode}
+                            isSaving={isSaving}
+                            onEdit={handleEditMode}
+                            onEditMobile={() => {
+                                setSelectedStudentId(students[0].id);
+                                handleOpen();
+                            }}
+                            onCancel={handleCancelEdit}
+                            onSave={handleSaveEdit}
                         />
 
                     </Card>
