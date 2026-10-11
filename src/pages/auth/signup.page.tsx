@@ -91,13 +91,13 @@ import BackButton from "../../components/ui/backButton";
       <Button type="submit" className="rounded-[15px] custom-shadow h-[75px] bg-amber-custom text-black" size="md" disabled={mutation.isPending || !termsAccepted || formik.values.email == '' || formik.values.password == '' || formik.values.password !== confirmPassword}>
         <Typography className="font-[Teachers] font-extrabold text-4xl">{mutation.isPending ? "Inscription en cours..." : "M'inscrire"}</Typography>
       </Button>
-      {mutation.isError && (
+      {/* {mutation.isError && (
       <Typography className="text-center" variant="small" color="red">
         {mutation.error.status === 401
           ? "Email ou mot de passe incorrect"
           : "Une erreur est survenue"}
       </Typography>
-        )}
+        )} */}
           <Typography variant="small" className="mt-2 flex justify-center">
             J'ai déjà un compte.
             <Typography

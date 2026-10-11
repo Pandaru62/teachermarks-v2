@@ -1,59 +1,33 @@
-import { useApi } from "../hooks/useApi";
-import StudentInterface, { CreateStudentInterface, EditStudentInterface } from "../interfaces/student.interface";
-
-const api = useApi()
+import apiClient from "./apiClient";
+import StudentInterface, { CreateStudentsInterface, EditStudentInterface } from "../interfaces/student.interface";
 
 export default async function getAllStudents() : Promise<StudentInterface[]> {
-    try {
-        const { data } = await api.get('students');
-		return data
-    } catch (error: any) {
-        throw new Error(error);
-    }
+    const { data } = await apiClient.get('students');
+    return data
 }
 
 export async function getStudentsByClass(classId: number) : Promise<StudentInterface[]> {
-    try {
-        const { data } = await api.get('students/' + classId + '/class');
-		return data
-    } catch (error: any) {
-        throw new Error(error);
-    }
+    const { data } = await apiClient.get('students/' + classId + '/class');
+    return data;
 }
 
 export async function getStudentById(id:number) : Promise<StudentInterface> {
-    try {
-        const { data } = await api.get('students/' + id);
-		return data
-    } catch (error: any) {
-        throw new Error(error);
-    }
+    const { data } = await apiClient.get('students/' + id);
+    return data
 }
 
-export async function createManyStudents(students : CreateStudentInterface[]) : Promise<StudentInterface[]> {
-    try {
-        const { data } = await api.post('students', students);
-		return data
-    } catch (error: any) {
-        throw new Error(error);
-    }
+export async function createManyStudents(students : CreateStudentsInterface) : Promise<StudentInterface[]> {
+    const { data } = await apiClient.post('students', students);
+    return data;
 }
 
 export async function editStudent(student : EditStudentInterface, id : number) : Promise<StudentInterface> {
-    try {
-        const { data } = await api.put('students/' + id, student);
-		return data
-    } catch (error: any) {
-        throw new Error(error);
-    }
+    const { data } = await apiClient.put('students/' + id, student);
+    return data;
 }
 
 export async function deleteStudent(id : number) {
-    try {
-        const { data } = await api.delete('students/' + id);
-        return data
-    } catch (error: any) {
-        throw new Error(error);
-    }
+    const { data } = await apiClient.delete('students/' + id);
+    return data
 }
 

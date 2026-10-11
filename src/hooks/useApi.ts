@@ -1,6 +1,28 @@
 import axios, { AxiosInstance } from "axios";
 import { useAuthStore } from "./useAuthStore";
 
+let refreshPromise: Promise<string> | null = null;
+
+function refreshAccessToken(): Promise<string> {
+  refreshPromise ??= axios
+    .get<{ newAccessToken: string }>(
+      `${import.meta.env.VITE_API_BASE_URL}/auth/refresh-token`,
+      { withCredentials: true },
+    )
+    .then(({ data }) => {
+      useAuthStore.setState({
+        accessToken: data.newAccessToken,
+      });
+
+      return data.newAccessToken;
+    })
+    .finally(() => {
+      refreshPromise = null;
+    });
+
+  return refreshPromise;
+}
+
 export function useApi() {
 
   const api: AxiosInstance = axios.create({
@@ -24,38 +46,28 @@ export function useApi() {
     (response) => response,
     async (error) => {
       const originalRequest = error.config;
-      console.log("🚀 ~ useApi ~ originalRequest:", originalRequest)
 
-      // If 401
-      if (error.response.status === 401 && originalRequest && !originalRequest._retry) {
+      if (
+        error.response?.status === 401 &&
+        originalRequest &&
+        !originalRequest._retry &&
+        !originalRequest.url?.includes("/auth/refresh-token")
+      ) {
         originalRequest._retry = true;
         try {
-          // Call to refresh endpoint
+          const newAccessToken = await refreshAccessToken();
 
-          // ERASE VITE_API_BASE_URL to check if it works
-          const refreshResponse = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/auth/refresh-token`, {
-            withCredentials: true,
-          });
-  
-          console.log("🚀 ~ useApi ~ refreshResponse:", refreshResponse)
-
-          const { newAccessToken } = refreshResponse.data;
-
-          // Store new access token
-          useAuthStore.setState({
-            accessToken: newAccessToken
-          });
-          console.log("🚀 ~ useApi ~ newAccessToken:", newAccessToken)
-
-          // Retry original request
-          if (originalRequest?.headers) {
+          if (originalRequest.headers) {
             originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-            return api(originalRequest);
           }
+
+          return api(originalRequest);
         } catch (refreshError) {
-          // If error, redirect to login page
-          useAuthStore.getState().logout();
-          globalThis.location.href = "/signin";
+          if ( axios.isAxiosError(refreshError) && [401, 403].includes(refreshError.response?.status ?? 0)) {
+            useAuthStore.getState().logout();
+            globalThis.location.href = "/signin";
+          }
+
           return Promise.reject(refreshError);
         }
       }

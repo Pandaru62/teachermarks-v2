@@ -8,8 +8,8 @@ import { showWarningAlert } from "../../utils/alerts/warningAlert";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import StudentInterface from "../../interfaces/student.interface";
 import { deleteStudent } from "../../api/student";
-import { showSuccessAlert } from "../../utils/alerts/showSuccessAlert";
 import DefaultIconButton from "../../components/ui/defaultIconButton";
+import { useToast } from "../../contexts/ToastContext";
 
 export default function StudentEditPage() {
 
@@ -18,14 +18,16 @@ export default function StudentEditPage() {
     const {student, studentError,studentLoading} = useStudentQuery(studentId);
 
     const queryClient = useQueryClient();
-    
+    const { showToast } = useToast();
+
+  
     const mutation = useMutation({
         mutationFn: deleteStudent,
         onSuccess: (deletedStudent: StudentInterface) => {
-        queryClient.setQueryData(['students'], (oldStudents : StudentInterface[]) =>
-            oldStudents ? oldStudents.filter((student) => student.id !== deletedStudent.id) : []);
-        
-        showSuccessAlert("L'élève a été supprimé", () => navigate("/forms/"));
+            queryClient.setQueryData(['students'], (oldStudents : StudentInterface[]) =>
+                oldStudents ? oldStudents.filter((student) => student.id !== deletedStudent.id) : []);
+            showToast("L'élève a été supprimé", "success");
+            void navigate("/forms/");
         },
     });
     

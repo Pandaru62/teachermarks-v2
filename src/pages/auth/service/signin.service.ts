@@ -1,11 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { signin } from "./auth.service";
 import { useAuthStore, UserWithoutPassword } from "../../../hooks/useAuthStore";
+import { getApiErrorMessage } from "../../../utils/getApiErrorMessage";
+import { useToast } from "../../../contexts/ToastContext";
 
 export interface LoginFormValues {
   email: string;
@@ -13,6 +14,7 @@ export interface LoginFormValues {
 }
 
 export function useLoginPageService() {
+  const { showToast } = useToast();
   const navigate = useNavigate();
   
   // Lire la valeur initiale depuis localStorage
@@ -27,16 +29,16 @@ export function useLoginPageService() {
       };
       const response = await signin(dataToSubmit);
       return {
-        user: response.data.user,
-        accessToken: response.data.access_token
+        user: response.user,
+        accessToken: response.access_token,
       };
     },
     onSuccess: (data: { user: UserWithoutPassword; accessToken: string }) => {
       useAuthStore.getState().login(data.user, data.accessToken);
-      navigate("/");
+      void navigate("/");
     },
-    onError: (error: AxiosError<{ message: string }>) => {
-      throw new Error(error.message);
+    onError: (error: unknown) => {
+      showToast(getApiErrorMessage(error), "error");
     },
   });
 

@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom"
 import useSchoolClassQuery from "../../hooks/schoolClass/useSchoolClassQuery";
-import { Stepper, Step, Card, Typography, IconButton, Button, Alert } from "@material-tailwind/react";
+import { Stepper, Step, Card, Typography, IconButton, Button } from "@material-tailwind/react";
 import { useState } from "react";
 import Wrapper from "../../components/ui/wrapper";
 import BackButton from "../../components/ui/backButton";
@@ -11,20 +11,22 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createManyStudents } from "../../api/student";
 import StudentInterface from "../../interfaces/student.interface";
 import DefaultLinkButton from "../../components/ui/defaultLinkButton";
+import { useToast } from "../../contexts/ToastContext";
+import { getApiErrorMessage } from "../../utils/getApiErrorMessage";
 
 export default function StudentsAddPage() {
 
     const formId = Number(useParams().id);
     const queryClient = useQueryClient();
 
-    
-    
     const {schoolClass, schoolClassError, schoolClassLoading} = useSchoolClassQuery(formId);
     
     const [activeStep, setActiveStep] = useState<number>(0);
     const [studentsArea, setStudentsArea] = useState<string>("");
     const [students, setStudents] = useState<{firstName: string, lastName: string, schoolClassId: number, hidden?: boolean}[]>([]);
     const [addedStudents, setAddedStudents] = useState<StudentInterface[] | null>(null);
+
+    const { showToast } = useToast();
     
     const mutation = useMutation({
         mutationFn: createManyStudents,
@@ -37,6 +39,12 @@ export default function StudentsAddPage() {
             // update query studentsByClass
             queryClient.setQueryData(['classStudents', formId], (oldStudents : StudentInterface[]) =>
                 oldStudents ? [...oldStudents, students] : []);
+
+            showToast("Les élèves ont été ajoutés", "success");
+        },
+        onError: (error: unknown) => {
+            showToast(getApiErrorMessage(error), "error");
+            setActiveStep(1);
         }
     });
 
@@ -63,7 +71,7 @@ export default function StudentsAddPage() {
             (s) => !s.hidden && s.lastName.trim() !== "" && s.firstName.trim() !== ""
         );
 
-        mutation.mutate(visibleStudents);
+        mutation.mutate({ students: visibleStudents.map((s) => ({ firstName: s.firstName, lastName: s.lastName, schoolClassId: formId })) });
         setActiveStep(2);
     };
 
@@ -180,27 +188,9 @@ export default function StudentsAddPage() {
                             <div>
                                 {mutation.isPending ? ('Ajout des élèves en cours...') : (
                                 <>
-                                    {mutation.isError ? ( <div>Une erreur s'est produite: {mutation.error.message}</div> ) : null}
-                                    {mutation.isSuccess ? (
+                                    {mutation.isSuccess && (
                                         <>
                                             <div className="bg-white rounded-xl p-5 my-3">
-                                            <Alert
-                                                icon={<svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        viewBox="0 0 24 24"
-                                                        fill="currentColor"
-                                                        className="h-6 w-6"
-                                                        >
-                                                        <path
-                                                            fillRule="evenodd"
-                                                            d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
-                                                            clipRule="evenodd"
-                                                        />
-                                                        </svg>}
-                                                className="rounded-none border-l-4 border-[#2ec946] bg-[#2ec946]/10 font-medium text-[#2ec946]"
-                                                >
-                                                Ajout effectué
-                                            </Alert>
                                                 <StudentsList students={addedStudents ?? []} />
                                             </div>
                                             <DefaultLinkButton
@@ -208,7 +198,7 @@ export default function StudentsAddPage() {
                                                 to="/forms"
                                             />
                                         </>
-                                    ) : null}
+                                    )}
                                 </>
                                 )}
                             </div>

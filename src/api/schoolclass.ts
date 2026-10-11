@@ -1,49 +1,27 @@
-import { useApi } from "../hooks/useApi";
+import apiClient from "./apiClient";
 import { CreateSchoolClassInterface, EditSchoolClassInterface } from "../interfaces/schoolclass.interface";
 
-const api = useApi()
-
 export default async function getSchoolClasses() {
-    try {
-        const { data } = await api.get('classes');
-		return data
-    } catch (error: any) {
-        throw new Error(error);
-    }
+    const { data } = await apiClient.get('classes');
+	return data
 }
 
 export async function getSchoolClassById(id:number) {
-    try {
-        const { data } = await api.get('classes/' + id);
-		return data
-    } catch (error: any) {
-        throw new Error(error);
-    }
+    const { data } = await apiClient.get('classes/' + id);
+	return data
 }
 
 export async function createSchoolClass(schoolClass : CreateSchoolClassInterface) {
-    try {
-        const { data } = await api.post('classes', schoolClass);
-		return data
-    } catch (error: any) {
-        throw new Error(error);
-    }
+    const { data } = await apiClient.post('classes', schoolClass);
+	return data
 }
 
 export async function editSchoolClass(schoolClass : EditSchoolClassInterface, id : number) {
-    try {
-        const { data } = await api.put('classes/' + id, schoolClass);
-		return data
-    } catch (error: any) {
-        throw new Error(error);
-    }
+    const { data } = await apiClient.put('classes/' + id, schoolClass);
+    return data
 }
 
 export async function archiveSchoolClass(id : number) {
-    try {
-        const { data } = await api.patch('classes/' + id + '/archive');
-		return data
-    } catch (error: any) {
-        throw new Error(error);
-    }
+    const { data } = await apiClient.patch('classes/' + id + '/archive');
+    return data
 }

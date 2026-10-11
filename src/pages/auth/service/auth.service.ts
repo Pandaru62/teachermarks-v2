@@ -1,37 +1,26 @@
-import axios from "axios";
-import { useApi } from "../../../hooks/useApi";
-import { LoginFormValues } from "./signin.service";
-import { SignUpFormValues } from "./signup.service";
 
-const api = useApi();
+import apiClient from "../../../api/apiClient";
+import type { LoginFormValues } from "./signin.service";
+import type { SignUpFormValues } from "./signup.service";
 
-  export async function signin(data: LoginFormValues) {
-    try {
-      const response = await api.post("auth/signin", data);
-      return response;
-    } catch (error) {
-      throw new Error(`Une erreur est survenue: ${error}`);
-    }
-  }
+export async function signin(data: LoginFormValues) {
+  const { data: responseData } = await apiClient.post(
+    "auth/signin",
+    data,
+  );
 
-  export async function signup(data: SignUpFormValues) {
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL || '/api/'}auth/signup`,
-        data
-      );
-      return response.data;
-    } catch (error) {
-      throw new Error(`Une erreur est survenue: ${error}`);
-    }
-  }
+  return responseData;
+}
 
-  export async function logOutClearCookies() {
-    try {
-      // const response = await api.delete("auth/logout");
-      // return response.data;
-      return
-    } catch (error) {
-      throw new Error(`Une erreur est survenue: ${error}`);
-    }
-  }
+export async function signup(data: SignUpFormValues) {
+  const { data: responseData } = await apiClient.post(
+    "auth/signup",
+    data,
+  );
+
+  return responseData;
+}
+
+export async function logOutClearCookies() {
+  // À implémenter lorsque la route de déconnexion du backend sera définie.
+}

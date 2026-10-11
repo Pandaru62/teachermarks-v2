@@ -9,4 +9,10 @@ export default interface StudentInterface {
 
 export type CreateStudentInterface = Pick<StudentInterface, "lastName" | "firstName">;
 
+export type CreateStudentsInterface = { students: {
+    lastName: string,
+    firstName: string,
+    schoolClassId: number
+}[] };
+
 export type EditStudentInterface = Pick<StudentInterface, "lastName" | "firstName">;

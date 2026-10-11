@@ -1,10 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { signup } from "./auth.service";
-import Swal from 'sweetalert2';
 import { useNavigate } from "react-router-dom";
+import { getApiErrorMessage } from "../../../utils/getApiErrorMessage";
+import { useToast } from "../../../contexts/ToastContext";
 
 export interface SignUpFormValues {
   email: string;
@@ -14,6 +14,7 @@ export interface SignUpFormValues {
 
 export function useSignUpPageService() {
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const mutation = useMutation({
     mutationFn: async (values: SignUpFormValues) => {
@@ -26,15 +27,11 @@ export function useSignUpPageService() {
       return response;
     },
     onSuccess: () => {
-      Swal.fire({
-        title: "Compte créé avec succès",
-        text: `Votre compte a bien été créé. Vous pouvez désormais vous connecter avec vos identfiants.`,
-        icon: "success"
-      });
-      navigate("/signin");
+      showToast("Votre compte a bien été créé. Vous pouvez désormais vous connecter avec vos identifiants.", "success");
+      void navigate("/signin");
     },
-    onError: (error: AxiosError<{ message: string }>) => {
-      throw new Error(error.message);
+    onError: (error: unknown) => {
+      showToast(getApiErrorMessage(error), "error");
     },
   });
 

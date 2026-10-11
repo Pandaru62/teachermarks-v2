@@ -25,51 +25,54 @@ import ProfileEditPage from './pages/profile/profileEdit.page'
 import AdminAddNotifPage from './pages/admin/adminAddNotif.page'
 import MainContainer from './components/ui/MainContainer'
 import BottomNav from './components/ui/footer/BottomNav'
+import { ToastProvider } from './contexts/ToastContext'
 
 function App() {
 
   return (
     <>
       <Header />
-      <MainContainer>
-        <Routes>
+      <ToastProvider>
+        <MainContainer>
+          <Routes>
 
-          <Route element={<PrivateRoute />} >
-            <Route path="/tests" element={<TestsPage />} />
-            <Route path="/tests/new" element={<TestAddPage />} />
-            <Route path="/tests/:id" element={<TestDetailsPage />} />
-            <Route path="/tests/:id/edit" element={<TestEditPage />} />
+            <Route element={<PrivateRoute />} >
+              <Route path="/tests" element={<TestsPage />} />
+              <Route path="/tests/new" element={<TestAddPage />} />
+              <Route path="/tests/:id" element={<TestDetailsPage />} />
+              <Route path="/tests/:id/edit" element={<TestEditPage />} />
 
+              
+              <Route path="/forms" element={<SchoolClassPage />} />
+              <Route path="/forms/new" element={<AddSchoolClassPage />} />
+              <Route path="/forms/:id" element={<SchoolClasseDetailsPage />} />
+              <Route path="/forms/:id/edit" element={<EditSchoolClassPage />} />
+
+              <Route path="/forms/:id/add-students" element={<StudentsAddPage />} />
+
+              <Route path="/skills" element={<SkillListPage />} />
+              <Route path="/skills/new" element={<SkillAddPage />} />
+              <Route path="/skills/:id" element={<SkillEditPage />} />
+
+              <Route path="/student/:id" element={<StudentDetailsPage />} />
+              <Route path="/student/:id/edit" element={<StudentEditPage />} />
+
+              <Route path="/profile" element={<ProfileDetailsPage />} />
+              <Route path="/profile/edit" element={<ProfileEditPage />} />
+
+              <Route path="/admin" element={<AdminAddNotifPage />} />
+
+
+            </Route>
+
+            <Route path="/" element={<HomePage />} />
+            <Route path="/signin" element={<SignInPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/*" element={<ErrorPage />} />
             
-            <Route path="/forms" element={<SchoolClassPage />} />
-            <Route path="/forms/new" element={<AddSchoolClassPage />} />
-            <Route path="/forms/:id" element={<SchoolClasseDetailsPage />} />
-            <Route path="/forms/:id/edit" element={<EditSchoolClassPage />} />
-
-            <Route path="/forms/:id/add-students" element={<StudentsAddPage />} />
-
-            <Route path="/skills" element={<SkillListPage />} />
-            <Route path="/skills/new" element={<SkillAddPage />} />
-            <Route path="/skills/:id" element={<SkillEditPage />} />
-
-            <Route path="/student/:id" element={<StudentDetailsPage />} />
-            <Route path="/student/:id/edit" element={<StudentEditPage />} />
-
-            <Route path="/profile" element={<ProfileDetailsPage />} />
-            <Route path="/profile/edit" element={<ProfileEditPage />} />
-
-            <Route path="/admin" element={<AdminAddNotifPage />} />
-
-
-          </Route>
-
-          <Route path="/" element={<HomePage />} />
-          <Route path="/signin" element={<SignInPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/*" element={<ErrorPage />} />
-          
-        </Routes>
-      </MainContainer>
+          </Routes>
+        </MainContainer>
+      </ToastProvider>
       <BottomNav />
     </>
   )
