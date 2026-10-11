@@ -72,13 +72,13 @@ import Wrapper from "../../components/ui/wrapper";
         <Button type="submit" className="rounded-[15px] custom-shadow h-[75px] w-full md:w-96 bg-amber-custom text-black" size="md" disabled={mutation.isPending}>
           <Typography className="font-[Teachers] font-extrabold text-xl">{mutation.isPending ? "Connexion en cours..." : "Me connecter"}</Typography>
         </Button>
-        {mutation.isError && (
+        {/* {mutation.isError && (
         <Typography className="text-center" variant="small" color="red">
           {mutation.error.status === 401
             ? "Email ou mot de passe incorrect"
             : "Une erreur est survenue"}
         </Typography>
-          )}
+          )} */}
             <Typography variant="small" className="mt-2 flex justify-center">
               Je n'ai pas de compte.
               <Typography
