@@ -42,8 +42,8 @@ export default function StudentsAddPage() {
 
             showToast("Les élèves ont été ajoutés", "success");
         },
-        onError: (error: unknown) => {
-            showToast(getApiErrorMessage(error), "error");
+        onError: async (error: unknown) => {
+            showToast(await getApiErrorMessage(error), "error");
             setActiveStep(1);
         }
     });

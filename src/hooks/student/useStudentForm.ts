@@ -1,15 +1,16 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
-import { showSuccessAlert } from '../../utils/alerts/showSuccessAlert';
 import { useQueryClient } from '@tanstack/react-query';
 import { StudentFormProps } from '../../components/forms/StudentForm';
 import { editStudent } from '../../api/student';
 import StudentInterface from '../../interfaces/student.interface';
+import { useToast } from '../../contexts/ToastContext';
 
 export const useStudentForm = (props : StudentFormProps) => {
   const {initialValues, editStudentId} = props;
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
 
   const navigate = useNavigate();
 
@@ -35,7 +36,8 @@ export const useStudentForm = (props : StudentFormProps) => {
 
           queryClient.setQueryData(['student', editStudentId], editedStudent)
 
-          showSuccessAlert("Elève modifié avec succès !", () => navigate("/student/" + editStudentId));
+          showToast("Elève modifié avec succès !", "success");
+          void navigate("/student/" + editStudentId);
         }
       }
     }

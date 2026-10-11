@@ -1,15 +1,16 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
-import { showSuccessAlert } from '../../utils/alerts/showSuccessAlert';
 import { SkillFormProps } from '../../components/forms/SkillForm';
 import { createSkill, editSkill } from '../../api/skill';
 import { useQueryClient } from '@tanstack/react-query';
 import SkillInterface from '../../interfaces/skill.interface';
+import { useToast } from '../../contexts/ToastContext';
 
 export const useSkillForm = (props : SkillFormProps) => {
   const {initialValues, editSkillId} = props;
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
 
   const navigate = useNavigate();
 
@@ -35,7 +36,8 @@ export const useSkillForm = (props : SkillFormProps) => {
 
           queryClient.setQueryData(['skill', editSkillId], editedSkill)
 
-          showSuccessAlert("Compétence modifiée avec succès !", () => navigate("/skills/"));
+          showToast("Compétence modifiée avec succès !", "success");
+          void navigate("/skills/");
         }
       } else {
         const newSkill = await createSkill(
@@ -50,7 +52,8 @@ export const useSkillForm = (props : SkillFormProps) => {
           );
 
           queryClient.setQueryData(['skill', newSkill.id], newSkill);
-          showSuccessAlert("Compétence créée avec succès !", () => navigate("/skills"));
+          showToast("Compétence créée avec succès !", "success");
+          void navigate("/skills");
         }
       }
     },

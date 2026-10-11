@@ -37,8 +37,8 @@ export function useLoginPageService() {
       useAuthStore.getState().login(data.user, data.accessToken);
       void navigate("/");
     },
-    onError: (error: unknown) => {
-      showToast(getApiErrorMessage(error), "error");
+    onError: async (error: unknown) => {
+      showToast(await getApiErrorMessage(error), "error");
     },
   });
 

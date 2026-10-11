@@ -30,8 +30,8 @@ export function useSignUpPageService() {
       showToast("Votre compte a bien été créé. Vous pouvez désormais vous connecter avec vos identifiants.", "success");
       void navigate("/signin");
     },
-    onError: (error: unknown) => {
-      showToast(getApiErrorMessage(error), "error");
+    onError: async (error: unknown) => {
+      showToast(await getApiErrorMessage(error), "error");
     },
   });
 

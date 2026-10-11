@@ -1,7 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 import { generatePdf } from "../../api/studenttest";
+import { useToast } from "../../contexts/ToastContext";
+import { getApiErrorMessage } from "../../utils/getApiErrorMessage";
 
 export default function useGenerateStudentTestPdf() {
+  const { showToast } = useToast();
   const mutation = useMutation({
     mutationFn: generatePdf,
     onSuccess: (pdfBlob, testId) => {
@@ -13,7 +16,11 @@ export default function useGenerateStudentTestPdf() {
       link.click();
       link.remove();
       window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
+      showToast("Le PDF a été généré avec succès.", "success");
     },
+    onError: async (error) => {
+      showToast(await getApiErrorMessage(error) || "Une erreur est survenue lors du téléchargement du PDF. Veuillez réessayer.", "error");
+    }
   });
 
   return {

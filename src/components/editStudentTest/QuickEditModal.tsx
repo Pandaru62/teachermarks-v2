@@ -12,7 +12,7 @@ import {
 } from "@material-tailwind/react";
 
 import CheckBoxListItem from "../ui/formInput/checkboxListItem";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import StudentInterface from "../../interfaces/student.interface";
 
 import useStudentTestEditor from "../../hooks/studentTest/useStudentTestEditor";
@@ -130,10 +130,10 @@ export default function QuickEditModal({
     }, [currentStudentId]);
 
     const sortedSkills =
-        [...formik.values.skills].sort(
+        useMemo(() => [...formik.values.skills].sort(
             (a, b) =>
                 a.skillId - b.skillId
-        );
+        ), [formik.values.skills]);
 
     /*
      * Find the current skill definition
@@ -349,17 +349,6 @@ export default function QuickEditModal({
     };
 
     const [skillInputs, setSkillInputs] = useState<Record<number, string>>({});
-
-    useEffect(() => {
-        const values: Record<number, string> = {};
-
-        formik.values.skills.forEach(skill => {
-            values[skill.skillId] =
-                skillLevelToInputValue(skill.level);
-        });
-
-        setSkillInputs(values);
-    }, [currentStudentId]);
 
     useEffect(() => {
         const values: Record<number, string> = {};

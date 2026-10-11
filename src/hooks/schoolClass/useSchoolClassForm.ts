@@ -3,9 +3,9 @@ import * as Yup from 'yup';
 import { useState } from 'react';
 import { createSchoolClass, editSchoolClass } from '../../api/schoolclass';
 import { useNavigate } from 'react-router-dom';
-import { showSuccessAlert } from '../../utils/alerts/showSuccessAlert';
 import { useQueryClient } from '@tanstack/react-query';
 import SchoolClassInterface from '../../interfaces/schoolclass.interface';
+import { useToast } from '../../contexts/ToastContext';
 
 interface SchoolClassFormProps {
   initialValues: { class_name: string; color: string };
@@ -13,12 +13,13 @@ interface SchoolClassFormProps {
 }
 
 export const useSchoolClassForm = (props : SchoolClassFormProps) => {
-    const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
   const {initialValues, editClassId} = props;
   const [selectedColor, setSelectedColor] = useState(initialValues.color ?? "");
   const [customColor, setCustomColor] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const handleColorChange = (color: string) => {
     setCustomColor('');
@@ -52,7 +53,8 @@ export const useSchoolClassForm = (props : SchoolClassFormProps) => {
 
           queryClient.setQueryData(['schoolClass', editClassId], editedClass);
 
-          showSuccessAlert("Classe modifiée avec succès !", () => navigate("/forms/" + editClassId));
+          showToast("Classe modifiée avec succès !", "success");
+          void navigate("/forms/" + editClassId);
         }
       } else {
         const newClass = await createSchoolClass(
@@ -68,7 +70,8 @@ export const useSchoolClassForm = (props : SchoolClassFormProps) => {
 
           queryClient.setQueryData(['schoolClass', newClass.id], newClass);
 
-          showSuccessAlert("Classe créée avec succès !", () => navigate("/forms"));
+          showToast("Classe créée avec succès !", "success");
+          void navigate("/forms");
         }
       }
     },

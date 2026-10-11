@@ -3,7 +3,6 @@ import { CheckIcon, PencilIcon, XMarkIcon, TableCellsIcon } from "@heroicons/rea
 import useGenerateStudentTestCsv from "../../hooks/studentTest/useGenerateStudentTestCsv";
 import useGenerateStudentTestPdf from "../../hooks/studentTest/useGenerateStudentTestPdf";
 
-
 interface ResultsTableToolbarProps {
     studentsCount?: number;
     isEditMode: boolean;

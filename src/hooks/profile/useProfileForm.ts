@@ -1,15 +1,15 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
-import { showSuccessAlert } from '../../utils/alerts/showSuccessAlert';
 import { editProfile } from '../../api/profile';
 import { useAuthStore } from '../useAuthStore';
 import ProfileInterface from '../../interfaces/profile.interface';
+import { useToast } from '../../contexts/ToastContext';
 
 
 export const useProfileForm = (initialValues : Omit<ProfileInterface, "userId">) => {
   const { user, setUser } = useAuthStore();
-  
+  const { showToast } = useToast();
   
   const navigate = useNavigate();
 
@@ -31,7 +31,8 @@ export const useProfileForm = (initialValues : Omit<ProfileInterface, "userId">)
           }, user.id);
         if(editedProfile) {
           setUser(editedProfile)
-          showSuccessAlert("Profil modifié avec succès !", () => navigate("/"));
+          showToast("Profil modifié avec succès !", "success");
+          void navigate("/");
         }
         }
       }

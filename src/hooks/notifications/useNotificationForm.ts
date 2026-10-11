@@ -1,12 +1,13 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
-import { showSuccessAlert } from '../../utils/alerts/showSuccessAlert';
 import { createandPublishNotification } from '../../api/notifications';
+import { useToast } from '../../contexts/ToastContext';
 
 export const useNotificationForm = () => {
   
     const navigate = useNavigate();
+    const { showToast } = useToast();
 
     const formik = useFormik({
         initialValues: {
@@ -26,7 +27,8 @@ export const useNotificationForm = () => {
                 }
             );
             if(newNotif) {
-                showSuccessAlert("Notification validée !", () => navigate("/"));
+                showToast("Notification validée !", "success");
+                void navigate("/");
             }
         }
     });

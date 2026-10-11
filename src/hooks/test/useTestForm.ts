@@ -1,7 +1,6 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
-import { showSuccessAlert } from '../../utils/alerts/showSuccessAlert';
 import { useQueryClient } from '@tanstack/react-query';
 import SchoolClassInterface from '../../interfaces/schoolclass.interface';
 import { createTest, editTest } from '../../api/tests';
@@ -9,6 +8,7 @@ import TestInterface, { TrimesterEnum } from '../../interfaces/test.interface';
 import { useState } from 'react';
 import SkillInterface from '../../interfaces/skill.interface';
 import Swal from "sweetalert2";
+import { useToast } from '../../contexts/ToastContext';
 
 export interface TestFormProps {
   initialValues: { 
@@ -32,7 +32,7 @@ export const useTestForm = (props : TestFormProps) => {
   const {initialValues, editTestId } = props;
   const navigate = useNavigate();
   const [selectedSkills, setSelectedSkills] = useState<Pick<SkillInterface, "id" | "name" | "abbreviation">[]>(initialValues.skills ?? []);
-
+  const { showToast } = useToast();
 
   const formik = useFormik({
     initialValues,
@@ -72,7 +72,8 @@ export const useTestForm = (props : TestFormProps) => {
 
                 queryClient.setQueryData(['test', editTestId], editedTest);
 
-                showSuccessAlert("Evaluation modifiée avec succès !", () => navigate("/tests/" + editTestId));
+                showToast("Evaluation modifiée avec succès !", "success");
+                void navigate("/tests/" + editTestId);
               }
             }
           });
@@ -89,7 +90,8 @@ export const useTestForm = (props : TestFormProps) => {
 
                 queryClient.setQueryData(['test', editTestId], editedTest);
 
-                showSuccessAlert("Evaluation modifiée avec succès !", () => navigate("/tests/" + editTestId));
+                showToast("Evaluation modifiée avec succès !", "success");
+                void navigate("/tests/" + editTestId);
               }
             }
         
@@ -106,7 +108,8 @@ export const useTestForm = (props : TestFormProps) => {
 
           queryClient.setQueryData(['test', newTest.id], newTest);
 
-          showSuccessAlert("Evaluation créée avec succès !", () => navigate("/tests"));
+          showToast("Evaluation créée avec succès !", "success");
+          void navigate("/tests");
         }
       }
     },

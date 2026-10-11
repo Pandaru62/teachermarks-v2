@@ -1,13 +1,14 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { showSuccessAlert } from '../../utils/alerts/showSuccessAlert';
 import { useAuthStore } from '../useAuthStore';
 import { TrimesterEnum } from '../../interfaces/test.interface';
 import { editPreferences } from '../../api/profile';
+import { useToast } from '../../contexts/ToastContext';
 
 
 export const usePreferencesForm = () => {
   const { user, setUser } = useAuthStore();
+  const { showToast } = useToast();
   
   const initialValues = {
     current_trimester: TrimesterEnum.TR1
@@ -26,7 +27,7 @@ export const usePreferencesForm = () => {
         );
         if(editedPreferences) {
           setUser({...user, current_trimester: values.current_trimester})
-          showSuccessAlert("Préférences modifiées avec succès !");
+          showToast("Préférences modifiées avec succès !", "success");
         }
         }
       }

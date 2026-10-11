@@ -1,10 +1,10 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { showSuccessAlert } from '../../utils/alerts/showSuccessAlert';
 import { useQueryClient } from '@tanstack/react-query';
 import ReportInterface from '../../interfaces/report.interface';
 import { editReport } from '../../api/report';
 import { TrimesterEnum } from '../../interfaces/test.interface';
+import { useToast } from '../../contexts/ToastContext';
 
 interface SchoolClassFormProps {
   report: ReportInterface | undefined;
@@ -14,6 +14,7 @@ interface SchoolClassFormProps {
 export const useReportForm = (props : SchoolClassFormProps) => {
   const queryClient = useQueryClient();
   const {report, trimester} = props;
+  const { showToast } = useToast();
 
   const formik = useFormik({
     initialValues: {
@@ -35,7 +36,7 @@ export const useReportForm = (props : SchoolClassFormProps) => {
         queryClient.setQueryData(['studentReport', editedReport.studentId], (oldReports : ReportInterface[]) =>
           oldReports ? oldReports.map((report) => report.id === editedReport.id ? editedReport : report) : []);
 
-        showSuccessAlert("Appréciation modifiée avec succès !");
+        showToast("Appréciation modifiée avec succès !", "success");
       }
     }
   });
