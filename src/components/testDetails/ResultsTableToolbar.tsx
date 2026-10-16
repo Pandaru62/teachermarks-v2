@@ -1,7 +1,7 @@
-import { Button, Typography } from "@material-tailwind/react";
+import { Button, Menu, MenuHandler, MenuItem, MenuList, Typography } from "@material-tailwind/react";
 import { CheckIcon, PencilIcon, XMarkIcon, TableCellsIcon } from "@heroicons/react/24/solid";
 import useGenerateStudentTestCsv from "../../hooks/studentTest/useGenerateStudentTestCsv";
-import useGenerateStudentTestPdf from "../../hooks/studentTest/useGenerateStudentTestPdf";
+import useGenerateStudentTestPdf, { useGenerateGridStudentTestPdf } from "../../hooks/studentTest/useGenerateStudentTestPdf";
 
 interface ResultsTableToolbarProps {
     studentsCount?: number;
@@ -28,6 +28,8 @@ export default function ResultsTableToolbar({
 
     const { downloadCsv, isDownloading } = useGenerateStudentTestCsv();
     const { downloadPdf, isDownloading: isDownloadingPdf } = useGenerateStudentTestPdf();
+    const { downloadGridPdf, isDownloading: isDownloadingGridPdf } = useGenerateGridStudentTestPdf();
+
 
     return (
         <>
@@ -68,24 +70,29 @@ export default function ResultsTableToolbar({
                 
                 {!isEditMode ? (
                 <div className="flex gap-2">
-                    <Button
-                        onClick={() => downloadPdf(testId)}
-                        disabled={isDownloadingPdf}
-                        className="
-                            flex
-                            items-center
-                            gap-2
-                            bg-test-300
-                            text-black
-                            normal-case
-                            shadow-none
-                            hover:shadow-md
-                        "
-                    >
-                        <TableCellsIcon className="w-4 h-4" />
-                        PDF
-                    </Button>
-
+                    <Menu>
+                        <MenuHandler>
+                            <Button
+                                disabled={isDownloadingPdf || isDownloadingGridPdf}
+                                className="
+                                    flex
+                                    items-center
+                                    gap-2
+                                    bg-test-300
+                                    text-black
+                                    normal-case
+                                    shadow-none
+                                    hover:shadow-md
+                                "
+                            >
+                                PDF
+                            </Button>
+                        </MenuHandler>
+                        <MenuList>
+                            <MenuItem onClick={() => downloadPdf(testId)}>En ligne</MenuItem>
+                            <MenuItem onClick={() => downloadGridPdf(testId)}>2 colonnes</MenuItem>
+                        </MenuList>
+                    </Menu>
                     <Button
                         onClick={() => downloadCsv(testId)}
                         disabled={isDownloading}

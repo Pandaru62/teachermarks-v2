@@ -39,3 +39,8 @@ export async function generatePdf(testId : number) : Promise<Blob> {
     const { data } = await apiClient.get(`/student-test/pdf/test/${testId}/export`, { responseType: 'blob' });
     return data
 }
+
+export async function generateGridPdf(testId : number) : Promise<Blob> {
+    const { data } = await apiClient.get(`/student-test/grid-pdf/test/${testId}/export`, { responseType: 'blob' });
+    return data
+}
