@@ -1,4 +1,5 @@
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+import { Fragment } from 'react';
 import { SkillLevelEnum, StudentTestByStudentInterface } from '../../interfaces/student-test.interface';
 import StudentInterface from '../../interfaces/student.interface';
 import { getAverageSkillById } from '../../utils/calculations/average.function';
@@ -88,8 +89,24 @@ export default function StudentReportPdf(props: StudentReportPdfProps) {
           borderBottomColor: '#000',
           borderBottomStyle: 'solid',
       },
+      rowEven: {
+        backgroundColor: '#fff',
+      },
+      rowOdd: {
+        backgroundColor: '#C4C4C4',
+      },
+      commentCell: {
+          flex: 1,
+          padding: 4,
+          fontSize: 10,
+          textAlign: 'left',
+          borderRightWidth: 1,
+          borderRightColor: '#000',
+          borderRightStyle: 'solid',
+      },
       tableHeader: {
-          backgroundColor: '#eee',
+          backgroundColor: '#000',
+          color: '#fff',
           fontWeight: 'bold',
       },
       tableCell: {
@@ -191,36 +208,51 @@ export default function StudentReportPdf(props: StudentReportPdfProps) {
               </View>
 
               {/* Rows */}
-              {tests.map(test => (
-                <View key={test.id} style={styles.tableRow}>
-                  <Text style={[styles.tableCell, styles.cellTR]}>{test.test.trimester}</Text>
-                  <Text style={[styles.tableCell, styles.cellName]}>{test.test.name}</Text>
-                  <Text style={[styles.tableCell, styles.cellNote]}>
-                    {test.isAbsent ? 'ABS' : test.isUnmarked ? 'NN' :
-                    `${test.mark ?? 'x'}/${test.test.scale}`}
-                    </Text>
-                  {skills.map((skill) => {
-                      const result = test.studenttesthasskill.find((sths => sths.skill.id === skill.id));
-                      const color = getSkillColor(result?.level ?? SkillLevelEnum.NN);
-                    return (
-                      <View
-                          key={skill.id}
-                          style={[
+              {tests.map((test, index) => {
+                const comment = test.comment?.trim();
+                const rowColor = index % 2 === 0 ? styles.rowEven : styles.rowOdd;
+
+                return (
+                  <Fragment key={test.id}>
+                    <View style={[styles.tableRow, rowColor]}>
+                      <Text style={[styles.tableCell, styles.cellTR]}>{test.test.trimester}</Text>
+                      <Text style={[styles.tableCell, styles.cellName]}>{test.test.name}</Text>
+                      <Text style={[styles.tableCell, styles.cellNote]}>
+                        {test.isAbsent ? 'ABS' : test.isUnmarked ? 'NN' :
+                        `${test.mark ?? 'x'}/${test.test.scale}`}
+                      </Text>
+                      {skills.map((skill) => {
+                        const result = test.studenttesthasskill.find((sths => sths.skill.id === skill.id));
+                        const color = getSkillColor(result?.level ?? SkillLevelEnum.NN);
+                        return (
+                          <View
+                            key={skill.id}
+                            style={[
                               styles.tableCell,
                               styles.cellSkill,
-                          ]}
-                      >
-                        {result?.level && color !== '#f0f9ff' ? (
-                          <View style={styles.skillLevelWrapper}>
-                              <View style={[styles.skillDot, { backgroundColor: color }]} />
-                              <Text>{"Niveau " + result.level[3]}</Text>
+                            ]}
+                          >
+                            {result?.level && color !== '#f0f9ff' ? (
+                              <View style={styles.skillLevelWrapper}>
+                                <View style={[styles.skillDot, { backgroundColor: color }]} />
+                                <Text>{"Niveau " + result.level[3]}</Text>
+                              </View>
+                            ) : (<Text> X </Text>)}
                           </View>
-                        ) : (<Text> X </Text>)}
+                        );
+                      })}
+                    </View>
+                    {comment && (
+                      <View style={[styles.tableRow, rowColor]}>
+                        <Text style={styles.commentCell}>
+                          <Text style={{ fontWeight: 'bold' }}>Commentaire : </Text>
+                          {comment}
+                        </Text>
                       </View>
-                    );
-                  })}
-                </View>
-              ))}
+                    )}
+                  </Fragment>
+                );
+              })}
 
             </View>
           </View>

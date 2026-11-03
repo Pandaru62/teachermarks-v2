@@ -36,6 +36,7 @@ export interface StudentTestByStudentInterface {
   mark: number;
   isAbsent: boolean;
   isUnmarked: boolean;
+  comment?: string;
   test: {
     coefficient: number;
     date: string;
