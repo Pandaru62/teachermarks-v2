@@ -208,7 +208,7 @@ export default function StudentReportPdf(props: StudentReportPdfProps) {
               </View>
 
               {/* Rows */}
-              {tests.map((test, index) => {
+              {[...tests].reverse().map((test, index) => {
                 const comment = test.comment?.trim();
                 const rowColor = index % 2 === 0 ? styles.rowEven : styles.rowOdd;
 
