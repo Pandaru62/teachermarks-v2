@@ -146,13 +146,13 @@ export default function StudentReportPdf(props: StudentReportPdfProps) {
       ,
       // progress bar styles
       progressContainer: {
-        marginTop: 6,
-        marginBottom: 6,
+        marginTop: 4,
+        marginBottom: 4,
       },
       progressLabels: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 4,
+        marginBottom: 2,
       },
       progressBarOuter: {
         height: 8,
@@ -166,14 +166,14 @@ export default function StudentReportPdf(props: StudentReportPdfProps) {
         borderRadius: 4,
       }
       ,
-      // two-column layout for skills
-      skillsTwoColRow: {
+      // three-column layout for skills
+      skillsThreeColRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 6,
+        marginBottom: 4,
       },
       skillCol: {
-        width: '48%'
+        width: '32%'
       }
   });
 
@@ -264,21 +264,28 @@ export default function StudentReportPdf(props: StudentReportPdfProps) {
           </Text>
             {(() => {
               const rows: (typeof skills)[] = [];
-              for (let i = 0; i < skills.length; i += 2) {
-                rows.push([skills[i], skills[i + 1]]);
+              for (let i = 0; i < skills.length; i += 3) {
+                rows.push(skills.slice(i, i + 3));
               }
               return rows.map((pair, rIdx) => (
-                <View key={`skill-row-${rIdx}`} style={styles.skillsTwoColRow}>
+                <View key={`skill-row-${rIdx}`} style={styles.skillsThreeColRow}>
                   {pair.map((skillItem, cIdx) => {
                     if (!skillItem) return <View key={`empty-${cIdx}`} style={styles.skillCol} />;
-                    const pct = Math.round((skillItem.result.average / 4) * 100);
-                    const color = getProgressColor(skillItem.result.average);
+                    const hasAverage = Number.isFinite(skillItem.result.average);
+                    const pct = hasAverage
+                      ? Math.min(Math.max((skillItem.result.average / 4) * 100, 0), 100)
+                      : 0;
+                    const color = hasAverage
+                      ? getProgressColor(skillItem.result.average)
+                      : '#e6e6e6';
                     return (
                       <View key={skillItem.id} style={styles.skillCol}>
                         <View style={styles.progressContainer}>
                           <View style={styles.progressLabels}>
                             <Text>{skillItem.name}</Text>
-                            <Text>{skillItem.result.average.toFixed(2)}/4</Text>
+                            <Text>
+                              {hasAverage ? `${skillItem.result.average.toFixed(2)}/4` : 'NN'}
+                            </Text>
                           </View>
                           <View style={styles.progressBarOuter}>
                             <View style={[styles.progressBarInner, { width: `${pct}%`, backgroundColor: color }]} />
