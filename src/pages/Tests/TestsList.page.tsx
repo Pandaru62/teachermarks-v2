@@ -90,7 +90,7 @@ export default function TestsListPage() {
                         <Link to={`/tests/${test.id}`}>
                             <Card>
                                 <CardBody>
-                                    <div className="flex gap-3">
+                                    <div className="flex gap-1 flex-wrap">
                                         <Chip className="min-w-10" value={test.schoolclass?.name ?? "classe non définie"} style={{ backgroundColor: test.schoolclass?.color ?? 'white'}}/>
                                         <Chip value={test.trimester} />
                                         <Chip 

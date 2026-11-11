@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import getSchoolClasses from "../../api/schoolclass";
-import SchoolClassInterface from "../../interfaces/schoolclass.interface";
+import { SchoolClassWithCountInterface } from "../../interfaces/schoolclass.interface";
 
 export default function useSchoolClassesQueries() {
 
@@ -8,7 +8,7 @@ export default function useSchoolClassesQueries() {
         data: schoolClasses,
         isLoading: schoolClassesLoading,
         isError: schoolClassesError,
-      } = useQuery<SchoolClassInterface[]>({
+      } = useQuery<SchoolClassWithCountInterface[]>({
         queryKey: ["schoolClasses"],
         queryFn: () => getSchoolClasses(),
       });

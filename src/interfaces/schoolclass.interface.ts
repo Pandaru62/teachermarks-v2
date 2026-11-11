@@ -11,6 +11,16 @@ export default interface SchoolClassInterface {
     updated_at: Date | string
 }
 
+export interface SchoolClassWithCountInterface {
+    id: number,
+    color: string,
+    name: string,
+    _count: {
+        students: number,
+        test: number
+    }
+}
+
 export type CreateSchoolClassInterface = Pick<SchoolClassInterface, "name" | "color" | "formId">;
 
 export type EditSchoolClassInterface = Pick<SchoolClassInterface, "name" | "color" | "isArchived">;

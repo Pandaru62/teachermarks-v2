@@ -191,7 +191,7 @@ export default function TestDetailsPage() {
 
                     <Dialog
                         open={modalIsOpen}
-                        size="xl"
+                        size="xxl"
                         handler={handleOpen}
                     >
 

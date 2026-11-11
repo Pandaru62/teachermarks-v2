@@ -1,3 +1,5 @@
+import { SchoolClassWithCountInterface } from "./schoolclass.interface"
+
 export default interface DashboardInterface {
     lastTests: {
         id: number,
@@ -10,13 +12,5 @@ export default interface DashboardInterface {
         completion: number
         absents: number
     }[]
-    schoolClasses: {
-        id: number,
-        color: string,
-        name: string,
-        _count: {
-            students: number,
-            test: number
-        }
-    }[]
+    schoolClasses: SchoolClassWithCountInterface[]
 }

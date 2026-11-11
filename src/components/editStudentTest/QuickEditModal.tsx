@@ -77,6 +77,96 @@ const inputValueToSkillLevel = (
     }
 };
 
+interface QuickEditHeaderProps {
+    student?: StudentInterface;
+    test: TestInterface;
+    isSaving: boolean;
+    isCrossShown?: boolean;
+    onClose: () => void;
+    onPrevious: () => void;
+    onNext: () => void;
+}
+
+const QuickEditHeader = ({
+    student,
+    test,
+    isSaving,
+    isCrossShown,
+    onClose,
+    onPrevious,
+    onNext
+}: QuickEditHeaderProps) => (
+    <div
+        className={`
+            sticky
+            top-0
+            z-30
+            bg-white
+            ${isCrossShown ? "border-b" : "border-t"}
+            border-gray-200
+            px-3
+            pt-2
+            pb-3
+            w-full
+        `}
+    >
+        {/* CLOSE */}
+        {isCrossShown && (
+            <div className="flex justify-end">
+                <IconButton
+                    variant="text"
+                    size="sm"
+                    className="rounded-full"
+                    onClick={onClose}
+                    disabled={isSaving}
+                    aria-label="Fermer"
+                >
+                    <XMarkIcon className="h-5 w-5 text-gray-700" />
+                </IconButton>
+            </div>
+        )}
+
+        <div className="flex items-center gap-1">
+            {/* PREVIOUS */}
+            <IconButton
+                variant="text"
+                size="sm"
+                className="rounded-full"
+                onClick={onPrevious}
+                disabled={isSaving}
+                aria-label="Élève précédent"
+            >
+                <ChevronLeftIcon className="h-5 w-5 text-gray-700" />
+            </IconButton>
+
+            {/* STUDENT */}
+            <div className="min-w-0 flex-1 text-center">
+                <div className="truncate text-base font-bold text-gray-900">
+                    {student?.lastName}{" "}
+                    {student?.firstName}
+                </div>
+                <div className="truncate text-xs text-gray-500">
+                    {test.name}
+                    {" · "}
+                    {test?.schoolclass?.name}
+                </div>
+            </div>
+
+            {/* NEXT */}
+            <IconButton
+                variant="text"
+                size="sm"
+                className="rounded-full"
+                onClick={onNext}
+                disabled={isSaving}
+                aria-label="Élève suivant"
+            >
+                <ChevronRightIcon className="h-5 w-5 text-gray-700" />
+            </IconButton>
+        </div>
+    </div>
+);
+
 
 
 export default function QuickEditModal({
@@ -318,36 +408,6 @@ export default function QuickEditModal({
         formik.values.isUnmarked ||
         formik.values.isAbsent;
 
-    const touchStartX = useRef<number | null>(null);
-
-    const handleTouchStart = (event: React.TouchEvent) => {
-        touchStartX.current = event.touches[0].clientX;
-    };
-
-    const handleTouchEnd = async (event: React.TouchEvent) => {
-        if (touchStartX.current === null) {
-            return;
-        }
-
-        const touchEndX = event.changedTouches[0].clientX;
-        const deltaX = touchEndX - touchStartX.current;
-
-        touchStartX.current = null;
-
-        // Ignore les petits mouvements
-        if (Math.abs(deltaX) < 50) {
-            return;
-        }
-
-        if (deltaX < 0) {
-            // Swipe gauche → suivant
-            await handleNext();
-        } else {
-            // Swipe droite → précédent
-            await handlePrevious();
-        }
-    };
-
     const [skillInputs, setSkillInputs] = useState<Record<number, string>>({});
 
     useEffect(() => {
@@ -359,7 +419,6 @@ export default function QuickEditModal({
 
         setSkillInputs(values);
     }, [currentStudentId, sortedSkills]);
-    
 
 
     return (
@@ -369,120 +428,22 @@ export default function QuickEditModal({
         >
 
             {/* HEADER */}
-
-            <div
-                className="
-                    sticky
-                    top-0
-                    z-30
-                    bg-white
-                    border-b
-                    border-gray-200
-                    px-3
-                    pt-2
-                    pb-3
-                "
-            >
-                {/* CLOSE */}
-                <div className="flex  justify-end">
-
-                    <IconButton
-                        variant="text"
-                        size="sm"
-                        className="rounded-full"
-                        onClick={handleClose}
-                        disabled={isSaving}
-                        aria-label="Fermer"
-                    >
-                        <XMarkIcon className="h-5 w-5 text-gray-700" />
-                    </IconButton>
-
-                </div>
-
-
-                <div
-                    className="
-                        flex
-                        items-center
-                        gap-1
-                    "
-                >
-
-                    {/* PREVIOUS */}
-
-                    <IconButton
-                        variant="text"
-                        size="sm"
-                        className="rounded-full"
-                        onClick={handlePrevious}
-                        disabled={isSaving}
-                        aria-label="Élève précédent"
-                    >
-                        <ChevronLeftIcon className="h-5 w-5 text-gray-700" />
-                    </IconButton>
-
-                    {/* STUDENT */}
-
-                    <div
-                        className="
-                            min-w-0
-                            flex-1
-                            text-center
-                        "
-                    >
-
-                        <div
-                            className="
-                                truncate
-                                text-base
-                                font-bold
-                                text-gray-900
-                            "
-                        >
-                            {student?.lastName}{" "}
-                            {student?.firstName}
-                        </div>
-
-                        <div
-                            className="
-                                truncate
-                                text-xs
-                                text-gray-500
-                            "
-                        >
-                            {test.name}
-                            {" · "}
-                            {test?.schoolclass?.name}
-                        </div>
-
-                    </div>
-
-                    {/* NEXT */}
-
-                    <IconButton
-                        variant="text"
-                        size="sm"
-                        className="rounded-full"
-                        onClick={handleNext}
-                        disabled={isSaving}
-                        aria-label="Élève suivant"
-                    >
-                        <ChevronRightIcon className="h-5 w-5 text-gray-700" />
-                    </IconButton>
-
-                </div>
-
-            </div>
-
+            <QuickEditHeader
+                student={student}
+                test={test}
+                isSaving={isSaving}
+                onClose={handleClose}
+                onPrevious={handlePrevious}
+                onNext={handleNext}
+                isCrossShown={true}
+            />
 
             {/* CONTENT */}
 
             <DialogBody
-                onTouchStart={handleTouchStart}
-                onTouchEnd={handleTouchEnd}
                 className="
                     overflow-auto
-                    max-h-[calc(100vh-190px)]
+                    max-h-[calc(100vh-250px)]
                     px-3
                     py-4
                     text-black
@@ -863,7 +824,7 @@ export default function QuickEditModal({
                         onChange={
                             formik.handleChange
                         }
-                        rows={3}
+                        rows={10}
                     />
 
                 </section>
@@ -878,10 +839,9 @@ export default function QuickEditModal({
                     sticky
                     bottom-0
                     z-30
-                    grid
-                    grid-cols-2
-                    gap-2
                     border-t
+                    flex
+                    flex-col
                     border-gray-200
                     bg-white/95
                     px-3
@@ -893,43 +853,52 @@ export default function QuickEditModal({
             >
 
                 {/* CANCEL CHANGES */}
+                <div className="flex justify-end w-full pb-3">
+                    <Button
+                        type="button"
+                        variant="text"
+                        color="red"
+                        onClick={handleCancel}
+                        disabled={isSaving}
+                        className="order-1"
+                    >
+                        Annuler
+                    </Button>
 
-                <Button
-                    type="button"
-                    variant="text"
-                    color="red"
-                    onClick={handleCancel}
-                    disabled={isSaving}
-                    className="order-1"
-                >
-                    Annuler
-                </Button>
+                    {/* SAVE + CLOSE */}
 
-                {/* SAVE + CLOSE */}
-
-                <Button
-                    type="button"
-                    variant="gradient"
-                    color="green"
-                    onClick={
-                        handleSaveAndClose
-                    }
-                    disabled={
-                        !formik.dirty ||
-                        isSaving
-                    }
-                    className="
-                        order-2
-                        flex
-                        items-center
-                        justify-center
-                        gap-2
-                    "
-                >
-                    {isSaving
-                        ? "Enregistrement..."
-                        : "Enregistrer & quitter"}
-                </Button>
+                    <Button
+                        type="button"
+                        variant="gradient"
+                        color="green"
+                        onClick={
+                            handleSaveAndClose
+                        }
+                        disabled={
+                            !formik.dirty ||
+                            isSaving
+                        }
+                        className="
+                            order-2
+                            flex
+                            items-center
+                            justify-center
+                            gap-2
+                        "
+                    >
+                        {isSaving
+                            ? "Enregistrement..."
+                            : "Enregistrer & quitter"}
+                    </Button>
+                </div>
+                <QuickEditHeader
+                    student={student}
+                    test={test}
+                    isSaving={isSaving}
+                    onClose={handleClose}
+                    onPrevious={handlePrevious}
+                    onNext={handleNext}
+                />
 
             </DialogFooter>
 

@@ -55,8 +55,10 @@ export default function TestForm({ initialValues, editTestId, schoolClasses }: T
                 >
                     <div className="w-full flex justify-between items-center p-3">
                         <BackButton/>
-                        <h1 className="text-black mb-3">Mon évaluation</h1>
-                        <DeleteButton onClick={handleDelete}/>
+                        <h1 className="w-full text-black text-center">Mon évaluation</h1>
+                        {editTestId && (
+                            <DeleteButton onClick={handleDelete}/>
+                        )}
                     </div>
                     <div className="flex flex-col gap-5 w-[96%]">
                         <TextInput
