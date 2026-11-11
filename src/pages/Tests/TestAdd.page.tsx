@@ -16,16 +16,16 @@ export default function TestAddPage() {
             {schoolClassesLoading && <p>Chargement en cours.</p>}
             {schoolClasses && schoolClasses.length > 0 ? (
                 <TestForm
-                initialValues={{
-                    name: "",
-                    coefficient: 1,
-                    date: today,
-                    description: "",
-                    scale: 20,
-                    trimester: user?.current_trimester ?? TrimesterEnum.TR1,
-                    schoolClassId: schoolClasses[0].id,
-                }}
-                schoolClasses={schoolClasses}
+                    initialValues={{
+                        name: "",
+                        coefficient: 1,
+                        date: today,
+                        description: "",
+                        scale: 20,
+                        trimester: user?.current_trimester ?? TrimesterEnum.TR1,
+                        schoolClassId: schoolClasses[0].id,
+                    }}
+                    schoolClasses={schoolClasses}
             />
             ) : (
                 <div>
