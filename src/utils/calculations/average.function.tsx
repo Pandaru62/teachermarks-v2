@@ -5,15 +5,6 @@ export default function calculateAverage(numbers : number[]): number {
     return (numbers.reduce((acc, number) => acc + number, 0)/numbers.length)
 }
 
-// export function getTestAverageMark(studentTests : StudentTestInterface[]): number {
-//     // only count students who were present and marked
-//     const marks = studentTests
-//       .filter((sT) => sT.isAbsent === false && sT.isUnmarked === false)
-//       .map((studentTest) => studentTest.mark)
-//       .filter((mark): mark is number => mark !== null);
-//     return calculateAverage(marks);
-// }
-
 export function getTestAverageMark(studentTests: StudentTestInterface[]): number | null {
     const marks = studentTests
         .filter(st => !st.isAbsent && !st.isUnmarked && st.mark != null)
@@ -124,7 +115,7 @@ export function getAverageBySkillByTrimester(
     }[];
   }
 
-  let results: ResultInterface[] = [];
+  const results: ResultInterface[] = [];
 
   const trimesters = Object.values(TrimesterEnum) as TrimesterEnum[];
 
@@ -154,8 +145,8 @@ export function getAverageBySkillByTrimester(
           ) {
             // Get the numeric level from enum key (e.g., LVL2 → 2)
             const levelString = sths.level.toString(); // "LVL2"
-            const numeric = parseInt(levelString.replace("LVL", ""), 10);
-            if (!isNaN(numeric)) {
+            const numeric = Number.parseInt(levelString.replace("LVL", ""), 10);
+            if (!Number.isNaN(numeric)) {
               numericLevels.push(numeric);
             }
           }
@@ -170,7 +161,7 @@ export function getAverageBySkillByTrimester(
       skills.push({
         id: skill.id,
         name: skill.name,
-        result: parseFloat(average.toFixed(2)), // optional: round to 2 decimals
+        result: Number.parseFloat(average.toFixed(2)), // optional: round to 2 decimals
       });
     }
 

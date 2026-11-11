@@ -42,3 +42,20 @@ export interface SchoolClassWithPupilsInterface {
         }
     ]
 }
+
+export interface SchoolClassWithPupilsAndAveragesInterface {
+    id: number,
+    color: string,
+    name: string,
+    pupils: {
+        id: number;
+        firstName: string;
+        lastName: string;
+        results: {
+            annual: number;
+            TR1: number;
+            TR2: number;
+            TR3: number;
+        }
+    }[]
+}

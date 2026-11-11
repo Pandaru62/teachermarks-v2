@@ -11,6 +11,11 @@ export async function getSchoolClassById(id:number) {
 	return data
 }
 
+export async function getSchoolClassWithPupilsAndAveragesById(id:number) {
+    const { data } = await apiClient.get('classes/' + id + '/pupils/averages');
+	return data
+}
+
 export async function createSchoolClass(schoolClass : CreateSchoolClassInterface) {
     const { data } = await apiClient.post('classes', schoolClass);
 	return data
