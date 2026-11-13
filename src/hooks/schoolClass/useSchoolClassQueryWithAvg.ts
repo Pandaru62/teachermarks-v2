@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getSchoolClassWithPupilsAndAveragesById } from "../../api/schoolclass";
+import { getSchoolClassesWithPupilsAndAveragesById } from "../../api/schoolclass";
 import { SchoolClassWithPupilsAndAveragesInterface } from "../../interfaces/schoolclass.interface";
 
 export default function useSchoolClassWithAvgQuery(id: number) {
@@ -10,7 +10,7 @@ export default function useSchoolClassWithAvgQuery(id: number) {
         isError: schoolClassError,
       } = useQuery<SchoolClassWithPupilsAndAveragesInterface>({
         queryKey: ["schoolClass", id],
-        queryFn: () => getSchoolClassWithPupilsAndAveragesById(id),
+        queryFn: () => getSchoolClassesWithPupilsAndAveragesById(id),
       });
 
 

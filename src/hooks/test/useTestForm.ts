@@ -2,7 +2,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
-import SchoolClassInterface from '../../interfaces/schoolclass.interface';
+import SchoolClassInterface, { SchoolClassWithCountInterface } from '../../interfaces/schoolclass.interface';
 import { createTest, editTest } from '../../api/tests';
 import TestInterface, { TrimesterEnum } from '../../interfaces/test.interface';
 import { useState } from 'react';
@@ -24,7 +24,7 @@ export interface TestFormProps {
     testTagId?: number
   };
   editTestId?: number;
-  schoolClasses? : SchoolClassInterface[]
+  schoolClasses? : SchoolClassWithCountInterface[]
 }
 
 export const useTestForm = (props : TestFormProps) => {

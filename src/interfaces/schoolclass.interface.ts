@@ -47,6 +47,7 @@ export interface SchoolClassWithPupilsAndAveragesInterface {
     id: number,
     color: string,
     name: string,
+    isArchived: boolean,
     pupils: {
         id: number;
         firstName: string;

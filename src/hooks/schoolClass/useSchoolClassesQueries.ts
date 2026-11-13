@@ -4,17 +4,17 @@ import { SchoolClassWithCountInterface } from "../../interfaces/schoolclass.inte
 
 export default function useSchoolClassesQueries() {
 
-    const {
-        data: schoolClasses,
-        isLoading: schoolClassesLoading,
-        isError: schoolClassesError,
-      } = useQuery<SchoolClassWithCountInterface[]>({
-        queryKey: ["schoolClasses"],
-        queryFn: () => getSchoolClasses(),
-      });
+  const {
+    data: schoolClasses,
+    isLoading: schoolClassesLoading,
+    isError: schoolClassesError,
+  } = useQuery<SchoolClassWithCountInterface[]>({
+    queryKey: ["schoolClasses"],
+    queryFn: () => getSchoolClasses(),
+  });
 
-    return( 
-        {schoolClasses,
-        schoolClassesLoading,
-        schoolClassesError})
-  }
+  return( 
+    {schoolClasses,
+    schoolClassesLoading,
+    schoolClassesError})
+}

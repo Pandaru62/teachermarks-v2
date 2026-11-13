@@ -11,7 +11,7 @@ export async function getSchoolClassById(id:number) {
 	return data
 }
 
-export async function getSchoolClassWithPupilsAndAveragesById(id:number) {
+export async function getSchoolClassesWithPupilsAndAveragesById(id:number) {
     const { data } = await apiClient.get('classes/' + id + '/pupils/averages');
 	return data
 }
